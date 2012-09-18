@@ -12,18 +12,6 @@ describe("hoek", function(){
   var dupsArray = [nestedObj, {z:'z'}, nestedObj];
   var reducedDupsArray = [nestedObj, {z:'z'}];
   
-  describe("#getTimestamp", function(){
-    it("should return a valid unix timestamp", function(done){
-      (function(){
-        var ts = hoek.getTimestamp();
-        ts.should.be.a('number');
-        var datetime = new Date(ts);
-        (typeof datetime).should.equal('object');
-      }).should.not.throw();
-      done();
-    })
-  })
-  
   describe("#clone", function(){
     it("should clone a nested object", function(done){
       var a = nestedObj;
