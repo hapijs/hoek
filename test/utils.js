@@ -42,10 +42,10 @@ describe("hoek", function(){
     })
   })
   
-  describe("#map", function(){
+  describe("#mapToObject", function () {
     it("should convert basic array to existential object", function(done){
       var keys = [1,2,3,4];
-      var a = hoek.map(keys);
+      var a = hoek.mapToObject(keys);
       for(var i in keys){
         a[keys[i]].should.equal(true);
       }
@@ -55,7 +55,7 @@ describe("hoek", function(){
     it("should convert array of objects to existential object", function(done){
       var keys = [{x:1}, {x:2}, {x:3}];
       var subkey = 'x';
-      var a= hoek.map(keys, subkey);
+      var a = hoek.mapToObject(keys, subkey);
       for(var i in keys){
         a[keys[i][subkey]].should.equal(true);
       }
