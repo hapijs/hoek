@@ -80,4 +80,13 @@ describe("hoek", function(){
       done();
     })
   })
+
+  describe("#assert", function() {
+    it('should throw an Error when using assert in a test', function(done) {
+      (function() {
+        hoek.assert(false, 'my error message')
+      }).should.throw('my error message');
+      done();
+    })
+  })
 })
