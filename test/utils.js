@@ -94,8 +94,8 @@ describe("hoek", function () {
 
     describe("#escapeRegex", function () {
         it("should escape all special regular expression characters", function (done) {
-            var a = hoek.escapeRegex('4^f$s.4*5+_?%=#!:@|~\\/`"(>)[<]d{}s,');
-            a.should.equal('4\\^f\\$s\\.4\\*5\\+_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s,');
+            var a = hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');
+            a.should.equal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
             done();
         })
     })
