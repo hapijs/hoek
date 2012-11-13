@@ -175,6 +175,16 @@ describe('Hoek', function () {
                 done();
             });
         });
+
+        it('should call callback with new error using passed error with error condition', function (done) {
+
+            Hoek.toss(new Error('ka'), new Error('boom'), function (err) {
+
+                should.exist(err);
+                err.message.should.equal('boom');
+                done();
+            });
+        });
     });
 });
 
