@@ -77,6 +77,18 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#intersect', function () {
+
+        it('should return the common objects of two arrays', function (done) {
+
+            var array1 = [1, 2, 3, 4, 4, 5, 5];
+            var array2 = [5, 4, 5, 6, 7];
+            var common = Hoek.intersect(array1, array2);
+            common.length.should.equal(2);
+            done();
+        });
+    });
+
     describe('#removeKeys', function () {
 
         var objWithHiddenKeys = {
