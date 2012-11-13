@@ -145,6 +145,36 @@ describe('Hoek', function () {
             Hoek.toss(true, 'feature', callback);
             Hoek.toss(false, 'bug', callback);
         });
+
+        it('should call callback with new error and no message', function (done) {
+
+            Hoek.toss(false, function (err) {
+
+                should.exist(err);
+                err.message.should.equal('');
+                done();
+            });
+        });
+
+        it('should call callback with error condition', function (done) {
+
+            Hoek.toss(new Error('boom'), function (err) {
+
+                should.exist(err);
+                err.message.should.equal('boom');
+                done();
+            });
+        });
+
+        it('should call callback with new error using message with error condition', function (done) {
+
+            Hoek.toss(new Error('ka'), 'boom', function (err) {
+
+                should.exist(err);
+                err.message.should.equal('boom');
+                done();
+            });
+        });
     });
 });
 
