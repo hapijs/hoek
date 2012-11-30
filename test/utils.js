@@ -220,5 +220,15 @@ describe('Hoek', function () {
             done();
         });
     });
+
+    describe('#escapeHtml', function () {
+
+        it('should escape all special HTML characters', function (done) {
+
+            var a = Hoek.escapeHtml('&<>"\'`');
+            a.should.equal('&amp;&lt;&gt;&quot;&#x27;&#x60;');
+            done();
+        });
+    });
 });
 
