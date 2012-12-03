@@ -1,7 +1,6 @@
 var assert = require('assert');
 var should = require('should');
-var sinon = require('sinon');
-var Hoek = require('../lib/hoek');
+var Hoek = process.env.TEST_COV ? require('../lib-cov/hoek') : require('../lib/hoek');
 
 
 describe('Hoek', function () {
