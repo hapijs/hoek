@@ -277,37 +277,19 @@ describe('Hoek', function () {
 
     describe('#abort', function () {
 
-        var stdoutIntercept = function (callback) {
-
-            var write = process.stdout.write;
-
-            process.stdout.write = function (string, encoding, fd) {
-
-                callback(string, encoding, fd);
-            };
-
-            return function () {
-
-                process.stdout.write = write;
-            };
-        };
-
         it('should exit process when not in test mode', function (done) {
 
             var env = process.env.NODE_ENV;
-            process.env.NODE_ENV = 'nottatest';
-
-            var unhookStdout = stdoutIntercept(function (output) {
-
-            });
-
+            var write = process.stdout.write;
             var exit = process.exit;
 
+            process.env.NODE_ENV = 'nottatest';
+            process.stdout.write = function () {};
             process.exit = function (state) {
 
-                process.exist = exit;
                 process.env.NODE_ENV = env;
-                unhookStdout();
+                process.stdout.write = write;
+                process.exist = exit;
 
                 expect(state).to.equal(1);
                 done();
