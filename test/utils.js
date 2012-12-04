@@ -1,13 +1,28 @@
-var assert = require('assert');
-var should = require('should');
+// Load modules
+
+var Chai = require('chai');
 var Hoek = process.env.TEST_COV ? require('../lib-cov/hoek') : require('../lib/hoek');
+
+
+// Declare internals
+
+var internals = {};
+
+
+// Test shortcuts
+
+var expect = Chai.expect;
 
 
 describe('Hoek', function () {
 
-    var emptyObj = {};
     var nestedObj = {
-        x: 'x',
+        w: /^something$/ig,
+        x: {
+            a: [1, 2, 3],
+            b: 123456,
+            c: new Date()
+        },
         y: 'y',
         z: new Date()
     };
@@ -22,22 +37,84 @@ describe('Hoek', function () {
             var a = nestedObj;
             var b = Hoek.clone(a);
 
-            assert.deepEqual(a, b);
-            b.z.should.equal(a.z);
+            expect(a).to.deep.equal(b)
+            expect(a.z.getTime()).to.equal(b.z.getTime());
+            done();
+        })
+
+        it('should clone a null object', function (done) {
+
+            var b = Hoek.clone(null);
+
+            expect(b).to.equal(null);
             done();
         })
     });
 
     describe('#merge', function () {
 
-        it('should', function (done) {
+        it('should combine an empty object with a non-empty object', function (done) {
 
-            var a = emptyObj;
+            var a = {};
             var b = nestedObj;
 
             var c = Hoek.merge(a, b);
-            assert.deepEqual(a, b);
-            assert.deepEqual(c, b);
+            expect(a).to.deep.equal(b);
+            expect(c).to.deep.equal(b);
+            done();
+        });
+
+        it('should override values in target', function (done) {
+
+            var a = { x: 1, y: 2, z: 3 };
+            var b = { x: null, z: 4 };
+
+            var c = Hoek.merge(a, b);
+            expect(c.x).to.equal(null);
+            expect(c.y).to.equal(2);
+            expect(c.z).to.equal(4);
+            done();
+        });
+    });
+
+    describe('#applyToDefaults', function () {
+
+        var defaults = {
+            a: 1,
+            b: 2,
+            c: {
+                d: 3,
+                e: [5, 6]
+            }
+        };
+
+        it('should return null if options is false', function (done) {
+
+            var result = Hoek.applyToDefaults(defaults, false);
+            expect(result).to.equal(null);
+            done();
+        });
+
+        it('should return a copy of defaults if options is true', function (done) {
+
+            var result = Hoek.applyToDefaults(defaults, true);
+            expect(result).to.deep.equal(result);
+            done();
+        });
+
+        it('should apply object to defaults', function (done) {
+
+            var obj = {
+                a: null,
+                c: {
+                    e: [4]
+                }
+            };
+
+            var result = Hoek.applyToDefaults(defaults, obj);
+            expect(result.c.e).to.deep.equal([4]);
+            expect(result.a).to.equal(1);
+            expect(result.b).to.equal(2);
             done();
         });
     });
@@ -47,19 +124,26 @@ describe('Hoek', function () {
         it('should ensure uniqueness within array of objects based on subkey', function (done) {
 
             var a = Hoek.unique(dupsArray, 'x');
-            assert.deepEqual(a, reducedDupsArray);
+            expect(a).to.deep.equal(reducedDupsArray);
             done();
         });
     });
 
     describe('#mapToObject', function () {
 
+        it('should return null on null array', function (done) {
+
+            var a = Hoek.mapToObject(null);
+            expect(a).to.equal(null);
+            done();
+        });
+
         it('should convert basic array to existential object', function (done) {
 
             var keys = [1, 2, 3, 4];
             var a = Hoek.mapToObject(keys);
             for (var i in keys) {
-                a[keys[i]].should.equal(true);
+                expect(a[keys[i]]).to.equal(true);
             }
             done();
         });
@@ -70,7 +154,7 @@ describe('Hoek', function () {
             var subkey = 'x';
             var a = Hoek.mapToObject(keys, subkey);
             for (var i in keys) {
-                a[keys[i][subkey]].should.equal(true);
+                expect(a[keys[i][subkey]]).to.equal(true);
             }
             done();
         });
@@ -83,7 +167,25 @@ describe('Hoek', function () {
             var array1 = [1, 2, 3, 4, 4, 5, 5];
             var array2 = [5, 4, 5, 6, 7];
             var common = Hoek.intersect(array1, array2);
-            common.length.should.equal(2);
+            expect(common.length).to.equal(2);
+            done();
+        });
+
+        it('should return an empty array if either input is null', function (done) {
+
+            expect(Hoek.intersect([1], null).length).to.equal(0);
+            expect(Hoek.intersect(null, [1]).length).to.equal(0);
+            done();
+        });
+    });
+
+    describe('#flatten', function () {
+
+        it('should return a flat array', function (done) {
+
+            var result = Hoek.flatten([1, 2, [3, 4, [5, 6], [7], 8], [9], [10, [11, 12]], 13]);
+            expect(result.length).to.equal(13);
+            expect(result).to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
             done();
         });
     });
@@ -102,9 +204,116 @@ describe('Hoek', function () {
         it('should delete params with definition\'s hide set to true', function (done) {
 
             var a = Hoek.removeKeys(objWithHiddenKeys, ['location']);
-            should.not.exist(objWithHiddenKeys.location);
-            should.exist(objWithHiddenKeys.company);
+            expect(objWithHiddenKeys.location).to.not.exist;
+            expect(objWithHiddenKeys.company).to.exist;
             done();
+        });
+    });
+
+    describe('#inheritAsync', function () {
+
+        it('should inherit selected methods and wrap in async call', function (done) {
+
+            var proto = {
+                a: function () {
+                    return 'a!';
+                },
+                b: function () {
+                    return 'b!';
+                },
+                c: function () {
+                    throw new Error('c!');
+                }
+            };
+
+            var targetFunc = function () { };
+            targetFunc.prototype.c = function () {
+
+                return 'oops';
+            };
+
+            Hoek.inheritAsync(targetFunc, proto, ['a', 'c']);
+            var target = new targetFunc();
+
+            expect(typeof target.a).to.equal('function');
+            expect(typeof target.c).to.equal('function');
+            expect(target.b).to.not.exist;
+
+            target.a(function (err, result) {
+
+                expect(err).to.not.exist;
+                expect(result).to.equal('a!');
+
+                target.c(function (err, result) {
+
+                    expect(result).to.not.exist;
+                    expect(err.message).to.equal('c!');
+                    done();
+                });
+            });
+        });
+    });
+
+    describe('#callStack', function () {
+
+        it('should return the full call stack', function (done) {
+
+            var stack = Hoek.callStack();
+            expect(stack[0][0]).to.contain('utils.js');
+            expect(stack[0][2]).to.equal(30);
+            done();
+        });
+    });
+
+    describe('#displayStack ', function () {
+
+        it('should return the full call stack for display', function (done) {
+
+            var stack = Hoek.displayStack();
+            expect(stack[0]).to.contain('test/utils.js:');
+            done();
+        });
+    });
+
+    describe('#abort', function () {
+
+        var stdoutIntercept = function (callback) {
+
+            var write = process.stdout.write;
+
+            process.stdout.write = function (string, encoding, fd) {
+
+                callback(string, encoding, fd);
+            };
+
+            return function () {
+
+                process.stdout.write = write;
+            };
+        };
+
+        it('should exit process when not in test mode', function (done) {
+
+            var env = process.env.NODE_ENV;
+            process.env.NODE_ENV = 'nottatest';
+
+            var unhookStdout = stdoutIntercept(function (output) {
+
+            });
+
+            var exit = process.exit;
+
+            process.exit = function (state) {
+
+                process.exist = exit;
+                process.env.NODE_ENV = env;
+                unhookStdout();
+
+                expect(state).to.equal(1);
+                done();
+            };
+
+            Hoek.abort('Boom');
         });
     });
 
@@ -112,10 +321,128 @@ describe('Hoek', function () {
 
         it('should throw an Error when using assert in a test', function (done) {
 
-            (function () {
+            var fn = function () {
 
                 Hoek.assert(false, 'my error message');
-            }).should.throw('my error message');
+            };
+
+            expect(fn).to.throw('my error message');
+            done();
+        });
+    });
+
+    describe('#executeRequestHandlers', function () {
+
+        var m1 = m2 = m3 = function (request, next) {
+
+            next();
+        };
+
+        var m4 = function (request, next) {
+
+            next(new Error());
+        };
+
+        var m5 = function (request, next) {
+
+            expect(true).to.equal(false);       // Must not be called
+        };
+
+        it('should execute an array of functions in order', function (done) {
+
+            Hoek.executeRequestHandlers([m1, m2, m3], {}, function (err) {
+
+                expect(err).to.not.exist;
+                done();
+            });
+        });
+
+        it('should abort execution of an array of functions when error returned', function (done) {
+
+            Hoek.executeRequestHandlers([m1, m2, m3, m4, m5], {}, function (err) {
+
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+        it('should do nothing on empty array', function (done) {
+
+            Hoek.executeRequestHandlers([], {}, function (err) {
+
+                expect(err).to.not.exist;
+                done();
+            });
+        });
+
+        it('should do nothing on null array', function (done) {
+
+            Hoek.executeRequestHandlers(null, {}, function (err) {
+
+                expect(err).to.not.exist;
+                done();
+            });
+        });
+    });
+
+    describe('#loadDirModules', function () {
+
+        it('should load modules from directory', function (done) {
+
+            var target = {};
+            Hoek.loadDirModules(__dirname + '/modules', ['test2'], target);
+            expect(target.Test1.x).to.equal(1);
+            expect(target.Test2).to.not.exist;
+            expect(target.Test3.z).to.equal(3);
+            done();
+        });
+
+        it('should list modules from directory into function', function (done) {
+
+            var target = {};
+            Hoek.loadDirModules(__dirname + '/modules', ['test2'], function (path, name, capName) {
+
+                target[name] = capName;
+            });
+
+            expect(target.test1).to.equal('Test1');
+            expect(target.test2).to.not.exist;
+            expect(target.test3).to.equal('Test3');
+            done();
+        });
+    });
+
+    describe('#rename', function () {
+
+        it('should rename object key', function (done) {
+
+            var a = { b: 'c' };
+            Hoek.rename(a, 'b', 'x');
+            expect(a.b).to.not.exist;
+            expect(a.x).to.equal('c');
+            done();
+        });
+    });
+
+    describe('Timer', function () {
+
+        it('should return time elapsed', function (done) {
+
+            var timer = new Hoek.Timer();
+            setInterval(function () {
+
+                expect(timer.elapsed()).to.be.above(9);
+                done();
+            }, 10);
+        });
+    });
+
+    describe('#loadPackage', function () {
+
+        it('should', function (done) {
+
+            var pack = Hoek.loadPackage();
+            expect(pack.name).to.equal('hoek');
             done();
         });
     });
@@ -125,7 +452,7 @@ describe('Hoek', function () {
         it('should escape all special regular expression characters', function (done) {
 
             var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');
-            a.should.equal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
+            expect(a).to.equal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
             done();
         });
     });
@@ -136,8 +463,8 @@ describe('Hoek', function () {
 
             var callback = function (err) {
 
-                should.exist(err);
-                err.message.should.equal('bug');
+                expect(err).to.exist;
+                expect(err.message).to.equal('bug');
                 done();
             };
 
@@ -149,8 +476,8 @@ describe('Hoek', function () {
 
             Hoek.toss(false, function (err) {
 
-                should.exist(err);
-                err.message.should.equal('');
+                expect(err).to.exist;
+                expect(err.message).to.equal('');
                 done();
             });
         });
@@ -159,8 +486,8 @@ describe('Hoek', function () {
 
             Hoek.toss(new Error('boom'), function (err) {
 
-                should.exist(err);
-                err.message.should.equal('boom');
+                expect(err).to.exist;
+                expect(err.message).to.equal('boom');
                 done();
             });
         });
@@ -169,8 +496,8 @@ describe('Hoek', function () {
 
             Hoek.toss(new Error('ka'), 'boom', function (err) {
 
-                should.exist(err);
-                err.message.should.equal('boom');
+                expect(err).to.exist;
+                expect(err.message).to.equal('boom');
                 done();
             });
         });
@@ -179,8 +506,8 @@ describe('Hoek', function () {
 
             Hoek.toss(new Error('ka'), new Error('boom'), function (err) {
 
-                should.exist(err);
-                err.message.should.equal('boom');
+                expect(err).to.exist;
+                expect(err.message).to.equal('boom');
                 done();
             });
         });
@@ -195,7 +522,7 @@ describe('Hoek', function () {
 
             it('should base64 URL-safe a string', function (done) {
 
-                Hoek.base64urlEncode(str).should.equal(base64str);
+                expect(Hoek.base64urlEncode(str)).to.equal(base64str);
                 done();
             });
         });
@@ -204,7 +531,13 @@ describe('Hoek', function () {
 
             it('should un-base64 URL-safe a string', function (done) {
 
-                Hoek.base64urlDecode(base64str).should.equal(str);
+                expect(Hoek.base64urlDecode(base64str)).to.equal(str);
+                done();
+            });
+
+            it('should return error on invalid input', function (done) {
+
+                expect(Hoek.base64urlDecode().message).to.exist;
                 done();
             });
         });
@@ -215,7 +548,7 @@ describe('Hoek', function () {
         it('should escape all special HTTP header attribute characters', function (done) {
 
             var a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');
-            a.should.equal('I said \\"go w\\\\o me\\"');
+            expect(a).to.equal('I said \\"go w\\\\o me\\"');
             done();
         });
     });
@@ -225,7 +558,21 @@ describe('Hoek', function () {
         it('should escape all special HTML characters', function (done) {
 
             var a = Hoek.escapeHtml('&<>"\'`');
-            a.should.equal('&amp;&lt;&gt;&quot;&#x27;&#x60;');
+            expect(a).to.equal('&amp;&lt;&gt;&quot;&#x27;&#x60;');
+            done();
+        });
+
+        it('should return empty string on falsy input', function (done) {
+
+            var a = Hoek.escapeHtml('');
+            expect(a).to.equal('');
+            done();
+        });
+
+        it('should return unchanged string on no reserved input', function (done) {
+
+            var a = Hoek.escapeHtml('abc');
+            expect(a).to.equal('abc');
             done();
         });
     });
