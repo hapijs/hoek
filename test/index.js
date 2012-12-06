@@ -411,7 +411,7 @@ describe('Hoek', function () {
         it('should return time elapsed', function (done) {
 
             var timer = new Hoek.Timer();
-            setInterval(function () {
+            setTimeout(function () {
 
                 expect(timer.elapsed()).to.be.above(9);
                 done();
