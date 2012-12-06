@@ -1,7 +1,7 @@
 // Load modules
 
 var Chai = require('chai');
-var Hoek = process.env.TEST_COV ? require('../lib-cov/hoek') : require('../lib/hoek');
+var Hoek = process.env.TEST_COV ? require('../lib-cov') : require('../lib');
 
 
 // Declare internals
@@ -259,7 +259,7 @@ describe('Hoek', function () {
         it('should return the full call stack', function (done) {
 
             var stack = Hoek.callStack();
-            expect(stack[0][0]).to.contain('utils.js');
+            expect(stack[0][0]).to.contain('index.js');
             expect(stack[0][2]).to.equal(30);
             done();
         });
@@ -270,7 +270,7 @@ describe('Hoek', function () {
         it('should return the full call stack for display', function (done) {
 
             var stack = Hoek.displayStack();
-            expect(stack[0]).to.contain('test/utils.js:');
+            expect(stack[0]).to.contain('test/index.js:');
             done();
         });
     });

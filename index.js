@@ -1,1 +1,1 @@
-module.exports = require('./lib/hoek');
+module.exports = require('./lib');
