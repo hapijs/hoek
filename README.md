@@ -1,5 +1,5 @@
 <a href="/walmartlabs/blammo"><img src="https://raw.github.com/walmartlabs/blammo/master/images/from.png" align="right" /></a>
-# hoek
+![hoek Logo](https://raw.github.com/walmartlabs/hoek/master/images/hoek.png)
 
 General purpose node utilities
 
