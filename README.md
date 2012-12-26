@@ -9,7 +9,7 @@ General purpose node utilities
 
 * [Introduction](#introduction "Introduction")
 * [Array](#array "Array")
-  * [clone](#clone "clone")
+  * [clone](#clone "clone(obj)")
   * [merge](#merge "merge")
   * [applyToDefaults](#applyToDefaults "applyToDefaults")
   * [unique](#unique "unique")
@@ -73,7 +73,7 @@ console.log(copy.x.b)      // results in 100
 
 ### merge
 
-
+Merge all the properties of source into target, source wins in conflic, and by default null and undefined from source are applied
 
 
 
