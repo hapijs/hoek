@@ -5,3 +5,8 @@ General purpose node utilities
 
 [![Build Status](https://secure.travis-ci.org/walmartlabs/hoek.png)](http://travis-ci.org/walmartlabs/hoek)
 
+# Table of Contents
+
+* [Introduction](#introduction "Introduction")
+* [Array](#array "Array")
+* [Object](#object "Object")
