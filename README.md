@@ -9,14 +9,14 @@ General purpose node utilities
 
 * [Introduction](#introduction "Introduction")
 * [Array](#array "Array")
-  * [clone(obj)](#clone "clone")
-  * [merge(target, source, isNullOverride, isMergeArrays)](#merge "merge")
-  * [applyToDefaults(defaults,options)](#applyToDefaults "applyToDefaults")
-  * [unique(array,key)](#unique "unique")
-  * [mapToObject(array,key)](#mapToObject "mapToObject")
-  * [intersect(array1,array2)](#intersect "intersect")
-  * [flatten(array,target)](#flatten "flatten")
-  * [removeKeys(object,keys)](#removeKeys "removeKeys")
+  * [clone](#clone "clone")
+  * [merge](#merge "merge")
+  * [applyToDefaults](#applyToDefaults "applyToDefaults")
+  * [unique](#unique "unique")
+  * [mapToObject](#mapToObject "mapToObject")
+  * [intersect](#intersect "intersect")
+  * [flatten](#flatten "flatten")
+  * [removeKeys](#removeKeys "removeKeys")
 * [Object](#object "Object")
   * [clone](#cloneObj "clone")
   * [inheritAsync](#inheritAsync "inheritAsync")
@@ -45,7 +45,7 @@ Under each of the sections (such as Array), there are subsections which correspo
 
 Hoek provides several helpful methods for arrays.
 
-### clone
+### clone(obj)
 
 This method is used to clone an object or an array. A *deep copy* is made (duplicates everything, including values that are objects). 
 
@@ -71,12 +71,21 @@ console.log(nestedObj.x.b) // results in 123456
 console.log(copy.x.b)      // results in 100
 ```
 
-### merge
+### merge(target, source, isNullOverride, isMergeArrays)
 
 Merge all the properties of source into target, source wins in conflic, and by default null and undefined from source are applied
 
 
+### applyToDefaults(defaults,options)
 
+### unique(array,key)
 
+### mapToObject(array,key)
+
+### intersect(array1,array2)
+
+### flatten(array,target)
+
+### removeKeys(object,keys)
 
 
