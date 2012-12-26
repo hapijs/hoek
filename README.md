@@ -9,8 +9,8 @@ General purpose node utilities
 
 * [Introduction](#introduction "Introduction")
 * [Array](#array "Array")
-  *[clone](#clone "clone")
-  *[merge](#merge "merge")
+  *[Clone](#clone "clone")
+  *[Merge](#merge "merge")
   *[applyToDefaults](#applyToDefaults "applyToDefaults")
   *[unique](#unique "unique")
   *[mapToObject](#mapToObject "mapToObject")
@@ -47,7 +47,7 @@ Hoek provides several helpful methods for arrays.
 
 ### clone
 
-This method is used to clone an object or an array. A *deep copy* is made.
+This method is used to clone an object or an array. A *deep copy* is made (duplicates everything, including values that are objects). 
 
 ```javascript
 
@@ -70,6 +70,10 @@ console.log(copy.y)        // results in 'y'
 console.log(nestedObj.x.b) // results in 123456
 console.log(copy.x.b)      // results in 100
 ```
+
+### merge
+
+
 
 
 
