@@ -415,7 +415,7 @@ describe('Hoek', function () {
 
                 expect(timer.elapsed()).to.be.above(9);
                 done();
-            }, 10);
+            }, 12);
         });
     });
 
