@@ -517,9 +517,15 @@ describe('Hoek', function () {
                 done();
             });
 
-            it('should return error on invalid input', function (done) {
+            it('should return error on undefined input', function (done) {
 
                 expect(Hoek.base64urlDecode().message).to.exist;
+                done();
+            });
+
+            it('should return error on invalid input', function (done) {
+
+                expect(Hoek.base64urlDecode('*').message).to.exist;
                 done();
             });
         });
