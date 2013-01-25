@@ -179,6 +179,22 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#matchKeys', function () {
+
+        it('should match the existing object keys', function (done) {
+
+            var obj = {
+                a: 1,
+                b: 2,
+                c: 3,
+                d: null
+            };
+
+            expect(Hoek.matchKeys(obj, ['b', 'c', 'd', 'e'])).to.deep.equal(['b', 'c', 'd']);
+            done();
+        });
+    });
+
     describe('#flatten', function () {
 
         it('should return a flat array', function (done) {
