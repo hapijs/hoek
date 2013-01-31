@@ -226,6 +226,55 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#reach', function () {
+
+        var obj = {
+            a: {
+                b: {
+                    c: {
+                        d: 1,
+                        e: 2
+                    },
+                    f: 'hello',
+                },
+                g: {
+                    h: 3
+                }
+            },
+            i: function () { }
+        };
+
+        it('returns a valid member', function (done) {
+
+            expect(Hoek.reach(obj, 'a.b.c.d')).to.equal(1);
+            done();
+        });
+
+        it('returns null on null object', function (done) {
+
+            expect(Hoek.reach(null, 'a.b.c.d')).to.not.exist;
+            done();
+        });
+
+        it('returns null on missing member', function (done) {
+
+            expect(Hoek.reach(obj, 'a.b.c.d.x')).to.not.exist;
+            done();
+        });
+
+        it('returns null on invalid member', function (done) {
+
+            expect(Hoek.reach(obj, 'a.b.c.d-.x')).to.not.exist;
+            done();
+        });
+
+        it('returns function member', function (done) {
+
+            expect(typeof Hoek.reach(obj, 'i')).to.equal('function');
+            done();
+        });
+    });
+
     describe('#inheritAsync', function () {
 
         it('should inherit selected methods and wrap in async call', function (done) {
