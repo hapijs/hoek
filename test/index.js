@@ -127,6 +127,12 @@ describe('Hoek', function () {
             expect(a).to.deep.equal(reducedDupsArray);
             done();
         });
+
+        it('removes duplicated without key', function (done) {
+
+            expect(Hoek.unique([1, 2, 3, 4, 2, 1, 5])).to.deep.equal([1, 2, 3, 4, 5]);
+            done();
+        });
     });
 
     describe('#mapToObject', function () {
