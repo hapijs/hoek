@@ -384,60 +384,6 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#executeRequestHandlers', function () {
-
-        var m1 = m2 = m3 = function (request, next) {
-
-            next();
-        };
-
-        var m4 = function (request, next) {
-
-            next(new Error());
-        };
-
-        var m5 = function (request, next) {
-
-            expect(true).to.equal(false);       // Must not be called
-        };
-
-        it('should execute an array of functions in order', function (done) {
-
-            Hoek.executeRequestHandlers([m1, m2, m3], {}, function (err) {
-
-                expect(err).to.not.exist;
-                done();
-            });
-        });
-
-        it('should abort execution of an array of functions when error returned', function (done) {
-
-            Hoek.executeRequestHandlers([m1, m2, m3, m4, m5], {}, function (err) {
-
-                expect(err).to.exist;
-                done();
-            });
-        });
-
-        it('should do nothing on empty array', function (done) {
-
-            Hoek.executeRequestHandlers([], {}, function (err) {
-
-                expect(err).to.not.exist;
-                done();
-            });
-        });
-
-        it('should do nothing on null array', function (done) {
-
-            Hoek.executeRequestHandlers(null, {}, function (err) {
-
-                expect(err).to.not.exist;
-                done();
-            });
-        });
-    });
-
     describe('#loadDirModules', function () {
 
         it('should load modules from directory', function (done) {
