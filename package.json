@@ -1,7 +1,7 @@
 {
   "name": "hoek",
   "description": "General purpose node utilities",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Eran Hammer <eran@hueniverse.com> (http://hueniverse.com)",
   "contributors":[
     "Van Nguyen <the.gol.effect@gmail.com>"
@@ -15,7 +15,6 @@
     "node": ">=0.8.0"
   },
   "dependencies": {
-    "async": "0.1.x"
   },
   "devDependencies": {
     "mocha": "1.x.x",
