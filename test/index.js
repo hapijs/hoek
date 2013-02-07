@@ -66,13 +66,14 @@ describe('Hoek', function () {
 
         it('should override values in target', function (done) {
 
-            var a = { x: 1, y: 2, z: 3 };
-            var b = { x: null, z: 4 };
+            var a = { x: 1, y: 2, z: 3, v: 5 };
+            var b = { x: null, z: 4, v: 0 };
 
             var c = Hoek.merge(a, b);
             expect(c.x).to.equal(null);
             expect(c.y).to.equal(2);
             expect(c.z).to.equal(4);
+            expect(c.v).to.equal(0);
             done();
         });
     });
@@ -85,7 +86,8 @@ describe('Hoek', function () {
             c: {
                 d: 3,
                 e: [5, 6]
-            }
+            },
+            f: 6
         };
 
         it('should return null if options is false', function (done) {
@@ -108,13 +110,15 @@ describe('Hoek', function () {
                 a: null,
                 c: {
                     e: [4]
-                }
+                },
+                f: 0
             };
 
             var result = Hoek.applyToDefaults(defaults, obj);
             expect(result.c.e).to.deep.equal([4]);
             expect(result.a).to.equal(1);
             expect(result.b).to.equal(2);
+            expect(result.f).to.equal(0);
             done();
         });
     });
