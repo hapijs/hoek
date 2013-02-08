@@ -45,7 +45,7 @@ Under each of the sections (such as Array), there are subsections which correspo
 
 Hoek provides several helpful methods for objects and arrays.
 
-### clone(obj)
+## clone(obj)
 
 This method is used to clone an object or an array. A *deep copy* is made (duplicates everything, including values that are objects). 
 
