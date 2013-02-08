@@ -15,8 +15,10 @@ General purpose node utilities
   * [unique](#unique "unique")
   * [mapToObject](#mapToObject "mapToObject")
   * [intersect](#intersect "intersect")
+  * [matchKeys](#matchKeys "matchKeys")
   * [flatten](#flatten "flatten")
   * [removeKeys](#removeKeys "removeKeys")
+  * [reach](#reach "reach")
   * [inheritAsync](#inheritAsync "inheritAsync")
   * [rename](#rename "rename")
 * [Timer](#timer "Timer")
@@ -114,12 +116,96 @@ var config = Hoek.applyToDefaults(defaults, options); // results in {host: "loca
 
 Remove duplicate items from Array
 
+```javascript
+
+var array = [1, 2, 2, 3, 3, 4, 5, 6];
+
+var newArray = Hoek.unique(array); // results in [1,2,3,4,5,6];
+
+array = [{id: 1}, {id: 1}, {id: 2}];
+
+newArray = Hoek.unique(array, "id") // results in [{id: 1}, {id: 2}]
+
+```
+
 ### mapToObject(array,key)
 
+Convert an Array into an Object
+
+```javascript
+
+var array = [1,2,3];
+var newObject = Hoek.mapToObject(array); // results in [{"1": true}, {"2": true}, {"3": true}]
+
+array = [{id: 1}, {id: 2}];
+newObject = Hoek.mapToObject(array, "id") // results in [{"id": 1}, {"id": 2}]
+
+```
 ### intersect(array1,array2)
 
-### flatten(array,target)
+Find the common unique items in two arrays
 
-### removeKeys(object,keys)
+```javascript
+
+var array1 = [1, 2, 3];
+var array2 = [1, 4, 5];
+
+var newArray = Hoek.intersect(array1, array2) // results in [1]
+
+```
+
+### matchKeys(obj, keys) 
+
+Find which keys are present
+
+```javascript
+
+var obj = {a: 1, b: 2, c: 3};
+var keys = ["a", "e"];
+
+Hoek.matchKeys(obj, keys) // returns ["a"]
+
+```
+
+### flatten(array, target)
+
+Flatten an array
+
+```javascript
+
+var array = [1, 2, 3];
+var target = [4, 5]; 
+
+var flattenedArray = Hoek.flatten(array, target) // results in [4, 5, 1, 2, 3];
+
+```
+
+### removeKeys(object, keys)
+
+Remove keys
+
+```javascript
+
+var object = {a: 1, b: 2, c: 3, d: 4};
+
+var keys = ["a", "b"];
+
+Hoek.removeKeys(object, keys) // object is now {c: 3, d: 4}
+
+```
+
+### reach(obj, chain)
+
+Converts an object key chain string to reference
+
+```javascript
+
+var chain = 'a.b.c';
+var obj = {a : {b : { c : 1}}};
+
+Hoek.reach(obj, chain) // returns 1
+
+```
+
 
 
