@@ -8,7 +8,7 @@ General purpose node utilities
 # Table of Contents
 
 * [Introduction](#introduction "Introduction")
-* [Array](#array "Array")
+* [Object](#object "Object")
   * [clone](#clone "clone")
   * [merge](#merge "merge")
   * [applyToDefaults](#applyToDefaults "applyToDefaults")
@@ -17,8 +17,6 @@ General purpose node utilities
   * [intersect](#intersect "intersect")
   * [flatten](#flatten "flatten")
   * [removeKeys](#removeKeys "removeKeys")
-* [Object](#object "Object")
-  * [clone](#cloneObj "clone")
   * [inheritAsync](#inheritAsync "inheritAsync")
   * [rename](#rename "rename")
 * [Timer](#timer "Timer")
