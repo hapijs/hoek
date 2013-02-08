@@ -39,9 +39,9 @@ var config = Hoek.applyToDefaults(default, {port : "3000", admin : true});
 
 Under each of the sections (such as Array), there are subsections which correspond to Hoek methods. Each subsection will explain how to use the corresponding method. In each js excerpt below, the var Hoek = require('hoek') is omitted for brevity.
 
-## Array
+## Object
 
-Hoek provides several helpful methods for arrays.
+Hoek provides several helpful methods for objects and arrays.
 
 ### clone(obj)
 
