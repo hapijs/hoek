@@ -112,6 +112,8 @@ var config = Hoek.applyToDefaults(defaults, options); // results in {host: "loca
 
 ### unique(array,key)
 
+Remove duplicate items from Array
+
 ### mapToObject(array,key)
 
 ### intersect(array1,array2)
