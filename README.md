@@ -98,6 +98,18 @@ newTarget = Hoek.merge(target, source, true, false) // results in [4, 5]
 
 ### applyToDefaults(defaults,options)
 
+Apply options to a copy of the defaults
+
+```javascript
+
+var defaults = {host: "localhost", port: 8000};
+var options = {port: 8080};
+
+var config = Hoek.applyToDefaults(defaults, options); // results in {host: "localhost", port: 8080};
+
+
+```
+
 ### unique(array,key)
 
 ### mapToObject(array,key)
