@@ -75,6 +75,27 @@ isNullOverride, isMergeArrays default to true
 Merge all the properties of source into target, source wins in conflic, and by default null and undefined from source are applied
 
 
+```javascript
+
+var target = {a: 1, b : 2}
+var source = {a: 0, c: 5}
+var source2 = {a: null, c: 5}
+
+var targetArray = [1, 2, 3];
+var sourceArray = [4, 5];
+
+var newTarget = Hoek.merge(target, source);     // results in {a: 0, b: 2, c: 5}
+newTarget = Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
+newTarget = Hoek.merge(target, source2, false); // results in {a: 1, b:2, c: 5}
+
+newTarget = Hoek.merge(target, source)              // results in [1, 2, 3, 4, 5]
+newTarget = Hoek.merge(target, source, true, false) // results in [4, 5]
+
+
+
+
+```
+
 ### applyToDefaults(defaults,options)
 
 ### unique(array,key)
