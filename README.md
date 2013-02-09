@@ -207,5 +207,65 @@ Hoek.reach(obj, chain) // returns 1
 
 ```
 
+### inheritAsync(self, obj, keys) 
+
+Inherits a selected set of methods from an object, wrapping functions in asynchronous syntax and catching errors
+
+```javascript
+
+var targetFunc = function () { };
+
+var proto = {
+                a: function () {
+                    return 'a!';
+                },
+                b: function () {
+                    return 'b!';
+                },
+                c: function () {
+                    throw new Error('c!');
+                }
+            };
+
+var keys = ['a', 'c'];
+
+Hoek.inheritAsync(targetFunc, proto, ['a', 'c']);
+
+var target = new targetFunc();
+
+target.a()                         // returns 'a!'                         
+target.c()                         // returns 'c!'
+target.b()                         // returns undefined
+
+
+```
+
+# rename(obj, from, to)
+
+Rename a key of an object
+
+```javascript
+
+var obj = {a : 1, b : 2};
+
+Hoek.rename(obj, "a", "c");     // obj is now {c : 1, b : 2}
+
+```
+
+
+# Timer
+
+A Timer object
+
+```javascript
+
+
+example : 
+
+
+var timerObj = new Hoek.Timer();
+console.log("Time is now: " + timerObj.ts)
+console.log("Elapsed time from initialization: " + timerObj.elapsed)
+
 
 
