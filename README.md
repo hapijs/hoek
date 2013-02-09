@@ -98,7 +98,7 @@ newTarget = Hoek.merge(target, source, true, false) // results in [4, 5]
 
 ```
 
-### applyToDefaults(defaults,options)
+### applyToDefaults(defaults, options)
 
 Apply options to a copy of the defaults
 
@@ -112,7 +112,7 @@ var config = Hoek.applyToDefaults(defaults, options); // results in {host: "loca
 
 ```
 
-### unique(array,key)
+### unique(array, key)
 
 Remove duplicate items from Array
 
@@ -128,7 +128,7 @@ newArray = Hoek.unique(array, "id") // results in [{id: 1}, {id: 2}]
 
 ```
 
-### mapToObject(array,key)
+### mapToObject(array, key)
 
 Convert an Array into an Object
 
@@ -141,7 +141,7 @@ array = [{id: 1}, {id: 2}];
 newObject = Hoek.mapToObject(array, "id") // results in [{"id": 1}, {"id": 2}]
 
 ```
-### intersect(array1,array2)
+### intersect(array1, array2)
 
 Find the common unique items in two arrays
 
