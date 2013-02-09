@@ -9,7 +9,7 @@ General purpose node utilities
 
 * [Introduction](#introduction "Introduction")
 * [Object](#object "Object")
-  * [clone(obj)](#clone "clone")
+  * [clone](#clone\(obj\) "clone")
   * [merge](#merge "merge")
   * [applyToDefaults](#applyToDefaults "applyToDefaults")
   * [unique](#unique "unique")
