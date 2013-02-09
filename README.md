@@ -15,7 +15,7 @@ General purpose node utilities
   * [unique](#uniquearray-keys "unique")
   * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
-  * [matchKeys](#matcheysobj-keys "matchKeys")
+  * [matchKeys](#matchkeysobj-keys "matchKeys")
   * [flatten](#flattenarray-target "flatten")
   * [removeKeys](#removekeysobject-keys "removeKeys")
   * [reach](#reachobj-chain "reach")
