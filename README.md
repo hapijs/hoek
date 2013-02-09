@@ -12,7 +12,7 @@ General purpose node utilities
   * [clone](#cloneobj "clone")
   * [merge](#mergetarget-source-isnulloverride-ismergearrays "merge")
   * [applyToDefaults](#applytodefaultsdefaults-options "applyToDefaults")
-  * [unique](#uniquearray-keys "unique")
+  * [unique](#uniquearray-key "unique")
   * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
   * [matchKeys](#matchkeysobj-keys "matchKeys")
