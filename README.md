@@ -22,6 +22,19 @@ General purpose node utilities
   * [inheritAsync](#inheritasyncself-obj-keys "inheritAsync")
   * [rename](#renameobj-from-to "rename")
 * [Timer](#timer "Timer")
+* [Binary Encoding/Decoding](#binary "Binary Encoding/Decoding")
+  * [base64urlEncode](#binary64urlEncodevalue "binary64urlEncode")
+  * [base64urlDecode](#binary64urlDecodevalue "binary64urlDecode")
+* [Escaping Characters](#escaped "Escaping Characters")
+  * [escapeHTML](#escapeHTMLstring "escapeHTML")
+  * [escapeHeaderAttribute](#escapeHeaderAttributeattribute "escapeHeaderAttribute")
+  * [escapeRegex](#escapeRegexstring "escapeRegex")
+* [Errors](#errors "Errors")
+  * [assert](#assertmessage "assert")
+  * [abort](#abortmessage "abort")
+  * [displayStack](#displayStackslice "displayStack")
+  * [callStack](#callStackslice "callStack")
+
 
 
 # Introduction
