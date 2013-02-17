@@ -1,7 +1,7 @@
 // Load modules
 
 var Chai = require('chai');
-var Hoek = process.env.TEST_COV ? require('../lib-cov') : require('../lib');
+var Hoek = require('../lib');
 
 
 // Declare internals
