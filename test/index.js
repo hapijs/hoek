@@ -372,6 +372,56 @@ describe('Hoek', function () {
 
             Hoek.abort('Boom');
         });
+
+        it('should respect hideStack argument', function (done) {
+
+            var env = process.env.NODE_ENV;
+            var write = process.stdout.write;
+            var exit = process.exit;
+            var output = '';
+
+            process.exit = function () {};
+            process.env.NODE_ENV = '';
+            process.stdout.write = function (message) {
+
+                output = message;
+            };
+
+            Hoek.abort('my error message', true);
+
+            process.env.NODE_ENV = env;
+            process.stdout.write = write;
+            process.exit = exit;
+
+            expect(output).to.equal('ABORT: my error message\n\t\n');
+
+            done();
+        });
+
+        it('should respect hideStack argument when it\'s enabled', function (done) {
+
+            var env = process.env.NODE_ENV;
+            var write = process.stdout.write;
+            var exit = process.exit;
+            var output = '';
+
+            process.exit = function () {};
+            process.env.NODE_ENV = '';
+            process.stdout.write = function (message) {
+
+                output = message;
+            };
+
+            Hoek.abort('my error message', false);
+
+            process.env.NODE_ENV = env;
+            process.stdout.write = write;
+            process.exit = exit;
+
+            expect(output).to.contain('index.js');
+
+            done();
+        });
     });
 
     describe('#assert', function () {
@@ -384,6 +434,31 @@ describe('Hoek', function () {
             };
 
             expect(fn).to.throw('my error message');
+            done();
+        });
+
+        it('should respect hideStack argument', function (done) {
+
+            var env = process.env.NODE_ENV;
+            var write = process.stdout.write;
+            var exit = process.exit;
+            var output = '';
+
+            process.exit = function () {};
+            process.env.NODE_ENV = '';
+            process.stdout.write = function (message) {
+
+                output = message;
+            };
+
+            Hoek.assert(false, 'my error message', true);
+
+            process.env.NODE_ENV = env;
+            process.stdout.write = write;
+            process.exit = exit;
+
+            expect(output).to.equal('ABORT: my error message\n\t\n');
+
             done();
         });
     });
