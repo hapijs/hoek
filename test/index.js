@@ -398,7 +398,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should respect hideStack argument when it\'s enabled', function (done) {
+        it('should default to showing stack', function (done) {
 
             var env = process.env.NODE_ENV;
             var write = process.stdout.write;
@@ -412,7 +412,7 @@ describe('Hoek', function () {
                 output = message;
             };
 
-            Hoek.abort('my error message', false);
+            Hoek.abort('my error message');
 
             process.env.NODE_ENV = env;
             process.stdout.write = write;
