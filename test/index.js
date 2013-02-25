@@ -373,6 +373,25 @@ describe('Hoek', function () {
             Hoek.abort('Boom');
         });
 
+        it('should throw when not in test mode and abortThrow is true', function (done) {
+
+            var env = process.env.NODE_ENV;
+            process.env.NODE_ENV = 'nottatest';
+            Hoek.abortThrow = true;
+
+            var fn = function () {
+
+                Hoek.abort('my error message');
+            };
+
+            expect(fn).to.throw('my error message');
+            Hoek.abortThrow = false;
+            process.env.NODE_ENV = env;
+            
+            done();
+        });
+
+
         it('should respect hideStack argument', function (done) {
 
             var env = process.env.NODE_ENV;
