@@ -40,7 +40,7 @@ describe('Hoek', function () {
             expect(a).to.deep.equal(b)
             expect(a.z.getTime()).to.equal(b.z.getTime());
             done();
-        })
+        });
 
         it('should clone a null object', function (done) {
 
@@ -48,7 +48,21 @@ describe('Hoek', function () {
 
             expect(b).to.equal(null);
             done();
-        })
+        });
+        
+        it('should throw on circular reference', function (done) {
+
+            var a = {};
+            a.x = a;
+            
+            var test = (function () {
+
+                var b = Hoek.clone(a);
+            });
+            
+            expect(test).to.throw();
+            done();
+        });
     });
 
     describe('#merge', function () {
