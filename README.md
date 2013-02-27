@@ -34,7 +34,10 @@ General purpose node utilities
   * [abort](#abortmessage "abort")
   * [displayStack](#displayStackslice "displayStack")
   * [callStack](#callStackslice "callStack")
-* [Load files]
+  * [toss](#tosscondition "toss")
+* [Load files](#load "Load Files")
+  * [loadPackage](#loadPackagedir "loadPackage")
+  * [loadDirModules](#loadDirModulespath-excludefiles-target "loadDirModules")
 
 
 
@@ -364,6 +367,15 @@ Returns a trace stack array.
 ```javascript
 
 ```
+
+### toss(condition)
+
+toss(condition /*, [message], callback */)
+
+Return an error as first argument of a callback
+
+
+# Load Files
 
 
 
