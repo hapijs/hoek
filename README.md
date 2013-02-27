@@ -287,9 +287,11 @@ console.log("Elapsed time from initialization: " + timerObj.elapsed)
 
 ### base64urlEncode(value)
 
-### base64urlEncode(value)
+Encodes value in Base64 or URL encoding
 
+### base64urlDecode(value)
 
+Decodes data in Base64 or URL encoding.
 # Escaping Characters
 
 Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
