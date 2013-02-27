@@ -35,7 +35,7 @@ General purpose node utilities
   * [displayStack](#displayStackslice "displayStack")
   * [callStack](#callStackslice "callStack")
   * [toss](#tosscondition "toss")
-* [Load files](#load "Load Files")
+* [Load files](#load-files "Load Files")
   * [loadPackage](#loadPackagedir "loadPackage")
   * [loadDirModules](#loadDirModulespath-excludefiles-target "loadDirModules")
 
@@ -376,6 +376,14 @@ Return an error as first argument of a callback
 
 
 # Load Files
+
+### loadPackage(dir)
+
+Load and parse package.json process root or given directory
+
+### loadDirModules(path, excludeFiles, target) 
+
+Loads modules from a given path; option to exclude files (array).
 
 
 
