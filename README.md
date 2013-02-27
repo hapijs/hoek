@@ -312,7 +312,7 @@ internals.htmlEscaped = {
 ```javascript
 
 var string = '<html> hey </html>';
-var escapedString = htmlEscaped(escapedString); // returns 
+var escapedString = Hoek.htmlEscape(escapedString); // returns &lthtml&gt hey &lthtml&gt
 
 ```
 
@@ -339,6 +339,9 @@ Hoek.assert(a === b, 'a should equal b');
 
 ### abort(message)
 
+First checks if process.env.NODE_ENV === 'test', and if so, throws error message. Otherwise,
+displays most recent stack and then exits process.
+
 ```javascript
 
 
@@ -346,11 +349,15 @@ Hoek.assert(a === b, 'a should equal b');
 
 ### displayStack(slice)
 
+Displays the trace stack
+
 ```javascript
 
 ```
 
 ### callStack(slice)
+
+Returns a trace stack array.
 
 ```javascript
 
