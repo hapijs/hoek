@@ -36,8 +36,8 @@ General purpose node utilities
   * [callStack](#callStackslice "callStack")
   * [toss](#tosscondition "toss")
 * [Load files](#load-files "Load Files")
-  * [loadPackage](#loadPackagedir "loadPackage")
-  * [loadDirModules](#loadDirModulespath-excludefiles-target "loadDirModules")
+  * [loadPackage](#loadPackagedir "loadpackage")
+  * [loadDirModules](#loadDirModulespath-excludefiles-target "loaddirmodules")
 
 
 
