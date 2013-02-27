@@ -1,7 +1,7 @@
 // Load modules
 
 var Chai = require('chai');
-var Hoek = process.env.TEST_COV ? require('../lib-cov') : require('../lib');
+var Hoek = require('../lib');
 
 
 // Declare internals
@@ -372,6 +372,75 @@ describe('Hoek', function () {
 
             Hoek.abort('Boom');
         });
+
+        it('should throw when not in test mode and abortThrow is true', function (done) {
+
+            var env = process.env.NODE_ENV;
+            process.env.NODE_ENV = 'nottatest';
+            Hoek.abortThrow = true;
+
+            var fn = function () {
+
+                Hoek.abort('my error message');
+            };
+
+            expect(fn).to.throw('my error message');
+            Hoek.abortThrow = false;
+            process.env.NODE_ENV = env;
+            
+            done();
+        });
+
+
+        it('should respect hideStack argument', function (done) {
+
+            var env = process.env.NODE_ENV;
+            var write = process.stdout.write;
+            var exit = process.exit;
+            var output = '';
+
+            process.exit = function () {};
+            process.env.NODE_ENV = '';
+            process.stdout.write = function (message) {
+
+                output = message;
+            };
+
+            Hoek.abort('my error message', true);
+
+            process.env.NODE_ENV = env;
+            process.stdout.write = write;
+            process.exit = exit;
+
+            expect(output).to.equal('ABORT: my error message\n\t\n');
+
+            done();
+        });
+
+        it('should default to showing stack', function (done) {
+
+            var env = process.env.NODE_ENV;
+            var write = process.stdout.write;
+            var exit = process.exit;
+            var output = '';
+
+            process.exit = function () {};
+            process.env.NODE_ENV = '';
+            process.stdout.write = function (message) {
+
+                output = message;
+            };
+
+            Hoek.abort('my error message');
+
+            process.env.NODE_ENV = env;
+            process.stdout.write = write;
+            process.exit = exit;
+
+            expect(output).to.contain('index.js');
+
+            done();
+        });
     });
 
     describe('#assert', function () {
@@ -384,6 +453,31 @@ describe('Hoek', function () {
             };
 
             expect(fn).to.throw('my error message');
+            done();
+        });
+
+        it('should respect hideStack argument', function (done) {
+
+            var env = process.env.NODE_ENV;
+            var write = process.stdout.write;
+            var exit = process.exit;
+            var output = '';
+
+            process.exit = function () {};
+            process.env.NODE_ENV = '';
+            process.stdout.write = function (message) {
+
+                output = message;
+            };
+
+            Hoek.assert(false, 'my error message', true);
+
+            process.env.NODE_ENV = env;
+            process.stdout.write = write;
+            process.exit = exit;
+
+            expect(output).to.equal('ABORT: my error message\n\t\n');
+
             done();
         });
     });
