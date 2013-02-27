@@ -34,6 +34,7 @@ General purpose node utilities
   * [abort](#abortmessage "abort")
   * [displayStack](#displayStackslice "displayStack")
   * [callStack](#callStackslice "callStack")
+* [Load files]
 
 
 
@@ -253,7 +254,7 @@ target.b()                         // returns undefined
 
 ```
 
-# rename(obj, from, to)
+### rename(obj, from, to)
 
 Rename a key of an object
 
@@ -279,6 +280,82 @@ example :
 var timerObj = new Hoek.Timer();
 console.log("Time is now: " + timerObj.ts)
 console.log("Elapsed time from initialization: " + timerObj.elapsed)
+
+```
+
+# Binary Encoding/Decoding
+
+### base64urlEncode(value)
+
+### base64urlEncode(value)
+
+
+# Escaping Characters
+
+Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
+
+```javascript
+
+internals.htmlEscaped = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '`': '&#x60;'
+};
+
+```
+
+### escapeHTML(string)
+
+```javascript
+
+var string = '<html> hey </html>';
+var escapedString = htmlEscaped(escapedString); // returns 
+
+```
+
+### escapeHeaderAttribute(attribute)
+
+Escape attribute value for use in HTTP header
+
+
+### escapeRegex(string)
+
+Escape string for Regex construction
+
+# Errors
+
+### assert(message)
+
+```javascript
+
+var a = 1, b =2;
+
+Hoek.assert(a === b, 'a should equal b');
+
+```
+
+### abort(message)
+
+```javascript
+
+
+```
+
+### displayStack(slice)
+
+```javascript
+
+```
+
+### callStack(slice)
+
+```javascript
+
+```
+
 
 
 
