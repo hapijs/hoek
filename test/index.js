@@ -679,5 +679,46 @@ describe('Hoek', function () {
             done();
         });
     });
+
+    describe('#printEvent', function () {
+
+        it('outputs event as string', function (done) {
+
+            var event = {
+                ets: (new Date(2013,1,1,6,30,45,123)).getTime(),
+                tags: ['a', 'b', 'c'],
+                data: { some: 'data' }
+            };
+
+            Hoek.consoleFunc = function (string) {
+
+                Hoek.consoleFunc = console.log;
+                expect(string).to.equal('130201/063045.123, a, {"some":"data"}');
+                done();
+            };
+
+            Hoek.printEvent(event);
+        });
+
+        it('outputs JSON error', function (done) {
+
+            var event = {
+                ets: (new Date(2013, 1, 1, 6, 30, 45, 123)).getTime(),
+                tags: ['a', 'b', 'c'],
+                data: { some: 'data' }
+            };
+
+            event.data.a = event.data;
+
+            Hoek.consoleFunc = function (string) {
+
+                Hoek.consoleFunc = console.log;
+                expect(string).to.equal('130201/063045.123, a, JSON Error: Converting circular structure to JSON');
+                done();
+            };
+
+            Hoek.printEvent(event);
+        });
+    });
 });
 
