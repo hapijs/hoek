@@ -685,7 +685,7 @@ describe('Hoek', function () {
         it('outputs event as string', function (done) {
 
             var event = {
-                ets: (new Date(2013,1,1,6,30,45,123)).getTime(),
+                timestamp: (new Date(2013, 1, 1, 6, 30, 45, 123)).getTime(),
                 tags: ['a', 'b', 'c'],
                 data: { some: 'data' }
             };
@@ -703,7 +703,7 @@ describe('Hoek', function () {
         it('outputs JSON error', function (done) {
 
             var event = {
-                ets: (new Date(2013, 1, 1, 6, 30, 45, 123)).getTime(),
+                timestamp: (new Date(2013, 1, 1, 6, 30, 45, 123)).getTime(),
                 tags: ['a', 'b', 'c'],
                 data: { some: 'data' }
             };
