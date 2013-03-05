@@ -1,12 +1,12 @@
 {
   "name": "hoek",
   "description": "General purpose node utilities",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "author": "Eran Hammer <eran@hueniverse.com> (http://hueniverse.com)",
   "contributors":[
     "Van Nguyen <the.gol.effect@gmail.com>"
   ],
-  "repository": "git://github.com/walmartlabs/hoek",
+  "repository": "git://github.com/spumko/hoek",
   "main": "index",
   "keywords": [
     "utilities"
@@ -30,7 +30,7 @@
   "licenses": [
     {
       "type": "BSD",
-      "url": "http://github.com/walmartlabs/hoek/raw/master/LICENSE"
+      "url": "http://github.com/spumko/hoek/raw/master/LICENSE"
     }
   ]
 }
