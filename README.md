@@ -1,9 +1,9 @@
-<a href="https://github.com/walmartlabs/blammo"><img src="https://raw.github.com/walmartlabs/blammo/master/images/from.png" align="right" /></a>
-![hoek Logo](https://raw.github.com/walmartlabs/hoek/master/images/hoek.png)
+<a href="https://github.com/spumko"><img src="https://raw.github.com/spumko/spumko/master/images/from.png" align="right" /></a>
+![hoek Logo](https://raw.github.com/spumko/hoek/master/images/hoek.png)
 
 General purpose node utilities
 
-[![Build Status](https://secure.travis-ci.org/walmartlabs/hoek.png)](http://travis-ci.org/walmartlabs/hoek)
+[![Build Status](https://secure.travis-ci.org/spumko/hoek.png)](http://travis-ci.org/spumko/hoek)
 
 # Table of Contents
 
@@ -26,7 +26,7 @@ General purpose node utilities
   * [base64urlEncode](#binary64urlEncodevalue "binary64urlEncode")
   * [base64urlDecode](#binary64urlDecodevalue "binary64urlDecode")
 * [Escaping Characters](#escaped "Escaping Characters")
-  * [escapeHTML](#escapeHTMLstring "escapeHTML")
+  * [escapeHtml](#escapeHtmlstring "escapeHtml")
   * [escapeHeaderAttribute](#escapeHeaderAttributeattribute "escapeHeaderAttribute")
   * [escapeRegex](#escapeRegexstring "escapeRegex")
 * [Errors](#errors "Errors")
@@ -34,6 +34,10 @@ General purpose node utilities
   * [abort](#abortmessage "abort")
   * [displayStack](#displayStackslice "displayStack")
   * [callStack](#callStackslice "callStack")
+  * [toss](#tosscondition "toss")
+* [Load files](#load-files "Load Files")
+  * [loadPackage](#loadPackagedir "loadpackage")
+  * [loadDirModules](#loadDirModulespath-excludefiles-target "loaddirmodules")
 
 
 
@@ -101,10 +105,10 @@ var sourceArray = [4, 5];
 
 var newTarget = Hoek.merge(target, source);     // results in {a: 0, b: 2, c: 5}
 newTarget = Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
-newTarget = Hoek.merge(target, source2, false); // results in {a: 1, b:2, c: 5}
+newTarget = Hoek.merge(target, source2, false); // results in {a: null, b:2, c: 5}
 
-newTarget = Hoek.merge(target, source)              // results in [1, 2, 3, 4, 5]
-newTarget = Hoek.merge(target, source, true, false) // results in [4, 5]
+newTarget = Hoek.merge(targetArray, sourceArray)              // results in [1, 2, 3, 4, 5]
+newTarget = Hoek.merge(targetArray, sourceArray, true, false) // results in [4, 5]
 
 
 
@@ -246,14 +250,15 @@ Hoek.inheritAsync(targetFunc, proto, ['a', 'c']);
 
 var target = new targetFunc();
 
-target.a()                         // returns 'a!'                         
-target.c()                         // returns 'c!'
-target.b()                         // returns undefined
+target.a(function(err, result){console.log(result)}         // returns 'a!'       
 
+target.c(function(err, result){console.log(result)}         // returns undefined
+
+target.b(function(err, result){console.log(result)}         // gives error: Object [object Object] has no method 'b'
 
 ```
 
-# rename(obj, from, to)
+### rename(obj, from, to)
 
 Rename a key of an object
 
@@ -268,7 +273,7 @@ Hoek.rename(obj, "a", "c");     // obj is now {c : 1, b : 2}
 
 # Timer
 
-A Timer object
+A Timer object. Initializing a new timer object sets the ts to the number of milliseconds elapsed since 1 January 1970 00:00:00 UTC.
 
 ```javascript
 
@@ -278,7 +283,154 @@ example :
 
 var timerObj = new Hoek.Timer();
 console.log("Time is now: " + timerObj.ts)
-console.log("Elapsed time from initialization: " + timerObj.elapsed)
+console.log("Elapsed time from initialization: " + timerObj.elapsed() + 'milliseconds')
+
+```
+
+# Binary Encoding/Decoding
+
+### base64urlEncode(value)
+
+Encodes value in Base64 or URL encoding
+
+### base64urlDecode(value)
+
+Decodes data in Base64 or URL encoding.
+# Escaping Characters
+
+Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
+
+```javascript
+
+internals.htmlEscaped = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '`': '&#x60;'
+};
+
+```
+
+### escapeHtml(string)
+
+```javascript
+
+var string = '<html> hey </html>';
+var escapedString = Hoek.escapeHtml(string); // returns &lt;html&gt; hey &lt;/html&gt;
+
+```
+
+### escapeHeaderAttribute(attribute)
+
+Escape attribute value for use in HTTP header
+
+```javascript
+
+var a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  //returns I said \"go w\\o me\"
+
+
+```
+
+
+### escapeRegex(string)
+
+Escape string for Regex construction
+
+```javascript
+
+var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4\^f\$s\.4\*5\+\-_\?%\=#\!\:@\|~\\\/`"\(>\)\[<\]d\{\}s\,
+
+
+
+```
+
+# Errors
+
+### assert(message)
+
+```javascript
+
+var a = 1, b =2;
+
+Hoek.assert(a === b, 'a should equal b');  // ABORT: a should equal b
+
+```
+
+### abort(message)
+
+First checks if process.env.NODE_ENV === 'test', and if so, throws error message. Otherwise,
+displays most recent stack and then exits process.
+
+
+
+### displayStack(slice)
+
+Displays the trace stack
+
+```javascript
+
+var stack = Hoek.displayStack();
+console.log(stack) // returns something like:
+
+[ 'null (/Users/user/Desktop/hoek/test.js:4:18)',
+  'Module._compile (module.js:449:26)',
+  'Module._extensions..js (module.js:467:10)',
+  'Module.load (module.js:356:32)',
+  'Module._load (module.js:312:12)',
+  'Module.runMain (module.js:492:10)',
+  'startup.processNextTick.process._tickCallback (node.js:244:9)' ]
+
+```
+
+### callStack(slice)
+
+Returns a trace stack array.
+
+```javascript
+
+var stack = Hoek.callStack();
+console.log(stack)  // returns something like:
+
+[ [ '/Users/user/Desktop/hoek/test.js', 4, 18, null, false ],
+  [ 'module.js', 449, 26, 'Module._compile', false ],
+  [ 'module.js', 467, 10, 'Module._extensions..js', false ],
+  [ 'module.js', 356, 32, 'Module.load', false ],
+  [ 'module.js', 312, 12, 'Module._load', false ],
+  [ 'module.js', 492, 10, 'Module.runMain', false ],
+  [ 'node.js',
+    244,
+    9,
+    'startup.processNextTick.process._tickCallback',
+    false ] ]
+
+
+```
+
+### toss(condition)
+
+toss(condition /*, [message], callback */)
+
+Return an error as first argument of a callback
+
+
+# Load Files
+
+### loadPackage(dir)
+
+Load and parse package.json process root or given directory
+
+```javascript
+
+var pack = Hoek.loadPackage();  // pack.name === 'hoek'
+
+```
+
+### loadDirModules(path, excludeFiles, target) 
+
+Loads modules from a given path; option to exclude files (array).
+
 
 
 
