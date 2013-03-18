@@ -1,6 +1,6 @@
 // Load modules
 
-var Chai = require('chai');
+var Lab = require('lab');
 var Hoek = require('../lib');
 
 
@@ -11,17 +11,23 @@ var internals = {};
 
 // Test shortcuts
 
-var expect = Chai.expect;
+var expect = Lab.expect;
+var before = Lab.before;
+var after = Lab.after;
+var describe = Lab.experiment;
+var it = Lab.test;
 
 
 describe('Hoek', function () {
 
     var nestedObj = {
-        w: /^something$/ig,
+        w: /^something$/igm,
         x: {
             a: [1, 2, 3],
             b: 123456,
-            c: new Date()
+            c: new Date(),
+            d: /hi/igm,
+            e: /hello/
         },
         y: 'y',
         z: new Date()
@@ -37,10 +43,10 @@ describe('Hoek', function () {
             var a = nestedObj;
             var b = Hoek.clone(a);
 
-            expect(a).to.deep.equal(b)
+            expect(a).to.deep.equal(b);
             expect(a.z.getTime()).to.equal(b.z.getTime());
             done();
-        })
+        });
 
         it('should clone a null object', function (done) {
 
@@ -48,7 +54,7 @@ describe('Hoek', function () {
 
             expect(b).to.equal(null);
             done();
-        })
+        });
     });
 
     describe('#merge', function () {
@@ -348,6 +354,21 @@ describe('Hoek', function () {
             expect(stack[0]).to.contain('test/index.js:');
             done();
         });
+
+        it('should include constructor functions correctly', function (done) {
+
+            var Something = function (next) {
+
+                next();
+            };
+
+            var something = new Something(function () {
+
+                var stack = Hoek.displayStack();
+                expect(stack[1]).to.contain('new Something');
+                done();
+            });
+        });
     });
 
     describe('#abort', function () {
@@ -362,9 +383,9 @@ describe('Hoek', function () {
             process.stdout.write = function () {};
             process.exit = function (state) {
 
+                process.exit = exit;
                 process.env.NODE_ENV = env;
                 process.stdout.write = write;
-                process.exist = exit;
 
                 expect(state).to.equal(1);
                 done();
