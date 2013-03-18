@@ -59,6 +59,81 @@ describe('Hoek', function () {
 
     describe('#merge', function () {
 
+        it('does not throw if source is null', function (done) {
+
+            var a = {};
+            var b = null;
+            var c = null;
+
+            expect(function () {
+
+                c = Hoek.merge(a, b);
+            }).to.not.throw();
+
+            expect(c).to.equal(a);
+            done();
+        });
+
+        it('does not throw if source is undefined', function (done) {
+
+            var a = {};
+            var b = undefined;
+            var c = null;
+
+            expect(function () {
+
+                c = Hoek.merge(a, b);
+            }).to.not.throw();
+
+            expect(c).to.equal(a);
+            done();
+        });
+
+        it('throws if source is not an object', function (done) {
+
+            expect(function () {
+
+                var a = {};
+                var b = 0;
+
+                Hoek.merge(a, b);
+            }).to.throw('Invalid source value: must be null, undefined, or an object');
+            done();
+        });
+
+        it('throws if target is not an object', function (done) {
+
+            expect(function () {
+
+                var a = 0;
+                var b = {};
+
+                Hoek.merge(a, b);
+            }).to.throw('Invalid target value: must be an object');
+            done();
+        });
+
+        it('throws if target is not an array and source is', function (done) {
+
+            expect(function () {
+
+                var a = {};
+                var b = [1, 2];
+
+                Hoek.merge(a, b);
+            }).to.throw('Cannot merge array onto an object');
+            done();
+        });
+
+        it('returns the same object when merging arrays', function (done) {
+
+            var a = [];
+            var b = [1, 2];
+
+            expect(Hoek.merge(a, b)).to.equal(a);
+            done();
+        });
+
         it('should combine an empty object with a non-empty object', function (done) {
 
             var a = {};
@@ -72,14 +147,31 @@ describe('Hoek', function () {
 
         it('should override values in target', function (done) {
 
-            var a = { x: 1, y: 2, z: 3, v: 5 };
-            var b = { x: null, z: 4, v: 0 };
+            var a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
+            var b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
 
             var c = Hoek.merge(a, b);
             expect(c.x).to.equal(null);
             expect(c.y).to.equal(2);
             expect(c.z).to.equal(4);
             expect(c.v).to.equal(0);
+            expect(c.m).to.equal('123');
+            expect(c.t).to.deep.equal({ u: 6 });
+            done();
+        });
+
+        it('should override values in target (flip)', function (done) {
+
+            var a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
+            var b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
+
+            var d = Hoek.merge(b, a);
+            expect(d.x).to.equal(1);
+            expect(d.y).to.equal(2);
+            expect(d.z).to.equal(3);
+            expect(d.v).to.equal(5);
+            expect(d.m).to.equal('abc');
+            expect(d.t).to.deep.equal('test');
             done();
         });
     });
@@ -93,7 +185,8 @@ describe('Hoek', function () {
                 d: 3,
                 e: [5, 6]
             },
-            f: 6
+            f: 6,
+            g: 'test'
         };
 
         it('should return null if options is false', function (done) {
@@ -117,7 +210,10 @@ describe('Hoek', function () {
                 c: {
                     e: [4]
                 },
-                f: 0
+                f: 0,
+                g: {
+                    h: 5
+                }
             };
 
             var result = Hoek.applyToDefaults(defaults, obj);
@@ -125,6 +221,7 @@ describe('Hoek', function () {
             expect(result.a).to.equal(1);
             expect(result.b).to.equal(2);
             expect(result.f).to.equal(0);
+            expect(result.g).to.deep.equal({ h: 5 });
             done();
         });
     });
@@ -380,7 +477,7 @@ describe('Hoek', function () {
             var exit = process.exit;
 
             process.env.NODE_ENV = 'nottatest';
-            process.stdout.write = function () {};
+            process.stdout.write = function () { };
             process.exit = function (state) {
 
                 process.exit = exit;
@@ -408,7 +505,7 @@ describe('Hoek', function () {
             expect(fn).to.throw('my error message');
             Hoek.abortThrow = false;
             process.env.NODE_ENV = env;
-            
+
             done();
         });
 
@@ -420,7 +517,7 @@ describe('Hoek', function () {
             var exit = process.exit;
             var output = '';
 
-            process.exit = function () {};
+            process.exit = function () { };
             process.env.NODE_ENV = '';
             process.stdout.write = function (message) {
 
@@ -445,7 +542,7 @@ describe('Hoek', function () {
             var exit = process.exit;
             var output = '';
 
-            process.exit = function () {};
+            process.exit = function () { };
             process.env.NODE_ENV = '';
             process.stdout.write = function (message) {
 
