@@ -69,6 +69,17 @@ describe('Hoek', function () {
             expect(test).to.not.throw();
             done();
         });
+        
+        it('should properly clone circular reference', function (done) {
+
+            var x = {};
+            x.y = x;
+            
+            var b = Hoek.clone(x);
+            expect(b.y).to.equal(x);
+            expect(b.y.y).to.equal(x);
+            done();
+        });
     });
 
     describe('#merge', function () {
