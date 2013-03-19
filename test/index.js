@@ -80,6 +80,27 @@ describe('Hoek', function () {
             expect(b.y.y).to.equal(x);
             done();
         });
+        
+        it('should properly clone deeply nested object', function (done) {
+
+            var a = {
+                x: {
+                    y: {
+                        a: [1, 2, 3],
+                        b: 123456,
+                        c: new Date(),
+                        d: /hi/igm,
+                        e: /hello/
+                    },
+                }
+            };
+            
+            var b = Hoek.clone(a);
+
+            expect(a).to.deep.equal(b);
+            expect(a.x.y.c.getTime()).to.equal(b.x.y.c.getTime());
+            done();
+        });
     });
 
     describe('#extend', function () {
