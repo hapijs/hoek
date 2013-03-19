@@ -1,6 +1,6 @@
 // Load modules
 
-var Chai = require('chai');
+var Lab = require('lab');
 var Hoek = require('../lib');
 
 
@@ -11,17 +11,23 @@ var internals = {};
 
 // Test shortcuts
 
-var expect = Chai.expect;
+var expect = Lab.expect;
+var before = Lab.before;
+var after = Lab.after;
+var describe = Lab.experiment;
+var it = Lab.test;
 
 
 describe('Hoek', function () {
 
     var nestedObj = {
-        w: /^something$/ig,
+        w: /^something$/igm,
         x: {
             a: [1, 2, 3],
             b: 123456,
-            c: new Date()
+            c: new Date(),
+            d: /hi/igm,
+            e: /hello/
         },
         y: 'y',
         z: new Date()
@@ -37,7 +43,7 @@ describe('Hoek', function () {
             var a = nestedObj;
             var b = Hoek.clone(a);
 
-            expect(a).to.deep.equal(b)
+            expect(a).to.deep.equal(b);
             expect(a.z.getTime()).to.equal(b.z.getTime());
             done();
         });
@@ -50,7 +56,7 @@ describe('Hoek', function () {
             done();
         });
         
-        it('should throw on circular reference', function (done) {
+        it('should not throw on circular reference', function (done) {
 
             var a = {};
             a.x = a;
@@ -60,12 +66,87 @@ describe('Hoek', function () {
                 var b = Hoek.clone(a);
             });
             
-            expect(test).to.throw();
+            expect(test).to.not.throw();
             done();
         });
     });
 
     describe('#merge', function () {
+
+        it('does not throw if source is null', function (done) {
+
+            var a = {};
+            var b = null;
+            var c = null;
+
+            expect(function () {
+
+                c = Hoek.merge(a, b);
+            }).to.not.throw();
+
+            expect(c).to.equal(a);
+            done();
+        });
+
+        it('does not throw if source is undefined', function (done) {
+
+            var a = {};
+            var b = undefined;
+            var c = null;
+
+            expect(function () {
+
+                c = Hoek.merge(a, b);
+            }).to.not.throw();
+
+            expect(c).to.equal(a);
+            done();
+        });
+
+        it('throws if source is not an object', function (done) {
+
+            expect(function () {
+
+                var a = {};
+                var b = 0;
+
+                Hoek.merge(a, b);
+            }).to.throw('Invalid source value: must be null, undefined, or an object');
+            done();
+        });
+
+        it('throws if target is not an object', function (done) {
+
+            expect(function () {
+
+                var a = 0;
+                var b = {};
+
+                Hoek.merge(a, b);
+            }).to.throw('Invalid target value: must be an object');
+            done();
+        });
+
+        it('throws if target is not an array and source is', function (done) {
+
+            expect(function () {
+
+                var a = {};
+                var b = [1, 2];
+
+                Hoek.merge(a, b);
+            }).to.throw('Cannot merge array onto an object');
+            done();
+        });
+
+        it('returns the same object when merging arrays', function (done) {
+
+            var a = [];
+            var b = [1, 2];
+
+            expect(Hoek.merge(a, b)).to.equal(a);
+            done();
+        });
 
         it('should combine an empty object with a non-empty object', function (done) {
 
@@ -80,14 +161,31 @@ describe('Hoek', function () {
 
         it('should override values in target', function (done) {
 
-            var a = { x: 1, y: 2, z: 3, v: 5 };
-            var b = { x: null, z: 4, v: 0 };
+            var a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
+            var b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
 
             var c = Hoek.merge(a, b);
             expect(c.x).to.equal(null);
             expect(c.y).to.equal(2);
             expect(c.z).to.equal(4);
             expect(c.v).to.equal(0);
+            expect(c.m).to.equal('123');
+            expect(c.t).to.deep.equal({ u: 6 });
+            done();
+        });
+
+        it('should override values in target (flip)', function (done) {
+
+            var a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
+            var b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
+
+            var d = Hoek.merge(b, a);
+            expect(d.x).to.equal(1);
+            expect(d.y).to.equal(2);
+            expect(d.z).to.equal(3);
+            expect(d.v).to.equal(5);
+            expect(d.m).to.equal('abc');
+            expect(d.t).to.deep.equal('test');
             done();
         });
     });
@@ -101,7 +199,8 @@ describe('Hoek', function () {
                 d: 3,
                 e: [5, 6]
             },
-            f: 6
+            f: 6,
+            g: 'test'
         };
 
         it('should return null if options is false', function (done) {
@@ -125,7 +224,10 @@ describe('Hoek', function () {
                 c: {
                     e: [4]
                 },
-                f: 0
+                f: 0,
+                g: {
+                    h: 5
+                }
             };
 
             var result = Hoek.applyToDefaults(defaults, obj);
@@ -133,6 +235,7 @@ describe('Hoek', function () {
             expect(result.a).to.equal(1);
             expect(result.b).to.equal(2);
             expect(result.f).to.equal(0);
+            expect(result.g).to.deep.equal({ h: 5 });
             done();
         });
     });
@@ -362,6 +465,21 @@ describe('Hoek', function () {
             expect(stack[0]).to.contain('test/index.js:');
             done();
         });
+
+        it('should include constructor functions correctly', function (done) {
+
+            var Something = function (next) {
+
+                next();
+            };
+
+            var something = new Something(function () {
+
+                var stack = Hoek.displayStack();
+                expect(stack[1]).to.contain('new Something');
+                done();
+            });
+        });
     });
 
     describe('#abort', function () {
@@ -373,12 +491,12 @@ describe('Hoek', function () {
             var exit = process.exit;
 
             process.env.NODE_ENV = 'nottatest';
-            process.stdout.write = function () {};
+            process.stdout.write = function () { };
             process.exit = function (state) {
 
+                process.exit = exit;
                 process.env.NODE_ENV = env;
                 process.stdout.write = write;
-                process.exist = exit;
 
                 expect(state).to.equal(1);
                 done();
@@ -401,7 +519,7 @@ describe('Hoek', function () {
             expect(fn).to.throw('my error message');
             Hoek.abortThrow = false;
             process.env.NODE_ENV = env;
-            
+
             done();
         });
 
@@ -413,7 +531,7 @@ describe('Hoek', function () {
             var exit = process.exit;
             var output = '';
 
-            process.exit = function () {};
+            process.exit = function () { };
             process.env.NODE_ENV = '';
             process.stdout.write = function (message) {
 
@@ -438,7 +556,7 @@ describe('Hoek', function () {
             var exit = process.exit;
             var output = '';
 
-            process.exit = function () {};
+            process.exit = function () { };
             process.env.NODE_ENV = '';
             process.stdout.write = function (message) {
 
@@ -467,31 +585,6 @@ describe('Hoek', function () {
             };
 
             expect(fn).to.throw('my error message');
-            done();
-        });
-
-        it('should respect hideStack argument', function (done) {
-
-            var env = process.env.NODE_ENV;
-            var write = process.stdout.write;
-            var exit = process.exit;
-            var output = '';
-
-            process.exit = function () {};
-            process.env.NODE_ENV = '';
-            process.stdout.write = function (message) {
-
-                output = message;
-            };
-
-            Hoek.assert(false, 'my error message', true);
-
-            process.env.NODE_ENV = env;
-            process.stdout.write = write;
-            process.exit = exit;
-
-            expect(output).to.equal('ABORT: my error message\n\t\n');
-
             done();
         });
     });
