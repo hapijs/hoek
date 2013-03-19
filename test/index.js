@@ -82,6 +82,23 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#extend', function () {
+
+        it('should accept non-empty first argument', function (done) {
+
+            var x = {y: 1};
+            var y = {x: 2};
+            
+            
+            var test = (function () {
+
+                var z = Hoek.extend(x, y);
+            });
+            expect(test).to.not.throw();
+            done();
+        });
+    });
+
     describe('#merge', function () {
 
         it('does not throw if source is null', function (done) {
