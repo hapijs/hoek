@@ -101,6 +101,16 @@ describe('Hoek', function () {
             expect(a.x.y.c.getTime()).to.equal(b.x.y.c.getTime());
             done();
         });
+        
+        it('should properly clone arrays', function (done) {
+
+            var a = [1,2,3];
+            
+            var b = Hoek.clone(a);
+
+            expect(a).to.deep.equal(b);
+            done();
+        });
     });
 
     describe('#extend', function () {
