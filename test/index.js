@@ -21,6 +21,7 @@ var it = Lab.test;
 describe('Hoek', function () {
 
     var nestedObj = {
+        v: [7,8,9],
         w: /^something$/igm,
         x: {
             a: [1, 2, 3],
@@ -109,6 +110,41 @@ describe('Hoek', function () {
             var b = Hoek.clone(a);
 
             expect(a).to.deep.equal(b);
+            done();
+        });
+        
+        it('should perform actual copy for shallow keys (no pass by reference)', function (done) {
+
+            var x = Hoek.clone(nestedObj);
+            var y = Hoek.clone(nestedObj);
+            
+            // Date
+            expect(x.z).to.not.equal(nestedObj.z);
+            expect(x.z).to.not.equal(y.z);
+            
+            // Regex
+            expect(x.w).to.not.equal(nestedObj.w);
+            expect(x.w).to.not.equal(y.w);
+            
+            // Array
+            expect(x.v).to.not.equal(nestedObj.v);
+            expect(x.v).to.not.equal(y.v);
+            
+            // Immutable(s)
+            x.y = 5;
+            expect(x.y).to.not.equal(nestedObj.y);
+            expect(x.y).to.not.equal(y.y);
+            
+            done();
+        });
+        
+        it('should perform actual copy for deep keys (no pass by reference)', function (done) {
+
+            var x = Hoek.clone(nestedObj);
+            var y = Hoek.clone(nestedObj);
+            
+            expect(x.x.c).to.not.equal(nestedObj.x.c);
+            expect(x.x.c).to.not.equal(y.x.c);
             done();
         });
     });
