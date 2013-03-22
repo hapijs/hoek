@@ -73,12 +73,14 @@ describe('Hoek', function () {
         
         it('should properly clone circular reference', function (done) {
 
-            var x = {};
+            var x = {
+                'z': new Date()
+            };
             x.y = x;
             
             var b = Hoek.clone(x);
-            expect(b.y).to.equal(x);
-            expect(b.y.y).to.equal(x);
+            expect(Object.keys(b.y)).to.deep.equal(Object.keys(x))
+            expect(b.y.z).to.not.equal(x.z);
             done();
         });
         
@@ -145,6 +147,9 @@ describe('Hoek', function () {
             
             expect(x.x.c).to.not.equal(nestedObj.x.c);
             expect(x.x.c).to.not.equal(y.x.c);
+            
+            expect(x.x.c.getTime()).to.equal(nestedObj.x.c.getTime());
+            expect(x.x.c.getTime()).to.equal(y.x.c.getTime());
             done();
         });
     });
