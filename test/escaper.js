@@ -42,6 +42,44 @@ describe('Hoek', function () {
             expect(encoded).to.equal('\\u0500\\u1000');
             done();
         });
+
+        it('doesn\'t throw an exception when passed null', function (done) {
+
+            var encoded = Hoek.escapeJavaScript(null);
+            expect(encoded).to.equal('');
+            done();
+        });
+    });
+
+    describe('#escapeHtml', function () {
+
+        it('encodes / characters', function (done) {
+
+            var encoded = Hoek.escapeHtml('<script>alert(1)</script>');
+            expect(encoded).to.equal('&lt;script&gt;alert&#x28;1&#x29;&lt;&#x2f;script&gt;');
+            done();
+        });
+
+        it('encodes < and > as named characters', function (done) {
+
+            var encoded = Hoek.escapeHtml('<script><>');
+            expect(encoded).to.equal('&lt;script&gt;&lt;&gt;');
+            done();
+        });
+
+        it('encodes large unicode characters', function (done) {
+
+            var encoded = Hoek.escapeHtml(String.fromCharCode(500) + String.fromCharCode(1000));
+            expect(encoded).to.equal('&#500;&#1000;');
+            done();
+        });
+
+        it('doesn\'t throw an exception when passed null', function (done) {
+
+            var encoded = Hoek.escapeHtml(null);
+            expect(encoded).to.equal('');
+            done();
+        });
     });
 });
 
