@@ -290,6 +290,15 @@ describe('Hoek', function () {
             expect(Hoek.intersect(null, [1]).length).to.equal(0);
             done();
         });
+
+        it('should return the common objects of object and array', function (done) {
+
+            var array1 = [1, 2, 3, 4, 4, 5, 5];
+            var array2 = [5, 4, 5, 6, 7];
+            var common = Hoek.intersect(Hoek.mapToObject(array1), array2);
+            expect(common.length).to.equal(2);
+            done();
+        });
     });
 
     describe('#matchKeys', function () {
