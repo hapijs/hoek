@@ -156,6 +156,24 @@ describe('Hoek', function () {
             expect(x.x.c.getTime()).to.equal(y.x.c.getTime());
             done();
         });
+
+        it('copies functions with properties', function (done) {
+
+            var a = {
+                x: function () { return 1; },
+                y: {}
+            };
+            a.x.z = 'string in function';
+            a.x.v = function () { return 2; };
+            a.y.u = a.x;
+
+            var b = Hoek.clone(a);
+            expect(b.x()).to.equal(1);
+            expect(b.x.v()).to.equal(2);
+            expect(b.y.u).to.equal(b.x);
+            expect(b.x.z).to.equal('string in function');
+            done();
+        });
     });
 
     describe('#merge', function () {
