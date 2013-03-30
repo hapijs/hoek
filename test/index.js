@@ -80,7 +80,11 @@ describe('Hoek', function () {
             
             var b = Hoek.clone(x);
             expect(Object.keys(b.y)).to.deep.equal(Object.keys(x))
-            expect(b.y.z).to.not.equal(x.z);
+            expect(b.z).to.not.equal(x.z);
+            expect(b.y).to.not.equal(x.y);
+            expect(b.y.z).to.not.equal(x.y.z);
+            expect(b.y).to.equal(b);
+            expect(b.y.y.y.y).to.equal(b);
             done();
         });
         
