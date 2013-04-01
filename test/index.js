@@ -56,28 +56,28 @@ describe('Hoek', function () {
             expect(b).to.equal(null);
             done();
         });
-        
+
         it('should not throw on circular reference', function (done) {
 
             var a = {};
             a.x = a;
-            
+
             var test = (function () {
 
                 var b = Hoek.clone(a);
             });
-            
+
             expect(test).to.not.throw();
             done();
         });
-        
+
         it('should properly clone circular reference', function (done) {
 
             var x = {
                 'z': new Date()
             };
             x.y = x;
-            
+
             var b = Hoek.clone(x);
             expect(Object.keys(b.y)).to.deep.equal(Object.keys(x))
             expect(b.z).to.not.equal(x.z);
@@ -87,7 +87,7 @@ describe('Hoek', function () {
             expect(b.y.y.y.y).to.equal(b);
             done();
         });
-        
+
         it('should properly clone deeply nested object', function (done) {
 
             var a = {
@@ -101,57 +101,57 @@ describe('Hoek', function () {
                     },
                 }
             };
-            
+
             var b = Hoek.clone(a);
 
             expect(a).to.deep.equal(b);
             expect(a.x.y.c.getTime()).to.equal(b.x.y.c.getTime());
             done();
         });
-        
+
         it('should properly clone arrays', function (done) {
 
             var a = [1,2,3];
-            
+
             var b = Hoek.clone(a);
 
             expect(a).to.deep.equal(b);
             done();
         });
-        
+
         it('should perform actual copy for shallow keys (no pass by reference)', function (done) {
 
             var x = Hoek.clone(nestedObj);
             var y = Hoek.clone(nestedObj);
-            
+
             // Date
             expect(x.z).to.not.equal(nestedObj.z);
             expect(x.z).to.not.equal(y.z);
-            
+
             // Regex
             expect(x.w).to.not.equal(nestedObj.w);
             expect(x.w).to.not.equal(y.w);
-            
+
             // Array
             expect(x.v).to.not.equal(nestedObj.v);
             expect(x.v).to.not.equal(y.v);
-            
+
             // Immutable(s)
             x.y = 5;
             expect(x.y).to.not.equal(nestedObj.y);
             expect(x.y).to.not.equal(y.y);
-            
+
             done();
         });
-        
+
         it('should perform actual copy for deep keys (no pass by reference)', function (done) {
 
             var x = Hoek.clone(nestedObj);
             var y = Hoek.clone(nestedObj);
-            
+
             expect(x.x.c).to.not.equal(nestedObj.x.c);
             expect(x.x.c).to.not.equal(y.x.c);
-            
+
             expect(x.x.c.getTime()).to.equal(nestedObj.x.c.getTime());
             expect(x.x.c.getTime()).to.equal(y.x.c.getTime());
             done();
@@ -476,7 +476,7 @@ describe('Hoek', function () {
                         d: 1,
                         e: 2
                     },
-                    f: 'hello',
+                    f: 'hello'
                 },
                 g: {
                     h: 3
@@ -869,10 +869,39 @@ describe('Hoek', function () {
 
     describe('#escapeHeaderAttribute', function () {
 
+        it('should not alter ascii values', function (done) {
+
+            var a = Hoek.escapeHeaderAttribute('My Value');
+            expect(a).to.equal('My Value');
+            done();
+        });
+
         it('should escape all special HTTP header attribute characters', function (done) {
 
-            var a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');
-            expect(a).to.equal('I said \\"go w\\\\o me\\"');
+            var a = Hoek.escapeHeaderAttribute('I said go!!!#"' + String.fromCharCode(92));
+            expect(a).to.equal('I said go!!!#\\"\\\\');
+            done();
+        });
+
+        it('should throw on large unicode characters', function (done) {
+
+            var fn = function () {
+
+                Hoek.escapeHeaderAttribute('this is a test' + String.fromCharCode(500) + String.fromCharCode(300));
+            };
+
+            expect(fn).to.throw(Error);
+            done();
+        });
+
+        it('should throw on CRLF to prevent response splitting', function (done) {
+
+            var fn = function () {
+
+                Hoek.escapeHeaderAttribute('this is a test\r\n');
+            };
+
+            expect(fn).to.throw(Error);
             done();
         });
     });
