@@ -57,6 +57,15 @@ describe('Hoek', function () {
             done();
         });
 
+        it('should not convert undefined properties to null', function (done) {
+
+            var obj = { something: undefined };
+            var b = Hoek.clone(obj);
+
+            expect(typeof b.something).to.equal('undefined');
+            done();
+        });
+
         it('should not throw on circular reference', function (done) {
 
             var a = {};
