@@ -979,5 +979,33 @@ describe('Hoek', function () {
             Hoek.printEvent(event);
         });
     });
+
+    describe('#nextTick', function () {
+
+        it('calls the provided callback on nextTick', function (done) {
+
+            var a = 0;
+
+            var inc = function (step, next) {
+
+                a += step;
+                next();
+            };
+
+            var ticked = Hoek.nextTick(inc);
+
+            ticked(5, function () {
+
+                expect(a).to.equal(6);
+                done();
+            });
+
+            expect(a).to.equal(0);
+            inc(1, function () {
+
+                expect(a).to.equal(1);
+            });
+        });
+    });
 });
 
