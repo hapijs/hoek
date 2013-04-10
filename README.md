@@ -43,7 +43,7 @@ General purpose node utilities
 
 # Introduction
 
-The *Hoek* general purpose node utilities library is used to aid in a variety of manners. It comes with useful methods for Ararys (clone, merge, applyToDefaults), Objects (removeKeys, copy), Asserting and more. 
+The *Hoek* general purpose node utilities library is used to aid in a variety of manners. It comes with useful methods for Arrays (clone, merge, applyToDefaults), Objects (removeKeys, copy), Asserting and more. 
 
 For example, to use Hoek to set configuration with default options:
 ```javascript
