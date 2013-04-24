@@ -105,7 +105,7 @@ var sourceArray = [4, 5];
 
 var newTarget = Hoek.merge(target, source);     // results in {a: 0, b: 2, c: 5}
 newTarget = Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
-newTarget = Hoek.merge(target, source2, false); // results in {a: null, b:2, c: 5}
+newTarget = Hoek.merge(target, source2, false); // results in {a: 1, b: 2, c: 5}
 
 newTarget = Hoek.merge(targetArray, sourceArray)              // results in [1, 2, 3, 4, 5]
 newTarget = Hoek.merge(targetArray, sourceArray, true, false) // results in [4, 5]
