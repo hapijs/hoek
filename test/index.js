@@ -710,6 +710,39 @@ describe('Hoek', function () {
             expect(fn).to.throw('my error message');
             done();
         });
+
+        it('should throw an Error when using assert in a test with no message', function (done) {
+
+            var fn = function () {
+
+                Hoek.assert(false);
+            };
+
+            expect(fn).to.throw('Unknown error');
+            done();
+        });
+
+        it('should throw an Error when using assert in a test with multipart message', function (done) {
+
+            var fn = function () {
+
+                Hoek.assert(false, 'This', 'is', 'my message');
+            };
+
+            expect(fn).to.throw('This is my message');
+            done();
+        });
+
+        it('should throw an Error when using assert in a test with object message', function (done) {
+
+            var fn = function () {
+
+                Hoek.assert(false, 'This', 'is', { spinal: 'tap' });
+            };
+
+            expect(fn).to.throw('This is {"spinal":"tap"}');
+            done();
+        });
     });
 
     describe('#loadDirModules', function () {
