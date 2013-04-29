@@ -743,6 +743,17 @@ describe('Hoek', function () {
             expect(fn).to.throw('This is {"spinal":"tap"}');
             done();
         });
+
+        it('should throw an Error when using assert in a test with error object message', function (done) {
+
+            var fn = function () {
+
+                Hoek.assert(false, new Error('This is spinal tap'));
+            };
+
+            expect(fn).to.throw('This is spinal tap');
+            done();
+        });
     });
 
     describe('#loadDirModules', function () {
