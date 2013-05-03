@@ -183,6 +183,20 @@ describe('Hoek', function () {
             expect(b.x.z).to.equal('string in function');
             done();
         });
+
+        it('should copy a buffer', function(done){
+            var tls = {
+                key: new Buffer([1,2,3,4,5]),
+                cert: new Buffer([1,2,3,4,5,6,10])
+            }
+
+            copiedTls = Hoek.clone(tls);
+            expect(Buffer.isBuffer(copiedTls.key)).to.equal(true);
+            expect(JSON.stringify(copiedTls.key)).to.equal(JSON.stringify(tls.key))
+            expect(Buffer.isBuffer(copiedTls.cert)).to.equal(true);
+            expect(JSON.stringify(copiedTls.cert)).to.equal(JSON.stringify(tls.cert))
+            done();
+        });
     });
 
     describe('#merge', function () {
