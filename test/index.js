@@ -1,6 +1,7 @@
 // Load modules
 
 var Lab = require('lab');
+var Stream = require('stream');
 var Hoek = require('../lib');
 
 
@@ -1077,6 +1078,34 @@ describe('Hoek', function () {
             inc(1, function () {
 
                 expect(a).to.equal(1);
+            });
+        });
+    });
+
+    describe('#readStream', function () {
+
+        it('reads a stream and provides output to callback', function (done) {
+
+            var readable = new Stream.Readable();
+            readable._read = function () {
+
+                this.push('hello');
+                this.push(' ');
+
+                readable._read = function () {
+
+                    this.push('world');
+                    this.push(null);
+                    return false;
+                };
+
+                return true;
+            };
+
+            Hoek.readStream(readable, function (result) {
+
+                expect(result).to.equal('hello world');
+                done();
             });
         });
     });
