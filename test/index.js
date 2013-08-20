@@ -190,7 +190,7 @@ describe('Hoek', function () {
                 cert: new Buffer([1,2,3,4,5,6,10])
             }
 
-            copiedTls = Hoek.clone(tls);
+            var copiedTls = Hoek.clone(tls);
             expect(Buffer.isBuffer(copiedTls.key)).to.equal(true);
             expect(JSON.stringify(copiedTls.key)).to.equal(JSON.stringify(tls.key))
             expect(Buffer.isBuffer(copiedTls.cert)).to.equal(true);
@@ -520,6 +520,12 @@ describe('Hoek', function () {
         it('returns a valid member', function (done) {
 
             expect(Hoek.reach(obj, 'a.b.c.d')).to.equal(1);
+            done();
+        });
+
+        it('returns a valid member with separator override', function (done) {
+
+            expect(Hoek.reach(obj, 'a/b/c/d', '/')).to.equal(1);
             done();
         });
 
