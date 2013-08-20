@@ -39,7 +39,7 @@ General purpose node utilities
   * [loadPackage](#loadPackagedir "loadpackage")
   * [loadDirModules](#loadDirModulespath-excludefiles-target "loaddirmodules")
 * [Streams](#streams "Streams")
-  * [readStream](#readStream "readStream")
+  * [readStream](#readstream "readStream")
 
 
 
