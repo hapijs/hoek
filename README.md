@@ -38,12 +38,14 @@ General purpose node utilities
 * [Load files](#load-files "Load Files")
   * [loadPackage](#loadPackagedir "loadpackage")
   * [loadDirModules](#loadDirModulespath-excludefiles-target "loaddirmodules")
+* [Streams](#streams "Streams")
+  * [readStream](#readStream "readStream")
 
 
 
 # Introduction
 
-The *Hoek* general purpose node utilities library is used to aid in a variety of manners. It comes with useful methods for Arrays (clone, merge, applyToDefaults), Objects (removeKeys, copy), Asserting and more. 
+The *Hoek* general purpose node utilities library is used to aid in a variety of manners. It comes with useful methods for Arrays (clone, merge, applyToDefaults), Objects (removeKeys, copy), Asserting and more.
 
 For example, to use Hoek to set configuration with default options:
 ```javascript
@@ -64,7 +66,7 @@ Hoek provides several helpful methods for objects and arrays.
 
 ### clone(obj)
 
-This method is used to clone an object or an array. A *deep copy* is made (duplicates everything, including values that are objects). 
+This method is used to clone an object or an array. A *deep copy* is made (duplicates everything, including values that are objects).
 
 ```javascript
 
@@ -171,7 +173,7 @@ var newArray = Hoek.intersect(array1, array2) // results in [1]
 
 ```
 
-### matchKeys(obj, keys) 
+### matchKeys(obj, keys)
 
 Find which keys are present
 
@@ -191,7 +193,7 @@ Flatten an array
 ```javascript
 
 var array = [1, 2, 3];
-var target = [4, 5]; 
+var target = [4, 5];
 
 var flattenedArray = Hoek.flatten(array, target) // results in [4, 5, 1, 2, 3];
 
@@ -224,7 +226,7 @@ Hoek.reach(obj, chain) // returns 1
 
 ```
 
-### inheritAsync(self, obj, keys) 
+### inheritAsync(self, obj, keys)
 
 Inherits a selected set of methods from an object, wrapping functions in asynchronous syntax and catching errors
 
@@ -250,7 +252,7 @@ Hoek.inheritAsync(targetFunc, proto, ['a', 'c']);
 
 var target = new targetFunc();
 
-target.a(function(err, result){console.log(result)}         // returns 'a!'       
+target.a(function(err, result){console.log(result)}         // returns 'a!'
 
 target.c(function(err, result){console.log(result)}         // returns undefined
 
@@ -278,7 +280,7 @@ A Timer object. Initializing a new timer object sets the ts to the number of mil
 ```javascript
 
 
-example : 
+example :
 
 
 var timerObj = new Hoek.Timer();
@@ -427,10 +429,22 @@ var pack = Hoek.loadPackage();  // pack.name === 'hoek'
 
 ```
 
-### loadDirModules(path, excludeFiles, target) 
+### loadDirModules(path, excludeFiles, target)
 
 Loads modules from a given path; option to exclude files (array).
 
 
+# Streams
 
+### readStream
+
+Read an entire stream buffer into a string
+
+```javascript
+
+readStream(inputStream, function (outputString) {
+    ...
+});
+
+```
 
