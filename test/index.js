@@ -22,7 +22,7 @@ var it = Lab.test;
 describe('Hoek', function () {
 
     var nestedObj = {
-        v: [7,8,9],
+        v: [7, 8, 9],
         w: /^something$/igm,
         x: {
             a: [1, 2, 3],
@@ -32,7 +32,7 @@ describe('Hoek', function () {
             e: /hello/
         },
         y: 'y',
-        z: new Date()
+        z: new Date(1378775452757)
     };
 
     var dupsArray = [nestedObj, { z: 'z' }, nestedObj];
@@ -121,7 +121,7 @@ describe('Hoek', function () {
 
         it('should properly clone arrays', function (done) {
 
-            var a = [1,2,3];
+            var a = [1, 2, 3];
 
             var b = Hoek.clone(a);
 
@@ -185,10 +185,10 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should copy a buffer', function(done){
+        it('should copy a buffer', function (done) {
             var tls = {
-                key: new Buffer([1,2,3,4,5]),
-                cert: new Buffer([1,2,3,4,5,6,10])
+                key: new Buffer([1, 2, 3, 4, 5]),
+                cert: new Buffer([1, 2, 3, 4, 5, 6, 10])
             }
 
             var copiedTls = Hoek.clone(tls);
@@ -315,6 +315,24 @@ describe('Hoek', function () {
             expect(d.v).to.equal(5);
             expect(d.m).to.equal('abc');
             expect(d.t).to.deep.equal('test');
+            done();
+        });
+
+        it('retains Date properties', function (done) {
+
+            var a = { x: new Date(1378776452757) };
+
+            var b = Hoek.merge({}, a);
+            expect(a.x.getTime()).to.equal(b.x.getTime());
+            done();
+        });
+
+        it('retains Date properties when merging keys', function (done) {
+
+            var a = { x: new Date(1378776452757) };
+
+            var b = Hoek.merge({ x: {} }, a);
+            expect(a.x.getTime()).to.equal(b.x.getTime());
             done();
         });
     });
