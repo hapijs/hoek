@@ -2,6 +2,7 @@
 
 var Lab = require('lab');
 var Stream = require('stream');
+var Path = require('path');
 var Hoek = require('../lib');
 
 
@@ -633,7 +634,7 @@ describe('Hoek', function () {
         it('should return the full call stack for display', function (done) {
 
             var stack = Hoek.displayStack();
-            expect(stack[0]).to.contain('test/index.js:');
+            expect(stack[0]).to.contain(Path.normalize('/test/index.js') + ':');
             done();
         });
 
@@ -858,7 +859,7 @@ describe('Hoek', function () {
 
     describe('#loadPackage', function () {
 
-        it('should', function (done) {
+        it('should load itself', function (done) {
 
             var pack = Hoek.loadPackage();
             expect(pack.name).to.equal('hoek');
