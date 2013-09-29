@@ -945,6 +945,12 @@ describe('Hoek', function () {
                 expect(Hoek.base64urlEncode(str)).to.equal(base64str);
                 done();
             });
+
+            it('encodes a buffer', function (done) {
+
+                expect(Hoek.base64urlEncode(new Buffer(str, 'binary'))).to.equal(base64str);
+                done();
+            });
         });
 
         describe('#base64urlDecode', function () {
@@ -952,6 +958,14 @@ describe('Hoek', function () {
             it('should un-base64 URL-safe a string', function (done) {
 
                 expect(Hoek.base64urlDecode(base64str)).to.equal(str);
+                done();
+            });
+
+            it('should un-base64 URL-safe a string and return a buffer', function (done) {
+
+                var buf = Hoek.base64urlDecode(base64str, 'buffer');
+                expect(buf instanceof Buffer).to.equal(true);
+                expect(buf.toString('binary')).to.equal(str);
                 done();
             });
 
