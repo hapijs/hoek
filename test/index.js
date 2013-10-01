@@ -199,6 +199,24 @@ describe('Hoek', function () {
             expect(JSON.stringify(copiedTls.cert)).to.equal(JSON.stringify(tls.cert))
             done();
         });
+
+        it('should clone an object with a prototype', function (done) {
+
+            var Obj = function () {
+
+                this.a = 5;
+            };
+
+            Obj.prototype.b = function () { return 'c'; };
+
+            var a = new Obj();
+            var b = Hoek.clone(a);
+
+            expect(b.a).to.equal(5);
+            expect(b.b()).to.equal('c');
+            expect(a).to.deep.equal(b);
+            done();
+        });
     });
 
     describe('#merge', function () {
