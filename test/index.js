@@ -221,6 +221,44 @@ describe('Hoek', function () {
 
     describe('#merge', function () {
 
+        it('merges array over an object', function (done) {
+
+            var a = {
+                x: ['n', 'm']
+            };
+
+            var b = {
+                x: {
+                    n: '1',
+                    m: '2'
+                }
+            };
+
+            Hoek.merge(b, a);
+            expect(a.x[0]).to.equal('n');
+            expect(a.x.n).to.not.exist;
+            done();
+        });
+
+        it('merges object over an array', function (done) {
+
+            var a = {
+                x: ['n', 'm']
+            };
+
+            var b = {
+                x: {
+                    n: '1',
+                    m: '2'
+                }
+            };
+
+            Hoek.merge(a, b);
+            expect(a.x.n).to.equal('1');
+            expect(a.x[0]).to.not.exist;
+            done();
+        });
+
         it('does not throw if source is null', function (done) {
 
             var a = {};
