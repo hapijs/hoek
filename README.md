@@ -111,10 +111,6 @@ newTarget = Hoek.merge(target, source2, false); // results in {a: 1, b: 2, c: 5}
 
 newTarget = Hoek.merge(targetArray, sourceArray)              // results in [1, 2, 3, 4, 5]
 newTarget = Hoek.merge(targetArray, sourceArray, true, false) // results in [4, 5]
-
-
-
-
 ```
 
 ### applyToDefaults(defaults, options)
@@ -127,8 +123,6 @@ var defaults = {host: "localhost", port: 8000};
 var options = {port: 8080};
 
 var config = Hoek.applyToDefaults(defaults, options); // results in {host: "localhost", port: 8080};
-
-
 ```
 
 ### unique(array, key)
@@ -144,7 +138,6 @@ var newArray = Hoek.unique(array); // results in [1,2,3,4,5,6];
 array = [{id: 1}, {id: 1}, {id: 2}];
 
 newArray = Hoek.unique(array, "id") // results in [{id: 1}, {id: 2}]
-
 ```
 
 ### mapToObject(array, key)
@@ -158,8 +151,8 @@ var newObject = Hoek.mapToObject(array); // results in [{"1": true}, {"2": true}
 
 array = [{id: 1}, {id: 2}];
 newObject = Hoek.mapToObject(array, "id") // results in [{"id": 1}, {"id": 2}]
-
 ```
+
 ### intersect(array1, array2)
 
 Find the common unique items in two arrays
@@ -170,7 +163,6 @@ var array1 = [1, 2, 3];
 var array2 = [1, 4, 5];
 
 var newArray = Hoek.intersect(array1, array2) // results in [1]
-
 ```
 
 ### matchKeys(obj, keys)
@@ -183,7 +175,6 @@ var obj = {a: 1, b: 2, c: 3};
 var keys = ["a", "e"];
 
 Hoek.matchKeys(obj, keys) // returns ["a"]
-
 ```
 
 ### flatten(array, target)
@@ -196,7 +187,6 @@ var array = [1, 2, 3];
 var target = [4, 5];
 
 var flattenedArray = Hoek.flatten(array, target) // results in [4, 5, 1, 2, 3];
-
 ```
 
 ### removeKeys(object, keys)
@@ -223,7 +213,6 @@ var chain = 'a.b.c';
 var obj = {a : {b : { c : 1}}};
 
 Hoek.reach(obj, chain) // returns 1
-
 ```
 
 ### inheritAsync(self, obj, keys)
@@ -252,12 +241,11 @@ Hoek.inheritAsync(targetFunc, proto, ['a', 'c']);
 
 var target = new targetFunc();
 
-target.a(function(err, result){console.log(result)}         // returns 'a!'
+target.a(function(err, result){console.log(result)}  // returns 'a!'
 
-target.c(function(err, result){console.log(result)}         // returns undefined
+target.c(function(err, result){console.log(result)}  // returns undefined
 
-target.b(function(err, result){console.log(result)}         // gives error: Object [object Object] has no method 'b'
-
+target.b(function(err, result){console.log(result)}  // gives error: Object [object Object] has no method 'b'
 ```
 
 ### rename(obj, from, to)
@@ -269,7 +257,6 @@ Rename a key of an object
 var obj = {a : 1, b : 2};
 
 Hoek.rename(obj, "a", "c");     // obj is now {c : 1, b : 2}
-
 ```
 
 
@@ -279,14 +266,9 @@ A Timer object. Initializing a new timer object sets the ts to the number of mil
 
 ```javascript
 
-
-example :
-
-
 var timerObj = new Hoek.Timer();
 console.log("Time is now: " + timerObj.ts)
 console.log("Elapsed time from initialization: " + timerObj.elapsed() + 'milliseconds')
-
 ```
 
 # Binary Encoding/Decoding
@@ -312,7 +294,6 @@ internals.htmlEscaped = {
     "'": '&#x27;',
     '`': '&#x60;'
 };
-
 ```
 
 ### escapeHtml(string)
@@ -321,7 +302,6 @@ internals.htmlEscaped = {
 
 var string = '<html> hey </html>';
 var escapedString = Hoek.escapeHtml(string); // returns &lt;html&gt; hey &lt;/html&gt;
-
 ```
 
 ### escapeHeaderAttribute(attribute)
@@ -331,8 +311,6 @@ Escape attribute value for use in HTTP header
 ```javascript
 
 var a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  //returns I said \"go w\\o me\"
-
-
 ```
 
 
@@ -343,9 +321,6 @@ Escape string for Regex construction
 ```javascript
 
 var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4\^f\$s\.4\*5\+\-_\?%\=#\!\:@\|~\\\/`"\(>\)\[<\]d\{\}s\,
-
-
-
 ```
 
 # Errors
@@ -357,7 +332,6 @@ var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4
 var a = 1, b =2;
 
 Hoek.assert(a === b, 'a should equal b');  // ABORT: a should equal b
-
 ```
 
 ### abort(message)
@@ -383,7 +357,6 @@ console.log(stack) // returns something like:
   'Module._load (module.js:312:12)',
   'Module.runMain (module.js:492:10)',
   'startup.processNextTick.process._tickCallback (node.js:244:9)' ]
-
 ```
 
 ### callStack(slice)
@@ -406,8 +379,6 @@ console.log(stack)  // returns something like:
     9,
     'startup.processNextTick.process._tickCallback',
     false ] ]
-
-
 ```
 
 ### toss(condition)
@@ -426,7 +397,6 @@ Load and parse package.json process root or given directory
 ```javascript
 
 var pack = Hoek.loadPackage();  // pack.name === 'hoek'
-
 ```
 
 ### loadDirModules(path, excludeFiles, target)
@@ -445,6 +415,5 @@ Read an entire stream buffer into a string
 readStream(inputStream, function (outputString) {
     ...
 });
-
 ```
 
