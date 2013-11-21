@@ -913,6 +913,19 @@ describe('Hoek', function () {
         });
     });
 
+    describe('Bench', function () {
+
+        it('should return time elapsed', function (done) {
+
+            var timer = new Hoek.Bench();
+            setTimeout(function () {
+
+                expect(timer.elapsed()).to.be.above(9);
+                done();
+            }, 12);
+        });
+    });
+
     describe('#loadPackage', function () {
 
         it('should load itself', function (done) {

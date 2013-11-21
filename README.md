@@ -22,6 +22,7 @@ General purpose node utilities
   * [inheritAsync](#inheritasyncself-obj-keys "inheritAsync")
   * [rename](#renameobj-from-to "rename")
 * [Timer](#timer "Timer")
+* [Bench](#bench "Bench")
 * [Binary Encoding/Decoding](#binary "Binary Encoding/Decoding")
   * [base64urlEncode](#binary64urlEncodevalue "binary64urlEncode")
   * [base64urlDecode](#binary64urlDecodevalue "binary64urlDecode")
@@ -270,6 +271,12 @@ var timerObj = new Hoek.Timer();
 console.log("Time is now: " + timerObj.ts)
 console.log("Elapsed time from initialization: " + timerObj.elapsed() + 'milliseconds')
 ```
+
+
+# Bench
+
+Same as Timer with the exception that `ts` stores the internal node clock which is not related to `Date.now()` and cannot be used to display
+human-readable timestamps. More accurate for benchmarking or internal timers.
 
 # Binary Encoding/Decoding
 

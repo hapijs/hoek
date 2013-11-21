@@ -1,7 +1,7 @@
 {
   "name": "hoek",
   "description": "General purpose node utilities",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "repository": "git://github.com/spumko/hoek",
   "main": "index",
   "keywords": [
