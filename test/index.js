@@ -1212,6 +1212,27 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#once', function () {
+
+        it('allows function to only execute once', function (done) {
+
+            var gen = 0;
+            var add = function (x) {
+
+                gen += x;
+            };
+
+            add(5);
+            expect(gen).to.equal(5);
+            add = Hoek.once(add);
+            add(5);
+            expect(gen).to.equal(10);
+            add(5);
+            expect(gen).to.equal(10);
+            done();
+        });
+    });
+
     describe('#ignore', function () {
 
         it('exists', function (done) {
