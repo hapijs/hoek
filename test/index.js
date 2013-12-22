@@ -1211,5 +1211,25 @@ describe('Hoek', function () {
             });
         });
     });
+
+    describe('#ignore', function () {
+
+        it('exists', function (done) {
+
+            expect(Hoek.ignore).to.exist;
+            expect(typeof Hoek.ignore).to.equal('function');
+            done();
+        });
+    });
+
+    describe('#inherits', function () {
+
+        it('exists', function (done) {
+
+            expect(Hoek.inherits).to.exist;
+            expect(typeof Hoek.inherits).to.equal('function');
+            done();
+        });
+    });
 });
 
