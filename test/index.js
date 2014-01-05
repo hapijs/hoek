@@ -1231,6 +1231,16 @@ describe('Hoek', function () {
             expect(gen).to.equal(10);
             done();
         });
+
+        it('double once wraps one time', function (done) {
+
+            var method = function () { };
+            method = Hoek.once(method);
+            method.x = 1;
+            method = Hoek.once(method);
+            expect(method.x).to.equal(1);
+            done();
+        });
     });
 
     describe('#ignore', function () {
