@@ -18,7 +18,7 @@ General purpose node utilities
   * [matchKeys](#matchkeysobj-keys "matchKeys")
   * [flatten](#flattenarray-target "flatten")
   * [removeKeys](#removekeysobject-keys "removeKeys")
-  * [reach](#reachobj-chain "reach")
+  * [reach](#reachobj-chain-options "reach")
   * [inheritAsync](#inheritasyncself-obj-keys "inheritAsync")
   * [rename](#renameobj-from-to "rename")
 * [Timer](#timer "Timer")
@@ -204,7 +204,7 @@ Hoek.removeKeys(object, keys) // object is now {c: 3, d: 4}
 
 ```
 
-### reach(obj, chain)
+### reach(obj, chain, [options])
 
 Converts an object key chain string to reference
 

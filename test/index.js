@@ -590,8 +590,11 @@ describe('Hoek', function () {
                     h: 3
                 }
             },
-            i: function () { }
+            i: function () { },
+            j: null
         };
+
+        obj.i.x = 5;
 
         it('returns a valid member', function (done) {
 
@@ -605,27 +608,59 @@ describe('Hoek', function () {
             done();
         });
 
-        it('returns null on null object', function (done) {
+        it('returns undefined on null object', function (done) {
 
-            expect(Hoek.reach(null, 'a.b.c.d')).to.not.exist;
+            expect(Hoek.reach(null, 'a.b.c.d')).to.equal(undefined);
             done();
         });
 
-        it('returns null on missing member', function (done) {
+        it('returns undefined on missing member', function (done) {
 
-            expect(Hoek.reach(obj, 'a.b.c.d.x')).to.not.exist;
+            expect(Hoek.reach(obj, 'a.b.c.d.x')).to.equal(undefined);
             done();
         });
 
-        it('returns null on invalid member', function (done) {
+        it('throws on missing member in strict mode', function (done) {
 
-            expect(Hoek.reach(obj, 'a.b.c.d-.x')).to.not.exist;
+            expect(function () {
+
+                Hoek.reach(obj, 'a.b.c.o.x', { strict: true });
+            }).to.throw('Missing segment o in reach path  a.b.c.o.x');
+
+            done();
+        });
+
+        it('returns undefined on invalid member', function (done) {
+
+            expect(Hoek.reach(obj, 'a.b.c.d-.x')).to.equal(undefined);
             done();
         });
 
         it('returns function member', function (done) {
 
             expect(typeof Hoek.reach(obj, 'i')).to.equal('function');
+            done();
+        });
+
+        it('returns function property', function (done) {
+
+            expect(Hoek.reach(obj, 'i.x')).to.equal(5);
+            done();
+        });
+
+        it('returns null', function (done) {
+
+            expect(Hoek.reach(obj, 'j')).to.equal(null);
+            done();
+        });
+
+        it('throws on function property when functions not allowed', function (done) {
+
+            expect(function () {
+
+                Hoek.reach(obj, 'i.x', { functions: false });
+            }).to.throw('Invalid segment x in reach path  i.x');
+
             done();
         });
     });
