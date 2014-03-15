@@ -945,7 +945,6 @@ describe('Hoek', function () {
 
         it('should throw and invalid key in object error', function (done) {
 
-
             var fn = function () {
 
                 var obj = {a:1, b:2};
