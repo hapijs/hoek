@@ -942,6 +942,19 @@ describe('Hoek', function () {
             expect(a.x).to.equal('c');
             done();
         });
+
+        it('should throw and invalid key in object error', function (done) {
+
+
+            var fn = function () {
+
+                var obj = {a:1, b:2};
+                Hoek.rename(obj, 'd', 'a');
+            };
+
+            expect(fn).to.throw('Invalid property d');
+            done();
+        });
     });
 
     describe('Timer', function () {
