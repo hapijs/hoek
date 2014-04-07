@@ -603,9 +603,15 @@ describe('Hoek', function () {
             done();
         });
 
-        it('returns undefined on missing member', function (done) {
+        it('returns undefined on missing object member', function (done) {
 
             expect(Hoek.reach(obj, 'a.b.c.d.x')).to.equal(undefined);
+            done();
+        });
+
+        it('returns undefined on missing function member', function (done) {
+
+            expect(Hoek.reach(obj, 'i.y', { functions: true })).to.equal(undefined);
             done();
         });
 
@@ -731,7 +737,6 @@ describe('Hoek', function () {
             done();
         });
 
-
         it('should respect hideStack argument', function (done) {
 
             var env = process.env.NODE_ENV;
@@ -754,6 +759,34 @@ describe('Hoek', function () {
 
             expect(output).to.equal('ABORT: my error message\n\t\n');
 
+            done();
+        });
+
+        it('throws in test mode', function (done) {
+
+            var env = process.env.NODE_ENV;
+            process.env.NODE_ENV = 'test';
+
+            expect(function () {
+
+                Hoek.abort('my error message', true);
+            }).to.throw('my error message');
+
+            process.env.NODE_ENV = env;
+            done();
+        });
+
+        it('throws in test mode with default message', function (done) {
+
+            var env = process.env.NODE_ENV;
+            process.env.NODE_ENV = 'test';
+
+            expect(function () {
+
+                Hoek.abort('', true);
+            }).to.throw('Unknown error');
+
+            process.env.NODE_ENV = env;
             done();
         });
 
@@ -841,33 +874,6 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#loadDirModules', function () {
-
-        it('should load modules from directory', function (done) {
-
-            var target = {};
-            Hoek.loadDirModules(__dirname + '/modules', ['test2'], target);
-            expect(target.Test1.x).to.equal(1);
-            expect(target.Test2).to.not.exist;
-            expect(target.Test3.z).to.equal(3);
-            done();
-        });
-
-        it('should list modules from directory into function', function (done) {
-
-            var target = {};
-            Hoek.loadDirModules(__dirname + '/modules', ['test2'], function (path, name, capName) {
-
-                target[name] = capName;
-            });
-
-            expect(target.test1).to.equal('Test1');
-            expect(target.test2).to.not.exist;
-            expect(target.test3).to.equal('Test3');
-            done();
-        });
-    });
-
     describe('Timer', function () {
 
         it('should return time elapsed', function (done) {
@@ -891,16 +897,6 @@ describe('Hoek', function () {
                 expect(timer.elapsed()).to.be.above(9);
                 done();
             }, 12);
-        });
-    });
-
-    describe('#loadPackage', function () {
-
-        it('should load itself', function (done) {
-
-            var pack = Hoek.loadPackage();
-            expect(pack.name).to.equal('hoek');
-            done();
         });
     });
 
@@ -932,6 +928,13 @@ describe('Hoek', function () {
                 expect(Hoek.base64urlEncode(new Buffer(str, 'binary'))).to.equal(base64str);
                 done();
             });
+
+            it('should base64 URL-safe a hex string', function (done) {
+
+                var buffer = new Buffer(str, 'binary');
+                expect(Hoek.base64urlEncode(buffer.toString('hex'), 'hex')).to.equal(base64str);
+                done();
+            });
         });
 
         describe('#base64urlDecode', function () {
@@ -939,6 +942,12 @@ describe('Hoek', function () {
             it('should un-base64 URL-safe a string', function (done) {
 
                 expect(Hoek.base64urlDecode(base64str)).to.equal(str);
+                done();
+            });
+
+            it('should un-base64 URL-safe a string into hex', function (done) {
+
+                expect(Hoek.base64urlDecode(base64str, 'hex')).to.equal(new Buffer(str, 'binary').toString('hex'));
                 done();
             });
 
