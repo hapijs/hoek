@@ -35,7 +35,6 @@ General purpose node utilities
   * [abort](#abortmessage "abort")
   * [displayStack](#displaystackslice "displayStack")
   * [callStack](#callstackslice "callStack")
-  * [toss](#tosscondition "toss")
 * [Load files](#load-files "Load Files")
   * [loadPackage](#loadpackagedir "loadpackage")
   * [loadDirModules](#loaddirmodulespath-excludefiles-target "loaddirmodules")
@@ -387,13 +386,6 @@ console.log(stack)  // returns something like:
     'startup.processNextTick.process._tickCallback',
     false ] ]
 ```
-
-### toss(condition)
-
-toss(condition /*, [message], callback */)
-
-Return an error as first argument of a callback
-
 
 # Load Files
 

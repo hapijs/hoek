@@ -1299,6 +1299,61 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#isAbsoltePath', function () {
+
+        it('identifies if path is absolute on Unix without node support', { parallel: false }, function (done) {
+
+            var orig = Path.isAbsolute;
+            Path.isAbsolute = undefined;
+
+            expect(Hoek.isAbsolutePath('')).to.equal(false);
+            expect(Hoek.isAbsolutePath('a')).to.equal(false);
+            expect(Hoek.isAbsolutePath('./a')).to.equal(false);
+            expect(Hoek.isAbsolutePath('/a')).to.equal(true);
+            expect(Hoek.isAbsolutePath('/')).to.equal(true);
+
+            Path.isAbsolute = orig;
+
+            done();
+        });
+
+        it('identifies if path is absolute with fake node support', { parallel: false }, function (done) {
+
+            var orig = Path.isAbsolute;
+            Path.isAbsolute = function (path) { return path[0] === '/'; };
+
+            expect(Hoek.isAbsolutePath('', 'linux')).to.equal(false);
+            expect(Hoek.isAbsolutePath('a', 'linux')).to.equal(false);
+            expect(Hoek.isAbsolutePath('./a', 'linux')).to.equal(false);
+            expect(Hoek.isAbsolutePath('/a', 'linux')).to.equal(true);
+            expect(Hoek.isAbsolutePath('/', 'linux')).to.equal(true);
+
+            Path.isAbsolute = orig;
+
+            done();
+        });
+
+        it('identifies if path is absolute on Windows without node support', { parallel: false }, function (done) {
+
+            var orig = Path.isAbsolute;
+            Path.isAbsolute = undefined;
+
+            expect(Hoek.isAbsolutePath('//server/file', 'win32')).to.equal(true);
+            expect(Hoek.isAbsolutePath('//server/file', 'win32')).to.equal(true);
+            expect(Hoek.isAbsolutePath('\\\\server\\file', 'win32')).to.equal(true);
+            expect(Hoek.isAbsolutePath('C:/Users/', 'win32')).to.equal(true);
+            expect(Hoek.isAbsolutePath('C:\\Users\\', 'win32')).to.equal(true);
+            expect(Hoek.isAbsolutePath('C:cwd/another', 'win32')).to.equal(false);
+            expect(Hoek.isAbsolutePath('C:cwd\\another', 'win32')).to.equal(false);
+            expect(Hoek.isAbsolutePath('directory/directory', 'win32')).to.equal(false);
+            expect(Hoek.isAbsolutePath('directory\\directory', 'win32')).to.equal(false);
+
+            Path.isAbsolute = orig;
+
+            done();
+        });
+    });
+
     describe('#ignore', function () {
 
         it('exists', function (done) {
