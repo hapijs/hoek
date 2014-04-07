@@ -80,6 +80,13 @@ describe('Hoek', function () {
             expect(encoded).to.equal('');
             done();
         });
+
+        it('encodes {} characters', function (done) {
+
+            var encoded = Hoek.escapeHtml('{}');
+            expect(encoded).to.equal('&#x7b;&#x7d;');
+            done();
+        });
     });
 });
 

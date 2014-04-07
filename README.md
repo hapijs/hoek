@@ -15,12 +15,9 @@ General purpose node utilities
   * [unique](#uniquearray-key "unique")
   * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
-  * [matchKeys](#matchkeysobj-keys "matchKeys")
   * [flatten](#flattenarray-target "flatten")
   * [removeKeys](#removekeysobject-keys "removeKeys")
   * [reach](#reachobj-chain-options "reach")
-  * [inheritAsync](#inheritasyncself-obj-keys "inheritAsync")
-  * [rename](#renameobj-from-to "rename")
 * [Timer](#timer "Timer")
 * [Bench](#bench "Bench")
 * [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
@@ -38,8 +35,6 @@ General purpose node utilities
 * [Load files](#load-files "Load Files")
   * [loadPackage](#loadpackagedir "loadpackage")
   * [loadDirModules](#loaddirmodulespath-excludefiles-target "loaddirmodules")
-* [Streams](#streams "Streams")
-  * [readStream](#readstream "readStream")
 
 
 
@@ -165,18 +160,6 @@ var array2 = [1, 4, 5];
 var newArray = Hoek.intersect(array1, array2) // results in [1]
 ```
 
-### matchKeys(obj, keys)
-
-Find which keys are present
-
-```javascript
-
-var obj = {a: 1, b: 2, c: 3};
-var keys = ["a", "e"];
-
-Hoek.matchKeys(obj, keys) // returns ["a"]
-```
-
 ### flatten(array, target)
 
 Flatten an array
@@ -187,20 +170,6 @@ var array = [1, 2, 3];
 var target = [4, 5];
 
 var flattenedArray = Hoek.flatten(array, target) // results in [4, 5, 1, 2, 3];
-```
-
-### removeKeys(object, keys)
-
-Remove keys
-
-```javascript
-
-var object = {a: 1, b: 2, c: 3, d: 4};
-
-var keys = ["a", "b"];
-
-Hoek.removeKeys(object, keys) // object is now {c: 3, d: 4}
-
 ```
 
 ### reach(obj, chain, [options])
@@ -214,51 +183,6 @@ var obj = {a : {b : { c : 1}}};
 
 Hoek.reach(obj, chain) // returns 1
 ```
-
-### inheritAsync(self, obj, keys)
-
-Inherits a selected set of methods from an object, wrapping functions in asynchronous syntax and catching errors
-
-```javascript
-
-var targetFunc = function () { };
-
-var proto = {
-                a: function () {
-                    return 'a!';
-                },
-                b: function () {
-                    return 'b!';
-                },
-                c: function () {
-                    throw new Error('c!');
-                }
-            };
-
-var keys = ['a', 'c'];
-
-Hoek.inheritAsync(targetFunc, proto, ['a', 'c']);
-
-var target = new targetFunc();
-
-target.a(function(err, result){console.log(result)}  // returns 'a!'
-
-target.c(function(err, result){console.log(result)}  // returns undefined
-
-target.b(function(err, result){console.log(result)}  // gives error: Object [object Object] has no method 'b'
-```
-
-### rename(obj, from, to)
-
-Rename a key of an object
-
-```javascript
-
-var obj = {a : 1, b : 2};
-
-Hoek.rename(obj, "a", "c");     // obj is now {c : 1, b : 2}
-```
-
 
 # Timer
 
@@ -401,18 +325,4 @@ var pack = Hoek.loadPackage();  // pack.name === 'hoek'
 ### loadDirModules(path, excludeFiles, target)
 
 Loads modules from a given path; option to exclude files (array).
-
-
-# Streams
-
-### readStream
-
-Read an entire stream buffer into a string
-
-```javascript
-
-readStream(inputStream, function (outputString) {
-    ...
-});
-```
 

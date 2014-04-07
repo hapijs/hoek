@@ -392,6 +392,15 @@ describe('Hoek', function () {
             expect(a.x.getTime()).to.equal(b.x.getTime());
             done();
         });
+
+        it('overrides Buffer', function (done) {
+
+            var a = { x: new Buffer('abc') };
+
+            var b = Hoek.merge({ x: {} }, a);
+            expect(a.x.toString()).to.equal('abc');
+            done();
+        });
     });
 
     describe('#applyToDefaults', function () {
@@ -406,6 +415,15 @@ describe('Hoek', function () {
             f: 6,
             g: 'test'
         };
+
+        it('throws when target is null', function (done) {
+
+            expect(function () {
+
+                Hoek.applyToDefaults(null, {});
+            }).to.throw('Invalid defaults value: must be an object');
+            done();
+        });
 
         it('should return null if options is false', function (done) {
 
@@ -481,12 +499,10 @@ describe('Hoek', function () {
 
         it('should convert array of objects to existential object', function (done) {
 
-            var keys = [{ x: 1 }, { x: 2 }, { x: 3 }];
+            var keys = [{ x: 1 }, { x: 2 }, { x: 3 }, { y: 4 }];
             var subkey = 'x';
             var a = Hoek.mapToObject(keys, subkey);
-            for (var i in keys) {
-                expect(a[keys[i][subkey]]).to.equal(true);
-            }
+            expect(a).to.deep.equal({ 1: true, 2: true, 3: true });
             done();
         });
     });
@@ -537,22 +553,6 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#matchKeys', function () {
-
-        it('should match the existing object keys', function (done) {
-
-            var obj = {
-                a: 1,
-                b: 2,
-                c: 3,
-                d: null
-            };
-
-            expect(Hoek.matchKeys(obj, ['b', 'c', 'd', 'e'])).to.deep.equal(['b', 'c', 'd']);
-            done();
-        });
-    });
-
     describe('#flatten', function () {
 
         it('should return a flat array', function (done) {
@@ -560,26 +560,6 @@ describe('Hoek', function () {
             var result = Hoek.flatten([1, 2, [3, 4, [5, 6], [7], 8], [9], [10, [11, 12]], 13]);
             expect(result.length).to.equal(13);
             expect(result).to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
-            done();
-        });
-    });
-
-    describe('#removeKeys', function () {
-
-        var objWithHiddenKeys = {
-            location: {
-                name: 'San Bruno'
-            },
-            company: {
-                name: '@WalmartLabs'
-            }
-        };
-
-        it('should delete params with definition\'s hide set to true', function (done) {
-
-            var a = Hoek.removeKeys(objWithHiddenKeys, ['location']);
-            expect(objWithHiddenKeys.location).to.not.exist;
-            expect(objWithHiddenKeys.company).to.exist;
             done();
         });
     });
@@ -671,50 +651,6 @@ describe('Hoek', function () {
             }).to.throw('Invalid segment x in reach path  i.x');
 
             done();
-        });
-    });
-
-    describe('#inheritAsync', function () {
-
-        it('should inherit selected methods and wrap in async call', function (done) {
-
-            var proto = {
-                a: function () {
-                    return 'a!';
-                },
-                b: function () {
-                    return 'b!';
-                },
-                c: function () {
-                    throw new Error('c!');
-                }
-            };
-
-            var targetFunc = function () { };
-            targetFunc.prototype.c = function () {
-
-                return 'oops';
-            };
-
-            Hoek.inheritAsync(targetFunc, proto, ['a', 'c']);
-            var target = new targetFunc();
-
-            expect(typeof target.a).to.equal('function');
-            expect(typeof target.c).to.equal('function');
-            expect(target.b).to.not.exist;
-
-            target.a(function (err, result) {
-
-                expect(err).to.not.exist;
-                expect(result).to.equal('a!');
-
-                target.c(function (err, result) {
-
-                    expect(result).to.not.exist;
-                    expect(err.message).to.equal('c!');
-                    done();
-                });
-            });
         });
     });
 
@@ -932,30 +868,6 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#rename', function () {
-
-        it('should rename object key', function (done) {
-
-            var a = { b: 'c' };
-            Hoek.rename(a, 'b', 'x');
-            expect(a.b).to.not.exist;
-            expect(a.x).to.equal('c');
-            done();
-        });
-
-        it('should throw and invalid key in object error', function (done) {
-
-            var fn = function () {
-
-                var obj = {a:1, b:2};
-                Hoek.rename(obj, 'd', 'a');
-            };
-
-            expect(fn).to.throw('Invalid property d');
-            done();
-        });
-    });
-
     describe('Timer', function () {
 
         it('should return time elapsed', function (done) {
@@ -999,62 +911,6 @@ describe('Hoek', function () {
             var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');
             expect(a).to.equal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
             done();
-        });
-    });
-
-    describe('#toss', function () {
-
-        it('should call callback with new error', function (done) {
-
-            var callback = function (err) {
-
-                expect(err).to.exist;
-                expect(err.message).to.equal('bug');
-                done();
-            };
-
-            Hoek.toss(true, 'feature', callback);
-            Hoek.toss(false, 'bug', callback);
-        });
-
-        it('should call callback with new error and no message', function (done) {
-
-            Hoek.toss(false, function (err) {
-
-                expect(err).to.exist;
-                expect(err.message).to.equal('');
-                done();
-            });
-        });
-
-        it('should call callback with error condition', function (done) {
-
-            Hoek.toss(new Error('boom'), function (err) {
-
-                expect(err).to.exist;
-                expect(err.message).to.equal('boom');
-                done();
-            });
-        });
-
-        it('should call callback with new error using message with error condition', function (done) {
-
-            Hoek.toss(new Error('ka'), 'boom', function (err) {
-
-                expect(err).to.exist;
-                expect(err.message).to.equal('boom');
-                done();
-            });
-        });
-
-        it('should call callback with new error using passed error with error condition', function (done) {
-
-            Hoek.toss(new Error('ka'), new Error('boom'), function (err) {
-
-                expect(err).to.exist;
-                expect(err.message).to.equal('boom');
-                done();
-            });
         });
     });
 
@@ -1171,47 +1027,6 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#printEvent', function () {
-
-        it('outputs event as string', function (done) {
-
-            var event = {
-                timestamp: (new Date(2013, 1, 1, 6, 30, 45, 123)).getTime(),
-                tags: ['a', 'b', 'c'],
-                data: { some: 'data' }
-            };
-
-            Hoek.consoleFunc = function (string) {
-
-                Hoek.consoleFunc = console.log;
-                expect(string).to.equal('130201/063045.123, a, {"some":"data"}');
-                done();
-            };
-
-            Hoek.printEvent(event);
-        });
-
-        it('outputs JSON error', function (done) {
-
-            var event = {
-                timestamp: (new Date(2013, 1, 1, 6, 30, 45, 123)).getTime(),
-                tags: ['a', 'b', 'c'],
-                data: { some: 'data' }
-            };
-
-            event.data.a = event.data;
-
-            Hoek.consoleFunc = function (string) {
-
-                Hoek.consoleFunc = console.log;
-                expect(string).to.equal('130201/063045.123, a, JSON Error: Converting circular structure to JSON');
-                done();
-            };
-
-            Hoek.printEvent(event);
-        });
-    });
-
     describe('#nextTick', function () {
 
         it('calls the provided callback on nextTick', function (done) {
@@ -1236,34 +1051,6 @@ describe('Hoek', function () {
             inc(1, function () {
 
                 expect(a).to.equal(1);
-            });
-        });
-    });
-
-    describe('#readStream', function () {
-
-        it('reads a stream and provides output to callback', function (done) {
-
-            var readable = new Stream.Readable();
-            readable._read = function () {
-
-                this.push('hello');
-                this.push(' ');
-
-                readable._read = function () {
-
-                    this.push('world');
-                    this.push(null);
-                    return false;
-                };
-
-                return true;
-            };
-
-            Hoek.readStream(readable, function (result) {
-
-                expect(result).to.equal('hello world');
-                done();
             });
         });
     });
