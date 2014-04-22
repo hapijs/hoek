@@ -1150,6 +1150,20 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#isInteger', function () {
+
+        it('validates integers', function (done) {
+
+            expect(Hoek.isInteger(0)).to.equal(true);
+            expect(Hoek.isInteger(1)).to.equal(true);
+            expect(Hoek.isInteger(1394035612500)).to.equal(true);
+            expect(Hoek.isInteger('0')).to.equal(false);
+            expect(Hoek.isInteger(1.0)).to.equal(true);
+            expect(Hoek.isInteger(1.1)).to.equal(false);
+            done();
+        });
+    });
+
     describe('#ignore', function () {
 
         it('exists', function (done) {
