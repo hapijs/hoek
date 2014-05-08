@@ -88,7 +88,8 @@ console.log(copy.x.b)      // results in 100
 ### merge(target, source, isNullOverride, isMergeArrays)
 isNullOverride, isMergeArrays default to true
 
-Merge all the properties of source into target, source wins in conflic, and by default null and undefined from source are applied
+Merge all the properties of source into target, source wins in conflic, and by default null and undefined from source are applied.
+Merge is destructive where the target is modified. For non destructive merge, use `applyToDefaults`.
 
 
 ```javascript
@@ -100,12 +101,12 @@ var source2 = {a: null, c: 5}
 var targetArray = [1, 2, 3];
 var sourceArray = [4, 5];
 
-var newTarget = Hoek.merge(target, source);     // results in {a: 0, b: 2, c: 5}
-newTarget = Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
-newTarget = Hoek.merge(target, source2, false); // results in {a: 1, b: 2, c: 5}
+Hoek.merge(target, source);     // results in {a: 0, b: 2, c: 5}
+Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
+Hoek.merge(target, source2, false); // results in {a: 1, b: 2, c: 5}
 
-newTarget = Hoek.merge(targetArray, sourceArray)              // results in [1, 2, 3, 4, 5]
-newTarget = Hoek.merge(targetArray, sourceArray, true, false) // results in [4, 5]
+Hoek.merge(targetArray, sourceArray)              // results in [1, 2, 3, 4, 5]
+Hoek.merge(targetArray, sourceArray, true, false) // results in [4, 5]
 ```
 
 ### applyToDefaults(defaults, options)
