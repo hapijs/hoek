@@ -1,7 +1,6 @@
 // Load modules
 
 var Lab = require('lab');
-var Stream = require('stream');
 var Path = require('path');
 var Hoek = require('../lib');
 
@@ -90,7 +89,7 @@ describe('Hoek', function () {
             x.y = x;
 
             var b = Hoek.clone(x);
-            expect(Object.keys(b.y)).to.deep.equal(Object.keys(x))
+            expect(Object.keys(b.y)).to.deep.equal(Object.keys(x));
             expect(b.z).to.not.equal(x.z);
             expect(b.y).to.not.equal(x.y);
             expect(b.y.z).to.not.equal(x.y.z);
@@ -109,7 +108,7 @@ describe('Hoek', function () {
                         c: new Date(),
                         d: /hi/igm,
                         e: /hello/
-                    },
+                    }
                 }
             };
 
@@ -190,13 +189,13 @@ describe('Hoek', function () {
             var tls = {
                 key: new Buffer([1, 2, 3, 4, 5]),
                 cert: new Buffer([1, 2, 3, 4, 5, 6, 10])
-            }
+            };
 
             var copiedTls = Hoek.clone(tls);
             expect(Buffer.isBuffer(copiedTls.key)).to.equal(true);
-            expect(JSON.stringify(copiedTls.key)).to.equal(JSON.stringify(tls.key))
+            expect(JSON.stringify(copiedTls.key)).to.equal(JSON.stringify(tls.key));
             expect(Buffer.isBuffer(copiedTls.cert)).to.equal(true);
-            expect(JSON.stringify(copiedTls.cert)).to.equal(JSON.stringify(tls.cert))
+            expect(JSON.stringify(copiedTls.cert)).to.equal(JSON.stringify(tls.cert));
             done();
         });
 
