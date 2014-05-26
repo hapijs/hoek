@@ -40,7 +40,7 @@ describe('Hoek', function () {
 
     describe('#clone', function () {
 
-        it('should clone a nested object', function (done) {
+        it('clones a nested object', function (done) {
 
             var a = nestedObj;
             var b = Hoek.clone(a);
@@ -50,7 +50,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should clone a null object', function (done) {
+        it('clones a null object', function (done) {
 
             var b = Hoek.clone(null);
 
@@ -81,7 +81,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should properly clone circular reference', function (done) {
+        it('clones circular reference', function (done) {
 
             var x = {
                 'z': new Date()
@@ -98,7 +98,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should properly clone deeply nested object', function (done) {
+        it('clones deeply nested object', function (done) {
 
             var a = {
                 x: {
@@ -119,7 +119,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should properly clone arrays', function (done) {
+        it('clones arrays', function (done) {
 
             var a = [1, 2, 3];
 
@@ -129,7 +129,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should perform actual copy for shallow keys (no pass by reference)', function (done) {
+        it('performs actual copy for shallow keys (no pass by reference)', function (done) {
 
             var x = Hoek.clone(nestedObj);
             var y = Hoek.clone(nestedObj);
@@ -154,7 +154,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should perform actual copy for deep keys (no pass by reference)', function (done) {
+        it('performs actual copy for deep keys (no pass by reference)', function (done) {
 
             var x = Hoek.clone(nestedObj);
             var y = Hoek.clone(nestedObj);
@@ -199,7 +199,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should clone an object with a prototype', function (done) {
+        it('clones an object with a prototype', function (done) {
 
             var Obj = function () {
 
@@ -214,6 +214,19 @@ describe('Hoek', function () {
             expect(b.a).to.equal(5);
             expect(b.b()).to.equal('c');
             expect(a).to.deep.equal(b);
+            done();
+        });
+
+        it('reuses cloned Date object', function (done) {
+
+            var obj = {
+                a: new Date()
+            };
+
+            obj.b = obj.a;
+
+            var copy = Hoek.clone(obj);
+            expect(copy.a).to.equal(copy.b);
             done();
         });
     });
