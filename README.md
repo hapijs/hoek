@@ -16,7 +16,6 @@ General purpose node utilities
   * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
   * [flatten](#flattenarray-target "flatten")
-  * [removeKeys](#removekeysobject-keys "removeKeys")
   * [reach](#reachobj-chain-options "reach")
 * [Timer](#timer "Timer")
 * [Bench](#bench "Bench")
