@@ -229,9 +229,55 @@ describe('Hoek', function () {
             expect(copy.a).to.equal(copy.b);
             done();
         });
+
+        it('shallow copies an object with a prototype and isImmutable flag', function (done) {
+
+            var Obj = function () {
+
+                this.value = 5;
+            };
+
+            Obj.prototype.b = function () { return 'c'; };
+            Obj.prototype.isImmutable = true;
+
+            var obj = {
+                a: new Obj()
+            };
+
+            var copy = Hoek.clone(obj);
+
+            expect(obj.a.value).to.equal(5);
+            expect(copy.a.value).to.equal(5);
+            expect(copy.a.b()).to.equal('c');
+            expect(obj.a).to.equal(copy.a);
+            done();
+        });
     });
 
     describe('#merge', function () {
+
+        it('deep copies source items', function (done) {
+
+            var target = {
+                b: 3,
+                d: []
+            };
+
+            var source = {
+                c: {
+                    d: 1
+                },
+                d: [{ e: 1}]
+            };
+
+            Hoek.merge(target, source);
+            expect(target.c).to.not.equal(source.c);
+            expect(target.c).to.deep.equal(source.c);
+            expect(target.d).to.not.equal(source.d);
+            expect(target.d[0]).to.not.equal(source.d[0]);
+            expect(target.d).to.deep.equal(source.d);
+            done();
+        });
 
         it('merges array over an object', function (done) {
 
