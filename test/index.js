@@ -483,21 +483,21 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should return null if options is false', function (done) {
+        it('returns null if options is false', function (done) {
 
             var result = Hoek.applyToDefaults(defaults, false);
             expect(result).to.equal(null);
             done();
         });
 
-        it('should return a copy of defaults if options is true', function (done) {
+        it('returns a copy of defaults if options is true', function (done) {
 
             var result = Hoek.applyToDefaults(defaults, true);
             expect(result).to.deep.equal(result);
             done();
         });
 
-        it('should apply object to defaults', function (done) {
+        it('applies object to defaults', function (done) {
 
             var obj = {
                 a: null,
@@ -520,6 +520,100 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#cloneWithShallow', function () {
+
+        it('deep clones except for listed keys', function (done) {
+
+            var source = {
+                a: {
+                    b: 5
+                },
+                c: {
+                    d: 6
+                }
+            };
+
+            var copy = Hoek.cloneWithShallow(source, ['c']);
+            expect(copy).to.deep.equal(source);
+            expect(copy).to.not.equal(source);
+            expect(copy.a).to.not.equal(source.a);
+            expect(copy.b).to.equal(source.b);
+            done();
+        });
+
+        it('returns immutable value', function (done) {
+
+            expect(Hoek.cloneWithShallow(5)).to.equal(5);
+            done();
+        });
+
+        it('returns null value', function (done) {
+
+            expect(Hoek.cloneWithShallow(null)).to.equal(null);
+            done();
+        });
+
+        it('returns undefined value', function (done) {
+
+            expect(Hoek.cloneWithShallow(undefined)).to.equal(undefined);
+            done();
+        });
+
+        it('deep clones except for listed keys (including missing keys)', function (done) {
+
+            var source = {
+                a: {
+                    b: 5
+                },
+                c: {
+                    d: 6
+                }
+            };
+
+            var copy = Hoek.cloneWithShallow(source, ['c', 'v']);
+            expect(copy).to.deep.equal(source);
+            expect(copy).to.not.equal(source);
+            expect(copy.a).to.not.equal(source.a);
+            expect(copy.b).to.equal(source.b);
+            done();
+        });
+    });
+
+    describe('#applyToDefaultsWithShallow', function () {
+
+        it('shallow copies the listed keys from options without merging', function (done) {
+
+            var defaults = {
+                a: {
+                    b: 5,
+                    e: 3
+                },
+                c: {
+                    d: 7,
+                    g: 1
+                }
+            };
+
+            var options = {
+                a: {
+                    b: 4
+                },
+                c: {
+                    d: 6,
+                    f: 7
+                }
+            };
+
+            var merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['a']);
+            expect(merged).to.deep.equal({ a: { b: 4 }, c: { d: 6, g: 1, f: 7 } });
+            expect(merged.a).to.equal(options.a);
+            expect(merged.a).to.not.equal(defaults.a);
+            expect(merged.c).to.not.equal(options.c);
+            expect(merged.c).to.not.equal(defaults.c);
+            done();
+        });
+    });
+
     describe('#unique', function () {
 
         it('should ensure uniqueness within array of objects based on subkey', function (done) {
@@ -538,7 +632,7 @@ describe('Hoek', function () {
 
     describe('#mapToObject', function () {
 
-        it('should return null on null array', function (done) {
+        it('returns null on null array', function (done) {
 
             var a = Hoek.mapToObject(null);
             expect(a).to.equal(null);
@@ -567,7 +661,7 @@ describe('Hoek', function () {
 
     describe('#intersect', function () {
 
-        it('should return the common objects of two arrays', function (done) {
+        it('returns the common objects of two arrays', function (done) {
 
             var array1 = [1, 2, 3, 4, 4, 5, 5];
             var array2 = [5, 4, 5, 6, 7];
@@ -576,7 +670,7 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should return just the first common object of two arrays', function (done) {
+        it('returns just the first common object of two arrays', function (done) {
 
             var array1 = [1, 2, 3, 4, 4, 5, 5];
             var array2 = [5, 4, 5, 6, 7];
@@ -594,14 +688,14 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should return an empty array if either input is null', function (done) {
+        it('returns an empty array if either input is null', function (done) {
 
             expect(Hoek.intersect([1], null).length).to.equal(0);
             expect(Hoek.intersect(null, [1]).length).to.equal(0);
             done();
         });
 
-        it('should return the common objects of object and array', function (done) {
+        it('returns the common objects of object and array', function (done) {
 
             var array1 = [1, 2, 3, 4, 4, 5, 5];
             var array2 = [5, 4, 5, 6, 7];
@@ -613,7 +707,7 @@ describe('Hoek', function () {
 
     describe('#flatten', function () {
 
-        it('should return a flat array', function (done) {
+        it('returns a flat array', function (done) {
 
             var result = Hoek.flatten([1, 2, [3, 4, [5, 6], [7], 8], [9], [10, [11, 12]], 13]);
             expect(result.length).to.equal(13);
@@ -720,7 +814,7 @@ describe('Hoek', function () {
 
     describe('#callStack', function () {
 
-        it('should return the full call stack', function (done) {
+        it('returns the full call stack', function (done) {
 
             var stack = Hoek.callStack();
             expect(stack[0][0]).to.contain('index.js');
@@ -731,7 +825,7 @@ describe('Hoek', function () {
 
     describe('#displayStack ', function () {
 
-        it('should return the full call stack for display', function (done) {
+        it('returns the full call stack for display', function (done) {
 
             var stack = Hoek.displayStack();
             expect(stack[0]).to.contain(Path.normalize('/test/index.js') + ':');
@@ -934,7 +1028,7 @@ describe('Hoek', function () {
 
     describe('Timer', function () {
 
-        it('should return time elapsed', function (done) {
+        it('returns time elapsed', function (done) {
 
             var timer = new Hoek.Timer();
             setTimeout(function () {
@@ -947,7 +1041,7 @@ describe('Hoek', function () {
 
     describe('Bench', function () {
 
-        it('should return time elapsed', function (done) {
+        it('returns time elapsed', function (done) {
 
             var timer = new Hoek.Bench();
             setTimeout(function () {
@@ -1017,13 +1111,13 @@ describe('Hoek', function () {
                 done();
             });
 
-            it('should return error on undefined input', function (done) {
+            it('returns error on undefined input', function (done) {
 
                 expect(Hoek.base64urlDecode().message).to.exist;
                 done();
             });
 
-            it('should return error on invalid input', function (done) {
+            it('returns error on invalid input', function (done) {
 
                 expect(Hoek.base64urlDecode('*').message).to.exist;
                 done();
@@ -1079,14 +1173,14 @@ describe('Hoek', function () {
             done();
         });
 
-        it('should return empty string on falsy input', function (done) {
+        it('returns empty string on falsy input', function (done) {
 
             var a = Hoek.escapeHtml('');
             expect(a).to.equal('');
             done();
         });
 
-        it('should return unchanged string on no reserved input', function (done) {
+        it('returns unchanged string on no reserved input', function (done) {
 
             var a = Hoek.escapeHtml('abc');
             expect(a).to.equal('abc');
