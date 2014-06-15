@@ -310,19 +310,3 @@ console.log(stack)  // returns something like:
     'startup.processNextTick.process._tickCallback',
     false ] ]
 ```
-
-# Load Files
-
-### loadPackage(dir)
-
-Load and parse package.json process root or given directory
-
-```javascript
-
-var pack = Hoek.loadPackage();  // pack.name === 'hoek'
-```
-
-### loadDirModules(path, excludeFiles, target)
-
-Loads modules from a given path; option to exclude files (array).
-
