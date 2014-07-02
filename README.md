@@ -266,7 +266,7 @@ Hoek.assert(a === b, 'a should equal b');  // ABORT: a should equal b
 
 ### abort(message)
 
-First checks if process.env.NODE_ENV === 'test', and if so, throws error message. Otherwise,
+First checks if `process.env.NODE_ENV === 'test'`, and if so, throws error message. Otherwise,
 displays most recent stack and then exits process.
 
 
