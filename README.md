@@ -52,7 +52,7 @@ var config = Hoek.applyToDefaults(default, {port : "3000", admin : true});
 // In this case, config would be { url: 'www.github.com', port: '3000', debug: true, admin: true }
 ```
 
-Under each of the sections (such as Array), there are subsections which correspond to Hoek methods. Each subsection will explain how to use the corresponding method. In each js excerpt below, the var Hoek = require('hoek') is omitted for brevity.
+Under each of the sections (such as Array), there are subsections which correspond to Hoek methods. Each subsection will explain how to use the corresponding method. In each js excerpt below, the `var Hoek = require('hoek')` is omitted for brevity.
 
 ## Object
 
