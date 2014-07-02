@@ -87,7 +87,7 @@ console.log(copy.x.b)      // results in 100
 ### merge(target, source, isNullOverride, isMergeArrays)
 isNullOverride, isMergeArrays default to true
 
-Merge all the properties of source into target, source wins in conflic, and by default null and undefined from source are applied.
+Merge all the properties of source into target, source wins in conflict, and by default null and undefined from source are applied.
 Merge is destructive where the target is modified. For non destructive merge, use `applyToDefaults`.
 
 
