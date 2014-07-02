@@ -45,14 +45,14 @@ For example, to use Hoek to set configuration with default options:
 ```javascript
 var Hoek = require('hoek');
 
-var default = {url : "www.github.com", port : "8000", debug : true}
+var default = {url : "www.github.com", port : "8000", debug : true};
 
 var config = Hoek.applyToDefaults(default, {port : "3000", admin : true});
 
 // In this case, config would be { url: 'www.github.com', port: '3000', debug: true, admin: true }
 ```
 
-Under each of the sections (such as Array), there are subsections which correspond to Hoek methods. Each subsection will explain how to use the corresponding method. In each js excerpt below, the `var Hoek = require('hoek')` is omitted for brevity.
+Under each of the sections (such as Array), there are subsections which correspond to Hoek methods. Each subsection will explain how to use the corresponding method. In each js excerpt below, the `var Hoek = require('hoek');` is omitted for brevity.
 
 ## Object
 
@@ -79,9 +79,9 @@ var copy = Hoek.clone(nestedObj);
 
 copy.x.b = 100;
 
-console.log(copy.y)        // results in 'y'
-console.log(nestedObj.x.b) // results in 123456
-console.log(copy.x.b)      // results in 100
+console.log(copy.y);        // results in 'y'
+console.log(nestedObj.x.b); // results in 123456
+console.log(copy.x.b);      // results in 100
 ```
 
 ### merge(target, source, isNullOverride, isMergeArrays)
@@ -93,19 +93,19 @@ Merge is destructive where the target is modified. For non destructive merge, us
 
 ```javascript
 
-var target = {a: 1, b : 2}
-var source = {a: 0, c: 5}
-var source2 = {a: null, c: 5}
+var target = {a: 1, b : 2};
+var source = {a: 0, c: 5};
+var source2 = {a: null, c: 5};
+
+Hoek.merge(target, source);         // results in {a: 0, b: 2, c: 5}
+Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
+Hoek.merge(target, source2, false); // results in {a: 1, b: 2, c: 5}
 
 var targetArray = [1, 2, 3];
 var sourceArray = [4, 5];
 
-Hoek.merge(target, source);     // results in {a: 0, b: 2, c: 5}
-Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
-Hoek.merge(target, source2, false); // results in {a: 1, b: 2, c: 5}
-
-Hoek.merge(targetArray, sourceArray)              // results in [1, 2, 3, 4, 5]
-Hoek.merge(targetArray, sourceArray, true, false) // results in [4, 5]
+Hoek.merge(targetArray, sourceArray);              // results in [1, 2, 3, 4, 5]
+Hoek.merge(targetArray, sourceArray, true, false); // results in [4, 5]
 ```
 
 ### applyToDefaults(defaults, options)
@@ -117,7 +117,7 @@ Apply options to a copy of the defaults
 var defaults = {host: "localhost", port: 8000};
 var options = {port: 8080};
 
-var config = Hoek.applyToDefaults(defaults, options); // results in {host: "localhost", port: 8080};
+var config = Hoek.applyToDefaults(defaults, options); // results in {host: "localhost", port: 8080}
 ```
 
 ### unique(array, key)
@@ -128,11 +128,11 @@ Remove duplicate items from Array
 
 var array = [1, 2, 2, 3, 3, 4, 5, 6];
 
-var newArray = Hoek.unique(array); // results in [1,2,3,4,5,6];
+var newArray = Hoek.unique(array);    // results in [1,2,3,4,5,6]
 
 array = [{id: 1}, {id: 1}, {id: 2}];
 
-newArray = Hoek.unique(array, "id") // results in [{id: 1}, {id: 2}]
+newArray = Hoek.unique(array, "id");  // results in [{id: 1}, {id: 2}]
 ```
 
 ### mapToObject(array, key)
@@ -142,10 +142,10 @@ Convert an Array into an Object
 ```javascript
 
 var array = [1,2,3];
-var newObject = Hoek.mapToObject(array); // results in [{"1": true}, {"2": true}, {"3": true}]
+var newObject = Hoek.mapToObject(array);   // results in [{"1": true}, {"2": true}, {"3": true}]
 
 array = [{id: 1}, {id: 2}];
-newObject = Hoek.mapToObject(array, "id") // results in [{"id": 1}, {"id": 2}]
+newObject = Hoek.mapToObject(array, "id"); // results in [{"id": 1}, {"id": 2}]
 ```
 
 ### intersect(array1, array2)
@@ -157,7 +157,7 @@ Find the common unique items in two arrays
 var array1 = [1, 2, 3];
 var array2 = [1, 4, 5];
 
-var newArray = Hoek.intersect(array1, array2) // results in [1]
+var newArray = Hoek.intersect(array1, array2); // results in [1]
 ```
 
 ### flatten(array, target)
@@ -169,7 +169,7 @@ Flatten an array
 var array = [1, 2, 3];
 var target = [4, 5];
 
-var flattenedArray = Hoek.flatten(array, target) // results in [4, 5, 1, 2, 3];
+var flattenedArray = Hoek.flatten(array, target); // results in [4, 5, 1, 2, 3]
 ```
 
 ### reach(obj, chain, [options])
@@ -181,7 +181,7 @@ Converts an object key chain string to reference
 var chain = 'a.b.c';
 var obj = {a : {b : { c : 1}}};
 
-Hoek.reach(obj, chain) // returns 1
+Hoek.reach(obj, chain); // returns 1
 ```
 
 # Timer
@@ -191,8 +191,8 @@ A Timer object. Initializing a new timer object sets the ts to the number of mil
 ```javascript
 
 var timerObj = new Hoek.Timer();
-console.log("Time is now: " + timerObj.ts)
-console.log("Elapsed time from initialization: " + timerObj.elapsed() + 'milliseconds')
+console.log("Time is now: " + timerObj.ts);
+console.log("Elapsed time from initialization: " + timerObj.elapsed() + 'milliseconds');
 ```
 
 
@@ -278,7 +278,7 @@ Displays the trace stack
 ```javascript
 
 var stack = Hoek.displayStack();
-console.log(stack) // returns something like:
+console.log(stack); // returns something like:
 
 [ 'null (/Users/user/Desktop/hoek/test.js:4:18)',
   'Module._compile (module.js:449:26)',
@@ -296,7 +296,7 @@ Returns a trace stack array.
 ```javascript
 
 var stack = Hoek.callStack();
-console.log(stack)  // returns something like:
+console.log(stack);  // returns something like:
 
 [ [ '/Users/user/Desktop/hoek/test.js', 4, 18, null, false ],
   [ 'module.js', 449, 26, 'Module._compile', false ],
