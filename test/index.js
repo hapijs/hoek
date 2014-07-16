@@ -810,6 +810,18 @@ describe('Hoek', function () {
 
             done();
         });
+
+        it('will return a default value if property is not found', function (done) {
+
+            expect(Hoek.reach(obj, 'a.b.q', {defaultValue: 'defaultValue'})).to.equal('defaultValue');
+            done();
+        });
+
+        it('will return a default value if path is not found', function (done) {
+
+            expect(Hoek.reach(obj, 'q', {defaultValue: 'defaultValue'})).to.equal('defaultValue');
+            done();
+        });
     });
 
     describe('#callStack', function () {
@@ -1336,4 +1348,3 @@ describe('Hoek', function () {
         });
     });
 });
-
