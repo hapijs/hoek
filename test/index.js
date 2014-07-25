@@ -1347,4 +1347,95 @@ describe('Hoek', function () {
             done();
         });
     });
+
+    describe('#compose', function () {
+
+        var source = {
+            address: {
+                one: '123 main street',
+                two: 'PO Box 1234'
+            },
+            title: 'Warehouse',
+            state: 'CA'
+        };
+
+        it('composes and object based on the input object', function (done) {
+
+            var result = Hoek.compose(source, {
+                'person.address.lineOne': 'address.one',
+                'person.address.lineTwo': 'address.two',
+                'title': 'title',
+                'person.address.region': 'state'
+            });
+
+            expect(result).to.deep.equal({
+                person: {
+                    address: {
+                        lineOne: '123 main street',
+                        lineTwo: 'PO Box 1234',
+                        region: 'CA'
+                    }
+                },
+                title: 'Warehouse'
+            });
+
+            done();
+        });
+
+        it('uses the reach options passed into it', function (done) {
+            var result = Hoek.compose(source, {
+                'person.address.lineOne': 'address-one',
+                'person.address.lineTwo': 'address-two',
+                'title': 'title',
+                'person.address.region': 'state',
+                'person.prefix': 'person-title'
+            }, {
+                separator: '-',
+                defaultValue: 'unknown'
+            });
+
+            expect(result).to.deep.equal({
+                person: {
+                    address: {
+                        lineOne: '123 main street',
+                        lineTwo: 'PO Box 1234',
+                        region: 'CA'
+                    },
+                    prefix: 'unknown'
+                },
+                title: 'Warehouse'
+            });
+
+            done();
+        });
+
+        it('works to create shallow objects', function (done) {
+            var result = Hoek.compose(source, {
+                lineOne: 'address.one',
+                lineTwo: 'address.two',
+                title: 'title',
+                region: 'state'
+            });
+
+            expect(result).to.deep.equal({
+                lineOne: '123 main street',
+                lineTwo: 'PO Box 1234',
+                title: 'Warehouse',
+                region: 'CA'
+            });
+
+            done();
+        });
+
+        it('only allows strings in the map', function (done) {
+
+            expect(function () {
+                var result = Hoek.compose(source, {
+                    lineOne: {}
+                });
+            }).to.throw('All mappings must be "." delineated string');
+
+            done();
+        });
+    });
 });
