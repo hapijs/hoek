@@ -1348,7 +1348,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#compose', function () {
+    describe('#transform', function () {
 
         var source = {
             address: {
@@ -1359,9 +1359,9 @@ describe('Hoek', function () {
             state: 'CA'
         };
 
-        it('composes and object based on the input object', function (done) {
+        it('transforms an object based on the input object', function (done) {
 
-            var result = Hoek.compose(source, {
+            var result = Hoek.transform(source, {
                 'person.address.lineOne': 'address.one',
                 'person.address.lineTwo': 'address.two',
                 'title': 'title',
@@ -1383,7 +1383,7 @@ describe('Hoek', function () {
         });
 
         it('uses the reach options passed into it', function (done) {
-            var result = Hoek.compose(source, {
+            var result = Hoek.transform(source, {
                 'person.address.lineOne': 'address-one',
                 'person.address.lineTwo': 'address-two',
                 'title': 'title',
@@ -1410,7 +1410,7 @@ describe('Hoek', function () {
         });
 
         it('works to create shallow objects', function (done) {
-            var result = Hoek.compose(source, {
+            var result = Hoek.transform(source, {
                 lineOne: 'address.one',
                 lineTwo: 'address.two',
                 title: 'title',
@@ -1430,7 +1430,7 @@ describe('Hoek', function () {
         it('only allows strings in the map', function (done) {
 
             expect(function () {
-                var result = Hoek.compose(source, {
+                var result = Hoek.transform(source, {
                     lineOne: {}
                 });
             }).to.throw('All mappings must be "." delineated string');

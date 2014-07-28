@@ -17,7 +17,7 @@ General purpose node utilities
   * [intersect](#intersectarray1-array2 "intersect")
   * [flatten](#flattenarray-target "flatten")
   * [reach](#reachobj-chain-options "reach")
-  * [compose](#composeobj-transform-options "compose")
+  * [transform](#transformobj-transform-options "transform")
 * [Timer](#timer "Timer")
 * [Bench](#bench "Bench")
 * [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
@@ -191,9 +191,9 @@ var obj = {a : {b : { c : 1}}};
 Hoek.reach(obj, chain); // returns 1
 ```
 
-### compose(obj, transform, [options])
+### transform(obj, transform, [options])
 
-Composes a new object based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options.
+Transforms an existing object into a new one based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options.
 
 ```javascript
 var source = {
@@ -205,7 +205,7 @@ var source = {
     state: 'CA'
 };
 
-var result = Hoek.compose(source, {
+var result = Hoek.transform(source, {
     'person.address.lineOne': 'address.one',
     'person.address.lineTwo': 'address.two',
     'title': 'title',
