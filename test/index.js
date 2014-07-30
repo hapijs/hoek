@@ -813,13 +813,13 @@ describe('Hoek', function () {
 
         it('will return a default value if property is not found', function (done) {
 
-            expect(Hoek.reach(obj, 'a.b.q', {defaultValue: 'defaultValue'})).to.equal('defaultValue');
+            expect(Hoek.reach(obj, 'a.b.q', {default: 'defaultValue'})).to.equal('defaultValue');
             done();
         });
 
         it('will return a default value if path is not found', function (done) {
 
-            expect(Hoek.reach(obj, 'q', {defaultValue: 'defaultValue'})).to.equal('defaultValue');
+            expect(Hoek.reach(obj, 'q', {default: 'defaultValue'})).to.equal('defaultValue');
             done();
         });
     });
@@ -1355,8 +1355,12 @@ describe('Hoek', function () {
                 one: '123 main street',
                 two: 'PO Box 1234'
             },
+            zip: {
+                code: 3321232,
+                province: null
+            },
             title: 'Warehouse',
-            state: 'CA'
+            state: 'CA',
         };
 
         it('transforms an object based on the input object', function (done) {
@@ -1365,7 +1369,9 @@ describe('Hoek', function () {
                 'person.address.lineOne': 'address.one',
                 'person.address.lineTwo': 'address.two',
                 'title': 'title',
-                'person.address.region': 'state'
+                'person.address.region': 'state',
+                'person.address.zip': 'zip.code',
+                'person.address.location': 'zip.province'
             });
 
             expect(result).to.deep.equal({
@@ -1373,7 +1379,9 @@ describe('Hoek', function () {
                     address: {
                         lineOne: '123 main street',
                         lineTwo: 'PO Box 1234',
-                        region: 'CA'
+                        region: 'CA',
+                        zip: 3321232,
+                        location: null
                     }
                 },
                 title: 'Warehouse'
@@ -1383,15 +1391,17 @@ describe('Hoek', function () {
         });
 
         it('uses the reach options passed into it', function (done) {
+
             var result = Hoek.transform(source, {
                 'person.address.lineOne': 'address-one',
                 'person.address.lineTwo': 'address-two',
                 'title': 'title',
                 'person.address.region': 'state',
-                'person.prefix': 'person-title'
+                'person.prefix': 'person-title',
+                'person.zip': 'zip-code'
             }, {
                 separator: '-',
-                defaultValue: 'unknown'
+                default: 'unknown'
             });
 
             expect(result).to.deep.equal({
@@ -1401,7 +1411,8 @@ describe('Hoek', function () {
                         lineTwo: 'PO Box 1234',
                         region: 'CA'
                     },
-                    prefix: 'unknown'
+                    prefix: 'unknown',
+                    zip: 3321232
                 },
                 title: 'Warehouse'
             });
@@ -1410,18 +1421,21 @@ describe('Hoek', function () {
         });
 
         it('works to create shallow objects', function (done) {
+
             var result = Hoek.transform(source, {
                 lineOne: 'address.one',
                 lineTwo: 'address.two',
                 title: 'title',
-                region: 'state'
+                region: 'state',
+                provice: 'zip.province'
             });
 
             expect(result).to.deep.equal({
                 lineOne: '123 main street',
                 lineTwo: 'PO Box 1234',
                 title: 'Warehouse',
-                region: 'CA'
+                region: 'CA',
+                provice: null
             });
 
             done();
@@ -1434,6 +1448,22 @@ describe('Hoek', function () {
                     lineOne: {}
                 });
             }).to.throw('All mappings must be "." delineated string');
+
+            done();
+        });
+
+        it('throws an error on invalid arguments', function (done) {
+            expect(function() {
+                var result = Hoek.transform(NaN, {});
+            }).to.throw('Invalid source object: must be null, undefined, or an object');
+
+            done();
+        });
+
+        it('is safe to pass null or undefined', function (done) {
+
+            var result = Hoek.transform(null, {});
+            expect(result).to.deep.equal({});
 
             done();
         });

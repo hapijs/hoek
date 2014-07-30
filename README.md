@@ -179,7 +179,7 @@ Converts an object key chain string to reference
 
 - `options` - optional settings
     - `separator` - string to split chain path on, defaults to '.'
-    - `defaultValue` - value to return if the path or value is not present, default is `undefined`
+    - `default` - value to return if the path or value is not present, default is `undefined`
     - `strict` - if `true`, will throw an error on missing member, default is `false`
     - `functions` - if `true` allow traversing functions for properties. `false` will throw an error if a function is part of the chain.
 
