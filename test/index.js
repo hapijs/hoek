@@ -105,7 +105,17 @@ describe('Hoek', function () {
             obj.__proto__ = null;
             var b = Hoek.clone(obj);
 
-            expect(b).to.equal(obj);
+            expect(b).to.deep.equal(obj);
+            done();
+        });
+
+        it('clones an object with an undefined prototype', function (done) {
+
+            var obj = {};
+            obj.__proto__ = undefined;
+            var b = Hoek.clone(obj);
+
+            expect(b).to.deep.equal(obj);
             done();
         });
 
