@@ -99,6 +99,16 @@ describe('Hoek', function () {
             done();
         });
 
+        it('clones an object with a null prototype', function (done) {
+
+            var obj = {};
+            obj.__proto__ = null;
+            var b = Hoek.clone(obj);
+
+            expect(b).to.equal(obj);
+            done();
+        });
+
         it('clones deeply nested object', function (done) {
 
             var a = {
@@ -1471,7 +1481,7 @@ describe('Hoek', function () {
 
         it('throws an error on invalid arguments', function (done) {
 
-            expect(function() {
+            expect(function () {
 
                 var result = Hoek.transform(NaN, {});
             }).to.throw('Invalid source object: must be null, undefined, or an object');
