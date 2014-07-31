@@ -1,5 +1,6 @@
 // Load modules
 
+var Fs = require('fs');
 var Lab = require('lab');
 var Path = require('path');
 var Hoek = require('../lib');
@@ -1097,6 +1098,20 @@ describe('Hoek', function () {
 
                 var buffer = new Buffer(str, 'binary');
                 expect(Hoek.base64urlEncode(buffer.toString('hex'), 'hex')).to.equal(base64str);
+                done();
+            });
+
+            it('works on larger input strings', function (done) {
+
+                var input = Fs.readFileSync(Path.join(__dirname, 'index.js')).toString();
+                var encoded = Hoek.base64urlEncode(input);
+
+                expect(encoded).to.not.contain('+');
+                expect(encoded).to.not.contain('/');
+
+                var decoded = Hoek.base64urlDecode(encoded);
+
+                expect(decoded).to.equal(input);
                 done();
             });
         });
