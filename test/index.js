@@ -1392,17 +1392,19 @@ describe('Hoek', function () {
 
         it('uses the reach options passed into it', function (done) {
 
-            var result = Hoek.transform(source, {
+            var schema = {
                 'person.address.lineOne': 'address-one',
                 'person.address.lineTwo': 'address-two',
                 'title': 'title',
                 'person.address.region': 'state',
                 'person.prefix': 'person-title',
                 'person.zip': 'zip-code'
-            }, {
+            };
+            var options = {
                 separator: '-',
                 default: 'unknown'
-            });
+            };
+            var result = Hoek.transform(source, schema, options);
 
             expect(result).to.deep.equal({
                 person: {
@@ -1427,7 +1429,7 @@ describe('Hoek', function () {
                 lineTwo: 'address.two',
                 title: 'title',
                 region: 'state',
-                provice: 'zip.province'
+                province: 'zip.province'
             });
 
             expect(result).to.deep.equal({
@@ -1435,7 +1437,7 @@ describe('Hoek', function () {
                 lineTwo: 'PO Box 1234',
                 title: 'Warehouse',
                 region: 'CA',
-                provice: null
+                province: null
             });
 
             done();
@@ -1453,7 +1455,9 @@ describe('Hoek', function () {
         });
 
         it('throws an error on invalid arguments', function (done) {
+
             expect(function() {
+
                 var result = Hoek.transform(NaN, {});
             }).to.throw('Invalid source object: must be null, undefined, or an object');
 
