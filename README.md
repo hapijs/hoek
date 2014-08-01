@@ -5,6 +5,8 @@ General purpose node utilities
 
 [![Build Status](https://secure.travis-ci.org/spumko/hoek.png)](http://travis-ci.org/spumko/hoek)
 
+Lead Maintainer: [Wyatt Preul](https://github.com/wpreul)
+
 # Table of Contents
 
 * [Introduction](#introduction "Introduction")
