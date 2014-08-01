@@ -2,7 +2,7 @@
   "name": "hoek",
   "description": "General purpose node utilities",
   "version": "2.3.0",
-  "repository": "git://github.com/spumko/hoek",
+  "repository": "git://github.com/hapijs/hoek",
   "main": "index",
   "keywords": [
     "utilities"
@@ -21,7 +21,7 @@
   "licenses": [
     {
       "type": "BSD",
-      "url": "http://github.com/spumko/hoek/raw/master/LICENSE"
+      "url": "http://github.com/hapijs/hoek/raw/master/LICENSE"
     }
   ]
 }

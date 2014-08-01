@@ -1,9 +1,9 @@
-<a href="https://github.com/spumko"><img src="https://raw.github.com/spumko/spumko/master/images/from.png" align="right" /></a>
-![hoek Logo](https://raw.github.com/spumko/hoek/master/images/hoek.png)
+<a href="https://github.com/hapijs"><img src="https://raw.github.com/hapijs/spumko/master/images/from.png" align="right" /></a>
+![hoek Logo](https://raw.github.com/hapijs/hoek/master/images/hoek.png)
 
 General purpose node utilities
 
-[![Build Status](https://secure.travis-ci.org/spumko/hoek.png)](http://travis-ci.org/spumko/hoek)
+[![Build Status](https://secure.travis-ci.org/hapijs/hoek.png)](http://travis-ci.org/hapijs/hoek)
 
 Lead Maintainer: [Wyatt Preul](https://github.com/wpreul)
 
