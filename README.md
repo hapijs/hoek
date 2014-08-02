@@ -1,4 +1,3 @@
-<a href="https://github.com/hapijs"><img src="https://raw.github.com/hapijs/spumko/master/images/from.png" align="right" /></a>
 ![hoek Logo](https://raw.github.com/hapijs/hoek/master/images/hoek.png)
 
 General purpose node utilities
