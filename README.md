@@ -4,7 +4,7 @@ General purpose node utilities
 
 [![Build Status](https://secure.travis-ci.org/hapijs/hoek.png)](http://travis-ci.org/hapijs/hoek)
 
-Lead Maintainer: [Wyatt Preul](https://github.com/wpreul)
+Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
 
 # Table of Contents
 
