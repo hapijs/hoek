@@ -162,16 +162,20 @@ var array2 = [1, 4, 5];
 var newArray = Hoek.intersect(array1, array2); // results in [1]
 ```
 
-### flatten(array, target)
+### flatten(array, [target])
 
 Flatten an array
 
 ```javascript
 
-var array = [1, 2, 3];
-var target = [4, 5];
+var array = [1, [2, 3]];
 
-var flattenedArray = Hoek.flatten(array, target); // results in [4, 5, 1, 2, 3]
+var flattenedArray = Hoek.flatten(array); // results in [1, 2, 3]
+
+array = [1, [2, 3]];
+target = [4, [5]];
+
+flattenedArray = Hoek.flatten(array, target); // results in [4, [5], 1, 2, 3]
 ```
 
 ### reach(obj, chain, [options])
