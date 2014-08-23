@@ -514,7 +514,7 @@ describe('Hoek', function () {
         it('returns a copy of defaults if options is true', function (done) {
 
             var result = Hoek.applyToDefaults(defaults, true);
-            expect(result).to.deep.equal(result);
+            expect(result).to.deep.equal(defaults);
             done();
         });
 
