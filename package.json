@@ -13,7 +13,7 @@
   "dependencies": {
   },
   "devDependencies": {
-    "lab": "3.x.x"
+    "lab": "4.x.x"
   },
   "scripts": {
     "test": "make test-cov"
