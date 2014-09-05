@@ -511,6 +511,20 @@ describe('Hoek', function () {
             done();
         });
 
+        it('returns null if options is null', function (done) {
+
+            var result = Hoek.applyToDefaults(defaults, null);
+            expect(result).to.equal(null);
+            done();
+        });
+
+        it('returns null if options is undefined', function (done) {
+
+            var result = Hoek.applyToDefaults(defaults, undefined);
+            expect(result).to.equal(null);
+            done();
+        });
+
         it('returns a copy of defaults if options is true', function (done) {
 
             var result = Hoek.applyToDefaults(defaults, true);
