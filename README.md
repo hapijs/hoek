@@ -36,8 +36,8 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [displayStack](#displaystackslice "displayStack")
   * [callStack](#callstackslice "callStack")
 * [Function](#function "Function")
-  * [nextTick](#nexttick "nextTick")
-  * [once](#once "once")
+  * [nextTick](#nexttickfn "nextTick")
+  * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
 
 
