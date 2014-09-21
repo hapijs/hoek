@@ -1648,6 +1648,131 @@ describe('Hoek', function () {
         });
     });
 
+    describe('#transform', function () {
+
+        var source = {
+            address: {
+                one: '123 main street',
+                two: 'PO Box 1234'
+            },
+            zip: {
+                code: 3321232,
+                province: null
+            },
+            title: 'Warehouse',
+            state: 'CA',
+        };
+
+        it('transforms an object based on the input object', function (done) {
+
+            var result = Hoek.transform(source, {
+                'person.address.lineOne': 'address.one',
+                'person.address.lineTwo': 'address.two',
+                'title': 'title',
+                'person.address.region': 'state',
+                'person.address.zip': 'zip.code',
+                'person.address.location': 'zip.province'
+            });
+
+            expect(result).to.deep.equal({
+                person: {
+                    address: {
+                        lineOne: '123 main street',
+                        lineTwo: 'PO Box 1234',
+                        region: 'CA',
+                        zip: 3321232,
+                        location: null
+                    }
+                },
+                title: 'Warehouse'
+            });
+
+            done();
+        });
+
+        it('uses the reach options passed into it', function (done) {
+
+            var schema = {
+                'person.address.lineOne': 'address-one',
+                'person.address.lineTwo': 'address-two',
+                'title': 'title',
+                'person.address.region': 'state',
+                'person.prefix': 'person-title',
+                'person.zip': 'zip-code'
+            };
+            var options = {
+                separator: '-',
+                default: 'unknown'
+            };
+            var result = Hoek.transform(source, schema, options);
+
+            expect(result).to.deep.equal({
+                person: {
+                    address: {
+                        lineOne: '123 main street',
+                        lineTwo: 'PO Box 1234',
+                        region: 'CA'
+                    },
+                    prefix: 'unknown',
+                    zip: 3321232
+                },
+                title: 'Warehouse'
+            });
+
+            done();
+        });
+
+        it('works to create shallow objects', function (done) {
+
+            var result = Hoek.transform(source, {
+                lineOne: 'address.one',
+                lineTwo: 'address.two',
+                title: 'title',
+                region: 'state',
+                province: 'zip.province'
+            });
+
+            expect(result).to.deep.equal({
+                lineOne: '123 main street',
+                lineTwo: 'PO Box 1234',
+                title: 'Warehouse',
+                region: 'CA',
+                province: null
+            });
+
+            done();
+        });
+
+        it('only allows strings in the map', function (done) {
+
+            expect(function () {
+                var result = Hoek.transform(source, {
+                    lineOne: {}
+                });
+            }).to.throw('All mappings must be "." delineated string');
+
+            done();
+        });
+
+        it('throws an error on invalid arguments', function (done) {
+
+            expect(function () {
+
+                var result = Hoek.transform(NaN, {});
+            }).to.throw('Invalid source object: must be null, undefined, or an object');
+
+            done();
+        });
+
+        it('is safe to pass null or undefined', function (done) {
+
+            var result = Hoek.transform(null, {});
+            expect(result).to.deep.equal({});
+
+            done();
+        });
+    });
+
     describe('#random', function () {
 
         it('generates a random string', function (done) {
