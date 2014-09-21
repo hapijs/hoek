@@ -1,5 +1,6 @@
 // Load modules
 
+var Fs = require('fs');
 var Lab = require('lab');
 var Path = require('path');
 var Hoek = require('../lib');
@@ -12,11 +13,12 @@ var internals = {};
 
 // Test shortcuts
 
+var lab = exports.lab = Lab.script();
 var expect = Lab.expect;
-var before = Lab.before;
-var after = Lab.after;
-var describe = Lab.experiment;
-var it = Lab.test;
+var before = lab.before;
+var after = lab.after;
+var describe = lab.experiment;
+var it = lab.test;
 
 
 describe('Hoek', function () {
@@ -95,6 +97,26 @@ describe('Hoek', function () {
             expect(b.y.z).to.not.equal(x.y.z);
             expect(b.y).to.equal(b);
             expect(b.y.y.y.y).to.equal(b);
+            done();
+        });
+
+        it('clones an object with a null prototype', function (done) {
+
+            var obj = {};
+            obj.__proto__ = null;
+            var b = Hoek.clone(obj);
+
+            expect(b).to.deep.equal(obj);
+            done();
+        });
+
+        it('clones an object with an undefined prototype', function (done) {
+
+            var obj = {};
+            obj.__proto__ = undefined;
+            var b = Hoek.clone(obj);
+
+            expect(b).to.deep.equal(obj);
             done();
         });
 
@@ -490,10 +512,24 @@ describe('Hoek', function () {
             done();
         });
 
+        it('returns null if options is null', function (done) {
+
+            var result = Hoek.applyToDefaults(defaults, null);
+            expect(result).to.equal(null);
+            done();
+        });
+
+        it('returns null if options is undefined', function (done) {
+
+            var result = Hoek.applyToDefaults(defaults, undefined);
+            expect(result).to.equal(null);
+            done();
+        });
+
         it('returns a copy of defaults if options is true', function (done) {
 
             var result = Hoek.applyToDefaults(defaults, true);
-            expect(result).to.deep.equal(result);
+            expect(result).to.deep.equal(defaults);
             done();
         });
 
@@ -813,13 +849,13 @@ describe('Hoek', function () {
 
         it('will return a default value if property is not found', function (done) {
 
-            expect(Hoek.reach(obj, 'a.b.q', {defaultValue: 'defaultValue'})).to.equal('defaultValue');
+            expect(Hoek.reach(obj, 'a.b.q', {default: 'defaultValue'})).to.equal('defaultValue');
             done();
         });
 
         it('will return a default value if path is not found', function (done) {
 
-            expect(Hoek.reach(obj, 'q', {defaultValue: 'defaultValue'})).to.equal('defaultValue');
+            expect(Hoek.reach(obj, 'q', {default: 'defaultValue'})).to.equal('defaultValue');
             done();
         });
     });
@@ -1099,6 +1135,20 @@ describe('Hoek', function () {
                 expect(Hoek.base64urlEncode(buffer.toString('hex'), 'hex')).to.equal(base64str);
                 done();
             });
+
+            it('works on larger input strings', function (done) {
+
+                var input = Fs.readFileSync(Path.join(__dirname, 'index.js')).toString();
+                var encoded = Hoek.base64urlEncode(input);
+
+                expect(encoded).to.not.contain('+');
+                expect(encoded).to.not.contain('/');
+
+                var decoded = Hoek.base64urlDecode(encoded);
+
+                expect(decoded).to.equal(input);
+                done();
+            });
         });
 
         describe('#base64urlDecode', function () {
@@ -1344,6 +1394,294 @@ describe('Hoek', function () {
 
             expect(Hoek.inherits).to.exist;
             expect(typeof Hoek.inherits).to.equal('function');
+            done();
+        });
+    });
+
+    describe('#transform', function () {
+
+        var source = {
+            address: {
+                one: '123 main street',
+                two: 'PO Box 1234'
+            },
+            zip: {
+                code: 3321232,
+                province: null
+            },
+            title: 'Warehouse',
+            state: 'CA',
+        };
+
+        it('transforms an object based on the input object', function (done) {
+
+            var result = Hoek.transform(source, {
+                'person.address.lineOne': 'address.one',
+                'person.address.lineTwo': 'address.two',
+                'title': 'title',
+                'person.address.region': 'state',
+                'person.address.zip': 'zip.code',
+                'person.address.location': 'zip.province'
+            });
+
+            expect(result).to.deep.equal({
+                person: {
+                    address: {
+                        lineOne: '123 main street',
+                        lineTwo: 'PO Box 1234',
+                        region: 'CA',
+                        zip: 3321232,
+                        location: null
+                    }
+                },
+                title: 'Warehouse'
+            });
+
+            done();
+        });
+
+        it('uses the reach options passed into it', function (done) {
+
+            var schema = {
+                'person.address.lineOne': 'address-one',
+                'person.address.lineTwo': 'address-two',
+                'title': 'title',
+                'person.address.region': 'state',
+                'person.prefix': 'person-title',
+                'person.zip': 'zip-code'
+            };
+            var options = {
+                separator: '-',
+                default: 'unknown'
+            };
+            var result = Hoek.transform(source, schema, options);
+
+            expect(result).to.deep.equal({
+                person: {
+                    address: {
+                        lineOne: '123 main street',
+                        lineTwo: 'PO Box 1234',
+                        region: 'CA'
+                    },
+                    prefix: 'unknown',
+                    zip: 3321232
+                },
+                title: 'Warehouse'
+            });
+
+            done();
+        });
+
+        it('works to create shallow objects', function (done) {
+
+            var result = Hoek.transform(source, {
+                lineOne: 'address.one',
+                lineTwo: 'address.two',
+                title: 'title',
+                region: 'state',
+                province: 'zip.province'
+            });
+
+            expect(result).to.deep.equal({
+                lineOne: '123 main street',
+                lineTwo: 'PO Box 1234',
+                title: 'Warehouse',
+                region: 'CA',
+                province: null
+            });
+
+            done();
+        });
+
+        it('only allows strings in the map', function (done) {
+
+            expect(function () {
+                var result = Hoek.transform(source, {
+                    lineOne: {}
+                });
+            }).to.throw('All mappings must be "." delineated string');
+
+            done();
+        });
+
+        it('throws an error on invalid arguments', function (done) {
+
+            expect(function () {
+
+                var result = Hoek.transform(NaN, {});
+            }).to.throw('Invalid source object: must be null, undefined, or an object');
+
+            done();
+        });
+
+        it('is safe to pass null or undefined', function (done) {
+
+            var result = Hoek.transform(null, {});
+            expect(result).to.deep.equal({});
+
+            done();
+        });
+    });
+
+    describe('#transform', function () {
+
+        var source = {
+            address: {
+                one: '123 main street',
+                two: 'PO Box 1234'
+            },
+            zip: {
+                code: 3321232,
+                province: null
+            },
+            title: 'Warehouse',
+            state: 'CA',
+        };
+
+        it('transforms an object based on the input object', function (done) {
+
+            var result = Hoek.transform(source, {
+                'person.address.lineOne': 'address.one',
+                'person.address.lineTwo': 'address.two',
+                'title': 'title',
+                'person.address.region': 'state',
+                'person.address.zip': 'zip.code',
+                'person.address.location': 'zip.province'
+            });
+
+            expect(result).to.deep.equal({
+                person: {
+                    address: {
+                        lineOne: '123 main street',
+                        lineTwo: 'PO Box 1234',
+                        region: 'CA',
+                        zip: 3321232,
+                        location: null
+                    }
+                },
+                title: 'Warehouse'
+            });
+
+            done();
+        });
+
+        it('uses the reach options passed into it', function (done) {
+
+            var schema = {
+                'person.address.lineOne': 'address-one',
+                'person.address.lineTwo': 'address-two',
+                'title': 'title',
+                'person.address.region': 'state',
+                'person.prefix': 'person-title',
+                'person.zip': 'zip-code'
+            };
+            var options = {
+                separator: '-',
+                default: 'unknown'
+            };
+            var result = Hoek.transform(source, schema, options);
+
+            expect(result).to.deep.equal({
+                person: {
+                    address: {
+                        lineOne: '123 main street',
+                        lineTwo: 'PO Box 1234',
+                        region: 'CA'
+                    },
+                    prefix: 'unknown',
+                    zip: 3321232
+                },
+                title: 'Warehouse'
+            });
+
+            done();
+        });
+
+        it('works to create shallow objects', function (done) {
+
+            var result = Hoek.transform(source, {
+                lineOne: 'address.one',
+                lineTwo: 'address.two',
+                title: 'title',
+                region: 'state',
+                province: 'zip.province'
+            });
+
+            expect(result).to.deep.equal({
+                lineOne: '123 main street',
+                lineTwo: 'PO Box 1234',
+                title: 'Warehouse',
+                region: 'CA',
+                province: null
+            });
+
+            done();
+        });
+
+        it('only allows strings in the map', function (done) {
+
+            expect(function () {
+                var result = Hoek.transform(source, {
+                    lineOne: {}
+                });
+            }).to.throw('All mappings must be "." delineated string');
+
+            done();
+        });
+
+        it('throws an error on invalid arguments', function (done) {
+
+            expect(function () {
+
+                var result = Hoek.transform(NaN, {});
+            }).to.throw('Invalid source object: must be null, undefined, or an object');
+
+            done();
+        });
+
+        it('is safe to pass null or undefined', function (done) {
+
+            var result = Hoek.transform(null, {});
+            expect(result).to.deep.equal({});
+
+            done();
+        });
+    });
+
+    describe('#random', function () {
+
+        it('generates a random string', function (done) {
+
+            var result = Hoek.random();
+
+            expect(result).to.exist;
+            expect(result).to.be.a('string');
+            done();
+        });
+
+        it('is random enough to use in fast loops', function (done) {
+
+            var results = [];
+
+            for (var i = 0; i < 10; ++i) {
+                results[i] = Hoek.random();
+            }
+
+            var filter = results.filter(function (item, index, array) {
+
+                return array.indexOf(item) === index;
+            });
+
+            expect(filter.length).to.equal(10);
+            expect(results.length).to.equal(10);
+            done();
+
+        });
+
+        it('combines the random elements with a supplied character', function (done) {
+
+            var result = Hoek.random('#');
+            expect(result).to.contain('#');
             done();
         });
     });

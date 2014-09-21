@@ -1,22 +1,26 @@
-<a href="https://github.com/spumko"><img src="https://raw.github.com/spumko/spumko/master/images/from.png" align="right" /></a>
-![hoek Logo](https://raw.github.com/spumko/hoek/master/images/hoek.png)
+![hoek Logo](https://raw.github.com/hapijs/hoek/master/images/hoek.png)
 
 General purpose node utilities
 
-[![Build Status](https://secure.travis-ci.org/spumko/hoek.png)](http://travis-ci.org/spumko/hoek)
+[![Build Status](https://secure.travis-ci.org/hapijs/hoek.png)](http://travis-ci.org/hapijs/hoek)
+
+Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
 
 # Table of Contents
 
 * [Introduction](#introduction "Introduction")
 * [Object](#object "Object")
   * [clone](#cloneobj "clone")
+  * [cloneWithShallow](#clonewithshallowobj-keys "cloneWithShallow")
   * [merge](#mergetarget-source-isnulloverride-ismergearrays "merge")
   * [applyToDefaults](#applytodefaultsdefaults-options "applyToDefaults")
+  * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
   * [unique](#uniquearray-key "unique")
   * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
   * [flatten](#flattenarray-target "flatten")
   * [reach](#reachobj-chain-options "reach")
+  * [transform](#transformobj-transform-options "transform")
 * [Timer](#timer "Timer")
 * [Bench](#bench "Bench")
 * [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
@@ -31,9 +35,12 @@ General purpose node utilities
   * [abort](#abortmessage "abort")
   * [displayStack](#displaystackslice "displayStack")
   * [callStack](#callstackslice "callStack")
-* [Load files](#load-files "Load Files")
-  * [loadPackage](#loadpackagedir "loadpackage")
-  * [loadDirModules](#loaddirmodulespath-excludefiles-target "loaddirmodules")
+* [Function](#function "Function")
+  * [nextTick](#nexttickfn "nextTick")
+  * [once](#oncefn "once")
+  * [ignore](#ignore "ignore")
+* [Miscellaneous](#miscellaneous "Miscellaneous")
+  * [random](#random "random")
 
 
 
@@ -84,6 +91,33 @@ console.log(nestedObj.x.b); // results in 123456
 console.log(copy.x.b);      // results in 100
 ```
 
+### cloneWithShallow(obj, keys)
+keys is an array of key names to shallow copy
+
+This method is also used to clone an object or array, however any keys listed in the `keys` array are shallow copied while those not listed are deep copied.
+
+```javascript
+
+var nestedObj = {
+        w: /^something$/ig,
+        x: {
+            a: [1, 2, 3],
+            b: 123456,
+            c: new Date()
+        },
+        y: 'y',
+        z: new Date()
+    };
+
+var copy = Hoek.cloneWithShallow(nestedObj, ['x']);
+
+copy.x.b = 100;
+
+console.log(copy.y);        // results in 'y'
+console.log(nestedObj.x.b); // results in 100
+console.log(copy.x.b);      // results in 100
+```
+
 ### merge(target, source, isNullOverride, isMergeArrays)
 isNullOverride, isMergeArrays default to true
 
@@ -114,10 +148,30 @@ Apply options to a copy of the defaults
 
 ```javascript
 
-var defaults = {host: "localhost", port: 8000};
-var options = {port: 8080};
+var defaults = { host: "localhost", port: 8000 };
+var options = { port: 8080 };
 
-var config = Hoek.applyToDefaults(defaults, options); // results in {host: "localhost", port: 8080}
+var config = Hoek.applyToDefaults(defaults, options); // results in { host: "localhost", port: 8080 }
+```
+
+### applyToDefaultsWithShallow(defaults, options, keys)
+keys is an array of key names to shallow copy
+
+Apply options to a copy of the defaults. Keys specified in the last parameter are shallow copied from options instead of merged.
+
+```javascript
+
+var defaults = {
+        server: {
+            host: "localhost",
+            port: 8000
+        },
+        name: 'example'
+    };
+
+var options = { server: { port: 8080 } };
+
+var config = Hoek.applyToDefaults(defaults, options); // results in { server: { port: 8080 }, name: 'example' }
 ```
 
 ### unique(array, key)
@@ -160,16 +214,20 @@ var array2 = [1, 4, 5];
 var newArray = Hoek.intersect(array1, array2); // results in [1]
 ```
 
-### flatten(array, target)
+### flatten(array, [target])
 
 Flatten an array
 
 ```javascript
 
-var array = [1, 2, 3];
-var target = [4, 5];
+var array = [1, [2, 3]];
 
-var flattenedArray = Hoek.flatten(array, target); // results in [4, 5, 1, 2, 3]
+var flattenedArray = Hoek.flatten(array); // results in [1, 2, 3]
+
+array = [1, [2, 3]];
+target = [4, [5]];
+
+flattenedArray = Hoek.flatten(array, target); // results in [4, [5], 1, 2, 3]
 ```
 
 ### reach(obj, chain, [options])
@@ -178,7 +236,7 @@ Converts an object key chain string to reference
 
 - `options` - optional settings
     - `separator` - string to split chain path on, defaults to '.'
-    - `defaultValue` - value to return if the path or value is not present, default is `undefined`
+    - `default` - value to return if the path or value is not present, default is `undefined`
     - `strict` - if `true`, will throw an error on missing member, default is `false`
     - `functions` - if `true` allow traversing functions for properties. `false` will throw an error if a function is part of the chain.
 
@@ -188,6 +246,39 @@ var chain = 'a.b.c';
 var obj = {a : {b : { c : 1}}};
 
 Hoek.reach(obj, chain); // returns 1
+```
+
+### transform(obj, transform, [options])
+
+Transforms an existing object into a new one based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options.
+
+```javascript
+var source = {
+    address: {
+        one: '123 main street',
+        two: 'PO Box 1234'
+    },
+    title: 'Warehouse',
+    state: 'CA'
+};
+
+var result = Hoek.transform(source, {
+    'person.address.lineOne': 'address.one',
+    'person.address.lineTwo': 'address.two',
+    'title': 'title',
+    'person.address.region': 'state'
+});
+// Results in
+// {
+//     person: {
+//         address: {
+//             lineOne: '123 main street',
+//             lineTwo: 'PO Box 1234',
+//             region: 'CA'
+//         }
+//     },
+//     title: 'Warehouse'
+// }
 ```
 
 # Timer
@@ -315,4 +406,98 @@ console.log(stack);  // returns something like:
     9,
     'startup.processNextTick.process._tickCallback',
     false ] ]
+```
+
+## Function
+
+### nextTick(fn)
+
+Returns a new function that wraps `fn` in `process.nextTick`.
+
+```javascript
+
+var myFn = function () {
+    console.log('Do this later');
+};
+
+var nextFn = Hoek.nextTick(myFn);
+
+nextFn();
+console.log('Do this first');
+
+// Results in:
+// 
+// Do this first
+// Do this later
+```
+
+### once(fn)
+
+Returns a new function that can be run multiple times, but makes sure `fn` is only run once.
+
+```javascript
+
+var myFn = function () {
+    console.log('Ran myFn');
+};
+
+var onceFn = Hoek.once(myFn);
+onceFn(); // results in "Ran myFn"
+onceFn(); // results in undefined
+```
+
+### ignore
+
+A simple no-op function. It does nothing at all.
+
+## Function
+
+### nextTick(fn)
+
+Returns a new function that wraps `fn` in `process.nextTick`.
+
+```javascript
+
+var myFn = function () {
+    console.log('Do this later');
+};
+
+var nextFn = Hoek.nextTick(myFn);
+
+nextFn();
+console.log('Do this first');
+
+// Results in:
+// 
+// Do this first
+// Do this later
+```
+
+### once(fn)
+
+Returns a new function that can be run multiple times, but makes sure `fn` is only run once.
+
+```javascript
+
+var myFn = function () {
+    console.log('Ran myFn');
+};
+
+var onceFn = Hoek.once(myFn);
+onceFn(); // results in "Ran myFn"
+onceFn(); // results in undefined
+```
+
+### ignore
+
+A simple no-op function. It does nothing at all.
+# Miscellaneous
+
+### random (join)
+`join` is the string or character to use to join the elements of the random string. Defaults to `''`.
+
+Returns a randomly generated string. While `crypto` is used for this result, these strings should not be used for any security applications.
+
+```javascript
+var result = Hoek.random('#');
 ```
