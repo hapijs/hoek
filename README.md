@@ -450,96 +450,11 @@ onceFn(); // results in undefined
 
 A simple no-op function. It does nothing at all.
 
-## Function
-
-### nextTick(fn)
-
-Returns a new function that wraps `fn` in `process.nextTick`.
-
-```javascript
-
-var myFn = function () {
-    console.log('Do this later');
-};
-
-var nextFn = Hoek.nextTick(myFn);
-
-nextFn();
-console.log('Do this first');
-
-// Results in:
-// 
-// Do this first
-// Do this later
-```
-
-### once(fn)
-
-Returns a new function that can be run multiple times, but makes sure `fn` is only run once.
-
-```javascript
-
-var myFn = function () {
-    console.log('Ran myFn');
-};
-
-var onceFn = Hoek.once(myFn);
-onceFn(); // results in "Ran myFn"
-onceFn(); // results in undefined
-```
-
-### ignore
-
-A simple no-op function. It does nothing at all.
-
-## Function
-
-### nextTick(fn)
-
-Returns a new function that wraps `fn` in `process.nextTick`.
-
-```javascript
-
-var myFn = function () {
-    console.log('Do this later');
-};
-
-var nextFn = Hoek.nextTick(myFn);
-
-nextFn();
-console.log('Do this first');
-
-// Results in:
-// 
-// Do this first
-// Do this later
-```
-
-### once(fn)
-
-Returns a new function that can be run multiple times, but makes sure `fn` is only run once.
-
-```javascript
-
-var myFn = function () {
-    console.log('Ran myFn');
-};
-
-var onceFn = Hoek.once(myFn);
-onceFn(); // results in "Ran myFn"
-onceFn(); // results in undefined
-```
-
-### ignore
-
-A simple no-op function. It does nothing at all.
-# Miscellaneous
-
 ### random (join)
 `join` is the string or character to use to join the elements of the random string. Defaults to `''`.
 
 Returns a randomly generated string. While `crypto` is used for this result, these strings should not be used for any security applications.
 
 ```javascript
-var result = Hoek.random('#');
+var result = Hoek.random('#'); // result should be a random string
 ```
