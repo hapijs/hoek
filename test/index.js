@@ -1523,14 +1523,15 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#random', function () {
+    describe('#uniqueFilename', function () {
 
-        it('generates a random string', function (done) {
+        it('generates a random file path', function (done) {
 
-            var result = Hoek.random();
+            var result = Hoek.uniqueFilename('./test/modules');
 
             expect(result).to.exist;
             expect(result).to.be.a('string');
+            expect(result).to.contain('test/modules');
             done();
         });
 
@@ -1539,7 +1540,7 @@ describe('Hoek', function () {
             var results = [];
 
             for (var i = 0; i < 10; ++i) {
-                results[i] = Hoek.random();
+                results[i] = Hoek.uniqueFilename('./test/modules');
             }
 
             var filter = results.filter(function (item, index, array) {
@@ -1555,8 +1556,11 @@ describe('Hoek', function () {
 
         it('combines the random elements with a supplied character', function (done) {
 
-            var result = Hoek.random('#');
-            expect(result).to.contain('#');
+            var result = Hoek.uniqueFilename('./test', 'txt');
+
+            expect(result).to.contain('test/');
+            expect(result).to.contain('.txt');
+
             done();
         });
     });

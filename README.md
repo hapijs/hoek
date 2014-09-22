@@ -40,7 +40,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
-  * [random](#random "random")
+  * [uniqueFilename](#uniquefilename "uniqueFilename")
 
 
 
@@ -450,11 +450,13 @@ onceFn(); // results in undefined
 
 A simple no-op function. It does nothing at all.
 
-### random (join)
-`join` is the string or character to use to join the elements of the random string. Defaults to `''`.
+## Miscellaneous
 
-Returns a randomly generated string. While `crypto` is used for this result, these strings should not be used for any security applications.
+### uniqueFilename(path, extension)
+`path` to prepend with the randomly generated file name. `extension` is the optional file extension, defaults to `''`.
+
+Returns a randomly generated file name at the specified `path`. The result is a fully resolved path to a file.
 
 ```javascript
-var result = Hoek.random('#'); // result should be a random string
+var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
 ```
