@@ -15,8 +15,6 @@ var internals = {};
 
 var lab = exports.lab = Lab.script();
 var expect = Lab.expect;
-var before = lab.before;
-var after = lab.after;
 var describe = lab.experiment;
 var it = lab.test;
 
@@ -40,7 +38,7 @@ describe('Hoek', function () {
     var dupsArray = [nestedObj, { z: 'z' }, nestedObj];
     var reducedDupsArray = [nestedObj, { z: 'z' }];
 
-    describe('#clone', function () {
+    describe('clone()', function () {
 
         it('clones a nested object', function (done) {
 
@@ -276,7 +274,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#merge', function () {
+    describe('merge()', function () {
 
         it('deep copies source items', function (done) {
 
@@ -483,7 +481,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#applyToDefaults', function () {
+    describe('applyToDefaults()', function () {
 
         var defaults = {
             a: 1,
@@ -556,7 +554,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#cloneWithShallow', function () {
+    describe('cloneWithShallow()', function () {
 
         it('deep clones except for listed keys', function (done) {
 
@@ -615,7 +613,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#applyToDefaultsWithShallow', function () {
+    describe('applyToDefaultsWithShallow()', function () {
 
         it('shallow copies the listed keys from options without merging', function (done) {
 
@@ -650,7 +648,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#unique', function () {
+    describe('unique()', function () {
 
         it('should ensure uniqueness within array of objects based on subkey', function (done) {
 
@@ -666,7 +664,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#mapToObject', function () {
+    describe('mapToObject()', function () {
 
         it('returns null on null array', function (done) {
 
@@ -695,7 +693,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#intersect', function () {
+    describe('intersect()', function () {
 
         it('returns the common objects of two arrays', function (done) {
 
@@ -741,7 +739,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#flatten', function () {
+    describe('flatten()', function () {
 
         it('returns a flat array', function (done) {
 
@@ -752,7 +750,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#reach', function () {
+    describe('reach()', function () {
 
         var obj = {
             a: {
@@ -860,7 +858,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#callStack', function () {
+    describe('callStack()', function () {
 
         it('returns the full call stack', function (done) {
 
@@ -871,7 +869,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#displayStack ', function () {
+    describe('displayStack ()', function () {
 
         it('returns the full call stack for display', function (done) {
 
@@ -896,7 +894,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#abort', function () {
+    describe('abort()', function () {
 
         it('should exit process when not in test mode', function (done) {
 
@@ -1016,7 +1014,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#assert', function () {
+    describe('assert()', function () {
 
         it('should throw an Error when using assert in a test', function (done) {
 
@@ -1100,7 +1098,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#escapeRegex', function () {
+    describe('escapeRegex()', function () {
 
         it('should escape all special regular expression characters', function (done) {
 
@@ -1115,7 +1113,7 @@ describe('Hoek', function () {
         var base64str = 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w';
         var str = unescape('%00%01%02%03%04%05%06%07%08%09%0A%0B%0C%0D%0E%0F%10%11%12%13%14%15%16%17%18%19%1A%1B%1C%1D%1E%1F%20%21%22%23%24%25%26%27%28%29*+%2C-./0123456789%3A%3B%3C%3D%3E%3F@ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D%7E%7F%80%81%82%83%84%85%86%87%88%89%8A%8B%8C%8D%8E%8F%90%91%92%93%94%95%96%97%98%99%9A%9B%9C%9D%9E%9F%A0%A1%A2%A3%A4%A5%A6%A7%A8%A9%AA%AB%AC%AD%AE%AF%B0%B1%B2%B3%B4%B5%B6%B7%B8%B9%BA%BB%BC%BD%BE%BF%C0%C1%C2%C3%C4%C5%C6%C7%C8%C9%CA%CB%CC%CD%CE%CF%D0%D1%D2%D3%D4%D5%D6%D7%D8%D9%DA%DB%DC%DD%DE%DF%E0%E1%E2%E3%E4%E5%E6%E7%E8%E9%EA%EB%EC%ED%EE%EF%F0%F1%F2%F3%F4%F5%F6%F7%F8%F9%FA%FB%FC%FD%FE%FF');
 
-        describe('#base64urlEncode', function () {
+        describe('base64urlEncode()', function () {
 
             it('should base64 URL-safe a string', function (done) {
 
@@ -1151,7 +1149,7 @@ describe('Hoek', function () {
             });
         });
 
-        describe('#base64urlDecode', function () {
+        describe('base64urlDecode()', function () {
 
             it('should un-base64 URL-safe a string', function (done) {
 
@@ -1187,7 +1185,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#escapeHeaderAttribute', function () {
+    describe('escapeHeaderAttribute()', function () {
 
         it('should not alter ascii values', function (done) {
 
@@ -1226,7 +1224,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#escapeHtml', function () {
+    describe('escapeHtml()', function () {
 
         it('should escape all special HTML characters', function (done) {
 
@@ -1250,7 +1248,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#nextTick', function () {
+    describe('nextTick()', function () {
 
         it('calls the provided callback on nextTick', function (done) {
 
@@ -1278,7 +1276,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#once', function () {
+    describe('once()', function () {
 
         it('allows function to only execute once', function (done) {
 
@@ -1309,7 +1307,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#isAbsoltePath', function () {
+    describe('isAbsoltePath()', function () {
 
         it('identifies if path is absolute on Unix without node support', { parallel: false }, function (done) {
 
@@ -1364,7 +1362,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#isInteger', function () {
+    describe('isInteger()', function () {
 
         it('validates integers', function (done) {
 
@@ -1378,7 +1376,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#ignore', function () {
+    describe('ignore()', function () {
 
         it('exists', function (done) {
 
@@ -1388,7 +1386,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#inherits', function () {
+    describe('inherits()', function () {
 
         it('exists', function (done) {
 
@@ -1398,7 +1396,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#transform', function () {
+    describe('transform()', function () {
 
         var source = {
             address: {
