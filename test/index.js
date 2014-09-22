@@ -1523,7 +1523,7 @@ describe('Hoek', function () {
         });
     });
 
-    describe('#uniqueFilename', function () {
+    describe('uniqueFilename()', function () {
 
         it('generates a random file path', function (done) {
 
