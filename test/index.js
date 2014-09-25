@@ -1520,4 +1520,56 @@ describe('Hoek', function () {
             done();
         });
     });
+
+    describe('uniqueFilename()', function () {
+
+        it('generates a random file path', function (done) {
+
+            var result = Hoek.uniqueFilename('./test/modules');
+
+            expect(result).to.exist;
+            expect(result).to.be.a('string');
+            expect(result).to.contain('test/modules');
+            done();
+        });
+
+        it('is random enough to use in fast loops', function (done) {
+
+            var results = [];
+
+            for (var i = 0; i < 10; ++i) {
+                results[i] = Hoek.uniqueFilename('./test/modules');
+            }
+
+            var filter = results.filter(function (item, index, array) {
+
+                return array.indexOf(item) === index;
+            });
+
+            expect(filter.length).to.equal(10);
+            expect(results.length).to.equal(10);
+            done();
+
+        });
+
+        it('combines the random elements with a supplied character', function (done) {
+
+            var result = Hoek.uniqueFilename('./test', 'txt');
+
+            expect(result).to.contain('test/');
+            expect(result).to.contain('.txt');
+
+            done();
+        });
+
+        it('accepts extensions with a "." in it', function (done) {
+
+            var result = Hoek.uniqueFilename('./test', '.mp3');
+
+            expect(result).to.contain('test/');
+            expect(result).to.contain('.mp3');
+
+            done();
+        });
+    });
 });
