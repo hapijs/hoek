@@ -1563,5 +1563,15 @@ describe('Hoek', function () {
 
             done();
         });
+
+        it('accepts extensions with a "." in it', function (done) {
+
+            var result = Hoek.uniqueFilename('./test', '.mp3');
+
+            expect(result).to.contain('test/');
+            expect(result).to.contain('.mp3');
+
+            done();
+        });
     });
 });
