@@ -854,6 +854,12 @@ describe('reach()', function () {
         expect(Hoek.reach(obj, 'q', {default: 'defaultValue'})).to.equal('defaultValue');
         done();
     });
+
+    it('allows a falsey value to be used as the default value', function (done) {
+
+        expect(Hoek.reach(obj, 'q', {default: ''})).to.equal('');
+        done();
+    });
 });
 
 describe('callStack()', function () {
