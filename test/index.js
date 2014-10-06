@@ -1394,6 +1394,22 @@ describe('inherits()', function () {
     });
 });
 
+describe('format()', function () {
+
+    it('exists', function (done) {
+
+        expect(Hoek.format).to.exist;
+        expect(typeof Hoek.format).to.equal('function');
+        done();
+    });
+
+    it('is a reference to Util.format', function (done) {
+
+        expect(Hoek.format('hello %s', 'world')).to.equal('hello world');
+        done();
+    });
+});
+
 describe('transform()', function () {
 
     var source = {
