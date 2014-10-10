@@ -2,6 +2,7 @@
 
 var Fs = require('fs');
 var Lab = require('lab');
+var Net = require('net');
 var Path = require('path');
 var Hoek = require('../lib');
 
@@ -268,6 +269,29 @@ describe('clone()', function () {
         expect(copy.a.value).to.equal(5);
         expect(copy.a.b()).to.equal('c');
         expect(obj.a).to.equal(copy.a);
+        done();
+    });
+
+    it('clones an object with property getter without executing it', function (done) {
+
+        var obj = {};
+        var value = 1;
+        var execCount = 0;
+
+        Object.defineProperty(obj, 'test', {
+            enumerable: true,
+            configurable: true,
+            get: function () {
+
+                ++execCount;
+                return value;
+            }
+        });
+
+        var copy = Hoek.clone(obj);
+        expect(execCount).to.equal(0);
+        expect(copy.test).to.equal(1);
+        expect(execCount).to.equal(1);
         done();
     });
 });
