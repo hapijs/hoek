@@ -2,7 +2,6 @@
 
 var Fs = require('fs');
 var Lab = require('lab');
-var Net = require('net');
 var Path = require('path');
 var Hoek = require('../lib');
 
