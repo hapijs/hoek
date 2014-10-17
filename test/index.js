@@ -308,7 +308,7 @@ describe('merge()', function () {
             c: {
                 d: 1
             },
-            d: [{ e: 1}]
+            d: [{ e: 1 }]
         };
 
         Hoek.merge(target, source);
@@ -669,6 +669,104 @@ describe('applyToDefaultsWithShallow()', function () {
     });
 });
 
+describe('deep()', function () {
+
+    it('compares simple values', function (done) {
+
+        expect(Hoek.deep('x', 'x')).to.be.true;
+        expect(Hoek.deep('x', 'y')).to.be.false;
+        expect(Hoek.deep('x1', 'x')).to.be.false;
+        expect(Hoek.deep(-0, +0)).to.be.false;
+        expect(Hoek.deep(-0, -0)).to.be.true;
+        expect(Hoek.deep(+0, +0)).to.be.true;
+        expect(Hoek.deep(1, 1)).to.be.true;
+        expect(Hoek.deep(0, 0)).to.be.true;
+        expect(Hoek.deep(-1, 1)).to.be.true;
+        done();
+    });
+
+    it('compares empty structures', function (done) {
+
+        expect(Hoek.deep([], [])).to.be.true;
+        expect(Hoek.deep({}, {})).to.be.true;
+        expect(Hoek.deep([], {})).to.be.false;
+        done();
+    });
+
+    it('compares empty arguments object', function (done) {
+
+        var compare = function () {
+
+            expect(Hoek.deep([], arguments)).to.be.false;
+        };
+
+        compare();
+        done();
+    });
+
+    it('compares empty arguments objects', function (done) {
+
+        var compare = function () {
+
+            var arg1 = arguments;
+
+            var inner = function () {
+
+                expect(Hoek.deep(arg1, arguments)).to.be.true;
+            };
+
+            inner();
+        };
+
+        compare();
+        done();
+    });
+
+    it('compares dates', function (done) {
+
+        expect(Hoek.deep(new Date(), new Date())).to.be.true;
+        expect(Hoek.deep(new Date(100), new Date(101))).to.be.false;
+        expect(Hoek.deep(new Date(), {})).to.be.false;
+        done();
+    });
+
+    it('compares regular expressions', function (done) {
+
+        expect(Hoek.deep(/\s/, new RegExp('\\\s'))).to.be.true;
+        expect(Hoek.deep(/\s/g, /\s/g)).to.be.true;
+        expect(Hoek.deep(/a/, {})).to.be.false;
+        expect(Hoek.deep(/\s/g, /\s/i)).to.be.false;
+        expect(Hoek.deep(/a/g, /b/g)).to.be.false;
+        done();
+    });
+
+    it('compares arrays', function (done) {
+
+        expect(Hoek.deep([1, 2, 3], [1, 2, 3])).to.be.true;
+        expect(Hoek.deep([1, 2, 3], [1, 3, 2])).to.be.false;
+        expect(Hoek.deep([1, 2, 3], [1, 2])).to.be.false;
+        done();
+    });
+
+    it('compares buffers', function (done) {
+
+        expect(Hoek.deep(new Buffer([1, 2, 3]), new Buffer([1, 2, 3]))).to.be.true;
+        expect(Hoek.deep(new Buffer([1, 2, 3]), new Buffer([1, 3, 2]))).to.be.false;
+        expect(Hoek.deep(new Buffer([1, 2, 3]), new Buffer([1, 2]))).to.be.false;
+        expect(Hoek.deep(new Buffer([1, 2, 3]), {})).to.be.false;
+        expect(Hoek.deep(new Buffer([1, 2, 3]), [1, 2, 3])).to.be.false;
+        done();
+    });
+
+    it('compares objects', function (done) {
+
+        //expect(Hoek.deep({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).to.be.true;
+        expect(Hoek.deep({ foo: 'bar' }, { foo: 'baz' })).to.be.false;
+        //expect(Hoek.deep({ foo: { bar: 'foo' } }, { foo: { bar: 'baz' } })).to.be.false;
+        done();
+    });
+});
+
 describe('unique()', function () {
 
     it('should ensure uniqueness within array of objects based on subkey', function (done) {
@@ -868,19 +966,19 @@ describe('reach()', function () {
 
     it('will return a default value if property is not found', function (done) {
 
-        expect(Hoek.reach(obj, 'a.b.q', {default: 'defaultValue'})).to.equal('defaultValue');
+        expect(Hoek.reach(obj, 'a.b.q', { default: 'defaultValue' })).to.equal('defaultValue');
         done();
     });
 
     it('will return a default value if path is not found', function (done) {
 
-        expect(Hoek.reach(obj, 'q', {default: 'defaultValue'})).to.equal('defaultValue');
+        expect(Hoek.reach(obj, 'q', { default: 'defaultValue' })).to.equal('defaultValue');
         done();
     });
 
     it('allows a falsey value to be used as the default value', function (done) {
 
-        expect(Hoek.reach(obj, 'q', {default: ''})).to.equal('');
+        expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
         done();
     });
 });
