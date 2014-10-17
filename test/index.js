@@ -308,7 +308,7 @@ describe('merge()', function () {
             c: {
                 d: 1
             },
-            d: [{ e: 1}]
+            d: [{ e: 1 }]
         };
 
         Hoek.merge(target, source);
@@ -669,6 +669,194 @@ describe('applyToDefaultsWithShallow()', function () {
     });
 });
 
+describe('deepEqual()', function () {
+
+    it('compares simple values', function (done) {
+
+        expect(Hoek.deepEqual('x', 'x')).to.be.true;
+        expect(Hoek.deepEqual('x', 'y')).to.be.false;
+        expect(Hoek.deepEqual('x1', 'x')).to.be.false;
+        expect(Hoek.deepEqual(-0, +0)).to.be.false;
+        expect(Hoek.deepEqual(-0, -0)).to.be.true;
+        expect(Hoek.deepEqual(+0, +0)).to.be.true;
+        expect(Hoek.deepEqual(+0, -0)).to.be.false;
+        expect(Hoek.deepEqual(1, 1)).to.be.true;
+        expect(Hoek.deepEqual(0, 0)).to.be.true;
+        expect(Hoek.deepEqual(-1, 1)).to.be.false;
+        expect(Hoek.deepEqual(NaN, 0)).to.be.false;
+        expect(Hoek.deepEqual(NaN, NaN)).to.be.true;
+        done();
+    });
+
+    it('compares different types', function (done) {
+
+        expect(Hoek.deepEqual([], 5)).to.be.false;
+        expect(Hoek.deepEqual(5, [])).to.be.false;
+        expect(Hoek.deepEqual({}, null)).to.be.false;
+        expect(Hoek.deepEqual(null, {})).to.be.false;
+        expect(Hoek.deepEqual('abc', {})).to.be.false;
+        expect(Hoek.deepEqual({}, 'abc')).to.be.false;
+        done();
+    });
+
+    it('compares empty structures', function (done) {
+
+        expect(Hoek.deepEqual([], [])).to.be.true;
+        expect(Hoek.deepEqual({}, {})).to.be.true;
+        expect(Hoek.deepEqual([], {})).to.be.false;
+        done();
+    });
+
+    it('compares empty arguments object', function (done) {
+
+        var compare = function () {
+
+            expect(Hoek.deepEqual([], arguments)).to.be.false;
+        };
+
+        compare();
+        done();
+    });
+
+    it('compares empty arguments objects', function (done) {
+
+        var compare = function () {
+
+            var arg1 = arguments;
+
+            var inner = function () {
+
+                expect(Hoek.deepEqual(arg1, arguments)).to.be.true;
+            };
+
+            inner();
+        };
+
+        compare();
+        done();
+    });
+
+    it('compares dates', function (done) {
+
+        expect(Hoek.deepEqual(new Date(), new Date())).to.be.true;
+        expect(Hoek.deepEqual(new Date(100), new Date(101))).to.be.false;
+        expect(Hoek.deepEqual(new Date(), {})).to.be.false;
+        done();
+    });
+
+    it('compares regular expressions', function (done) {
+
+        expect(Hoek.deepEqual(/\s/, new RegExp('\\\s'))).to.be.true;
+        expect(Hoek.deepEqual(/\s/g, /\s/g)).to.be.true;
+        expect(Hoek.deepEqual(/a/, {})).to.be.false;
+        expect(Hoek.deepEqual(/\s/g, /\s/i)).to.be.false;
+        expect(Hoek.deepEqual(/a/g, /b/g)).to.be.false;
+        done();
+    });
+
+    it('compares arrays', function (done) {
+
+        expect(Hoek.deepEqual([1, 2, 3], [1, 2, 3])).to.be.true;
+        expect(Hoek.deepEqual([1, 2, 3], [1, 3, 2])).to.be.false;
+        expect(Hoek.deepEqual([1, 2, 3], [1, 2])).to.be.false;
+        done();
+    });
+
+    it('compares buffers', function (done) {
+
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2, 3]))).to.be.true;
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 3, 2]))).to.be.false;
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2]))).to.be.false;
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), {})).to.be.false;
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), [1, 2, 3])).to.be.false;
+        done();
+    });
+
+    it('compares objects', function (done) {
+
+        expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).to.be.true;
+        expect(Hoek.deepEqual({ foo: 'bar' }, { foo: 'baz' })).to.be.false;
+        expect(Hoek.deepEqual({ foo: { bar: 'foo' } }, { foo: { bar: 'baz' } })).to.be.false;
+        done();
+    });
+
+    it('handles circular dependency', function (done) {
+
+        var a = {};
+        a.x = a;
+
+        var b = Hoek.clone(a);
+        expect(Hoek.deepEqual(a, b)).to.equal.true;
+        done();
+    });
+
+    it('compares an object with property getter without executing it', function (done) {
+
+        var obj = {};
+        var value = 1;
+        var execCount = 0;
+
+        Object.defineProperty(obj, 'test', {
+            enumerable: true,
+            configurable: true,
+            get: function () {
+
+                ++execCount;
+                return value;
+            }
+        });
+
+        var copy = Hoek.clone(obj);
+        expect(Hoek.deepEqual(obj, copy)).to.equal.true;
+        expect(execCount).to.equal(0);
+        expect(copy.test).to.equal(1);
+        expect(execCount).to.equal(1);
+        done();
+    });
+
+    it('compares objects with property getters', function (done) {
+
+        var obj = {};
+        Object.defineProperty(obj, 'test', {
+            enumerable: true,
+            configurable: true,
+            get: function () { return 1; }
+        });
+
+        var ref = {};
+        Object.defineProperty(ref, 'test', {
+            enumerable: true,
+            configurable: true,
+            get: function () { return 2; }
+        });
+
+        expect(Hoek.deepEqual(obj, ref)).to.equal.false;
+        done();
+    });
+
+    it('compared object prototypes', function (done) {
+
+        var Obj = function () {
+
+            this.a = 5;
+        };
+
+        Obj.prototype.b = function () { return this.a; };
+
+        var Ref = function () {
+
+            this.a = 5;
+        };
+
+        Ref.prototype.b = function () { return this.a; };
+
+        expect(Hoek.deepEqual(new Obj(), new Ref())).to.equal.false;
+        expect(Hoek.deepEqual(new Obj(), new Obj())).to.equal.true;
+        expect(Hoek.deepEqual(new Ref(), new Ref())).to.equal.true;
+        done();
+    });
+});
+
 describe('unique()', function () {
 
     it('should ensure uniqueness within array of objects based on subkey', function (done) {
@@ -868,19 +1056,19 @@ describe('reach()', function () {
 
     it('will return a default value if property is not found', function (done) {
 
-        expect(Hoek.reach(obj, 'a.b.q', {default: 'defaultValue'})).to.equal('defaultValue');
+        expect(Hoek.reach(obj, 'a.b.q', { default: 'defaultValue' })).to.equal('defaultValue');
         done();
     });
 
     it('will return a default value if path is not found', function (done) {
 
-        expect(Hoek.reach(obj, 'q', {default: 'defaultValue'})).to.equal('defaultValue');
+        expect(Hoek.reach(obj, 'q', { default: 'defaultValue' })).to.equal('defaultValue');
         done();
     });
 
     it('allows a falsey value to be used as the default value', function (done) {
 
-        expect(Hoek.reach(obj, 'q', {default: ''})).to.equal('');
+        expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
         done();
     });
 });

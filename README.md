@@ -15,6 +15,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [merge](#mergetarget-source-isnulloverride-ismergearrays "merge")
   * [applyToDefaults](#applytodefaultsdefaults-options "applyToDefaults")
   * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
+  * [deepEqual](#deepequala-b "deepEqual")
   * [unique](#uniquearray-key "unique")
   * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
@@ -172,6 +173,14 @@ var defaults = {
 var options = { server: { port: 8080 } };
 
 var config = Hoek.applyToDefaults(defaults, options); // results in { server: { port: 8080 }, name: 'example' }
+```
+
+### deepEqual(b, a)
+
+Performs a deep comparison of the two values including support for circular dependencies, prototype, and properties.
+
+```javascript
+Hoek.deepEqual({ a: [1, 2], b: 'string', c: { d: true } }, { a: [1, 2], b: 'string', c: { d: true } });
 ```
 
 ### unique(array, key)
