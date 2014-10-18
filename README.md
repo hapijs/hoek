@@ -19,6 +19,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [unique](#uniquearray-key "unique")
   * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
+  * [contain](#containref-values-options "contain")
   * [flatten](#flattenarray-target "flatten")
   * [reach](#reachobj-chain-options "reach")
   * [transform](#transformobj-transform-options "transform")
@@ -221,6 +222,28 @@ var array1 = [1, 2, 3];
 var array2 = [1, 4, 5];
 
 var newArray = Hoek.intersect(array1, array2); // results in [1]
+```
+
+### contain(ref, values, [options])
+
+Tests if the reference value contains the provided values where:
+- `ref` - the reference string, array, or object.
+- `values` - a single or array of values to find within the `ref` value. If `ref` is an object, `values` can be a key name,
+  an array of key names, or an object with key-value pairs to compare.
+- `options` - an optional object with the following optional settings:
+    - `deep` - if `true`, performed a deep comparison of the values.
+    - `once` - if `true`, allows only one occurrence of each value.
+    - `only` - if `true`, does not allow values not explicitly listed.
+    - `part` - if `true`, allows partial match of the values (at least one must always match).
+
+Note: comparing a string to overlapping values will result in failed comparison (e.g. `contain('abc', ['ab', 'bc'])`).
+Also, if an object key's value does not match the provided value, `false` is returned even when `part` is specified.
+
+```javascript
+Hoek.contain('aaa', 'a', { only: true });							// true
+Hoek.contain([{ a: 1 }], [{ a: 1 }], { deep: true });				// true
+Hoek.contain([1, 2, 2], [1, 2], { once: true });					// false
+Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true }); // true
 ```
 
 ### flatten(array, [target])
