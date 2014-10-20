@@ -433,7 +433,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('should combine an empty object with a non-empty object', function (done) {
+    it('combines an empty object with a non-empty object', function (done) {
 
         var a = {};
         var b = nestedObj;
@@ -444,7 +444,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('should override values in target', function (done) {
+    it('overrides values in target', function (done) {
 
         var a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
         var b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
@@ -459,7 +459,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('should override values in target (flip)', function (done) {
+    it('overrides values in target (flip)', function (done) {
 
         var a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
         var b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
@@ -756,9 +756,11 @@ describe('deepEqual()', function () {
 
     it('compares arrays', function (done) {
 
+        expect(Hoek.deepEqual([[1]], [[1]])).to.be.true;
         expect(Hoek.deepEqual([1, 2, 3], [1, 2, 3])).to.be.true;
         expect(Hoek.deepEqual([1, 2, 3], [1, 3, 2])).to.be.false;
         expect(Hoek.deepEqual([1, 2, 3], [1, 2])).to.be.false;
+        expect(Hoek.deepEqual([1], [1])).to.be.true;
         done();
     });
 
@@ -786,7 +788,7 @@ describe('deepEqual()', function () {
         a.x = a;
 
         var b = Hoek.clone(a);
-        expect(Hoek.deepEqual(a, b)).to.equal.true;
+        expect(Hoek.deepEqual(a, b)).to.be.true;
         done();
     });
 
@@ -807,7 +809,7 @@ describe('deepEqual()', function () {
         });
 
         var copy = Hoek.clone(obj);
-        expect(Hoek.deepEqual(obj, copy)).to.equal.true;
+        expect(Hoek.deepEqual(obj, copy)).to.be.true;
         expect(execCount).to.equal(0);
         expect(copy.test).to.equal(1);
         expect(execCount).to.equal(1);
@@ -830,7 +832,7 @@ describe('deepEqual()', function () {
             get: function () { return 2; }
         });
 
-        expect(Hoek.deepEqual(obj, ref)).to.equal.false;
+        expect(Hoek.deepEqual(obj, ref)).to.be.false;
         done();
     });
 
@@ -850,16 +852,16 @@ describe('deepEqual()', function () {
 
         Ref.prototype.b = function () { return this.a; };
 
-        expect(Hoek.deepEqual(new Obj(), new Ref())).to.equal.false;
-        expect(Hoek.deepEqual(new Obj(), new Obj())).to.equal.true;
-        expect(Hoek.deepEqual(new Ref(), new Ref())).to.equal.true;
+        expect(Hoek.deepEqual(new Obj(), new Ref())).to.be.false;
+        expect(Hoek.deepEqual(new Obj(), new Obj())).to.be.true;
+        expect(Hoek.deepEqual(new Ref(), new Ref())).to.be.true;
         done();
     });
 });
 
 describe('unique()', function () {
 
-    it('should ensure uniqueness within array of objects based on subkey', function (done) {
+    it('ensures uniqueness within array of objects based on subkey', function (done) {
 
         var a = Hoek.unique(dupsArray, 'x');
         expect(a).to.deep.equal(reducedDupsArray);
@@ -882,7 +884,7 @@ describe('mapToObject()', function () {
         done();
     });
 
-    it('should convert basic array to existential object', function (done) {
+    it('converts basic array to existential object', function (done) {
 
         var keys = [1, 2, 3, 4];
         var a = Hoek.mapToObject(keys);
@@ -892,7 +894,7 @@ describe('mapToObject()', function () {
         done();
     });
 
-    it('should convert array of objects to existential object', function (done) {
+    it('converts array of objects to existential object', function (done) {
 
         var keys = [{ x: 1 }, { x: 2 }, { x: 3 }, { y: 4 }];
         var subkey = 'x';
@@ -944,6 +946,74 @@ describe('intersect()', function () {
         var array2 = [5, 4, 5, 6, 7];
         var common = Hoek.intersect(Hoek.mapToObject(array1), array2);
         expect(common.length).to.equal(2);
+        done();
+    });
+});
+
+describe('contain()', function () {
+
+    it('tests strings', function (done) {
+
+        expect(Hoek.contain('abc', 'ab')).to.be.true;
+        expect(Hoek.contain('abc', 'abc', { only: true })).to.be.true;
+        expect(Hoek.contain('aaa', 'a', { only: true })).to.be.true;
+        expect(Hoek.contain('abc', 'b', { once: true })).to.be.true;
+        expect(Hoek.contain('abc', ['a', 'c'])).to.be.true;
+        expect(Hoek.contain('abc', ['a', 'd'], { part: true })).to.be.true;
+
+        expect(Hoek.contain('abc', 'ac')).to.be.false;
+        expect(Hoek.contain('abcd', 'abc', { only: true })).to.be.false;
+        expect(Hoek.contain('aab', 'a', { only: true })).to.be.false;
+        expect(Hoek.contain('abb', 'b', { once: true })).to.be.false;
+        expect(Hoek.contain('abc', ['a', 'd'])).to.be.false;
+        expect(Hoek.contain('abc', ['ab', 'bc'])).to.be.false;                      // Overlapping values not supported
+        done();
+    });
+
+    it('tests arrays', function (done) {
+
+        expect(Hoek.contain([1, 2, 3], 1)).to.be.true;
+        expect(Hoek.contain([{ a: 1 }], { a: 1 }, { deep: true })).to.be.true;
+        expect(Hoek.contain([1, 2, 3], [1, 2])).to.be.true;
+        expect(Hoek.contain([{ a: 1 }], [{ a: 1 }], { deep: true })).to.be.true;
+        expect(Hoek.contain([1, 1, 2], [1, 2], { only: true })).to.be.true;
+        expect(Hoek.contain([1, 2], [1, 2], { once: true })).to.be.true;
+        expect(Hoek.contain([1, 2, 3], [1, 4], { part: true })).to.be.true;
+        expect(Hoek.contain([[1], [2]], [[1]], { deep: true })).to.be.true;
+
+        expect(Hoek.contain([1, 2, 3], 4)).to.be.false;
+        expect(Hoek.contain([{ a: 1 }], { a: 2 }, { deep: true })).to.be.false;
+        expect(Hoek.contain([{ a: 1 }], { a: 1 })).to.be.false;
+        expect(Hoek.contain([1, 2, 3], [4, 5])).to.be.false;
+        expect(Hoek.contain([[3], [2]], [[1]])).to.be.false;
+        expect(Hoek.contain([[1], [2]], [[1]])).to.be.false;
+        expect(Hoek.contain([{ a: 1 }], [{ a: 2 }], { deep: true })).to.be.false;
+        expect(Hoek.contain([1, 3, 2], [1, 2], { only: true })).to.be.false;
+        expect(Hoek.contain([1, 2, 2], [1, 2], { once: true })).to.be.false;
+        expect(Hoek.contain([0, 2, 3], [1, 4], { part: true })).to.be.false;
+        done();
+    });
+
+    it('tests objects', function (done) {
+
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'a')).to.be.true;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'c'])).to.be.true;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'b', 'c'], { only: true })).to.be.true;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1 })).to.be.true;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, c: 3 })).to.be.true;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true })).to.be.true;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }, { only: true })).to.be.true;
+        expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] }, { deep: true })).to.be.true;
+
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'd')).to.be.false;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'd'])).to.be.false;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3, d: 4 }, ['a', 'b', 'c'], { only: true })).to.be.false;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2 })).to.be.false;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2, b: 2 }, { part: true })).to.be.false;             // part does not ignore bad value
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 3 })).to.be.false;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 })).to.be.false;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 }, { only: true })).to.be.false;
+        expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] })).to.be.false;
         done();
     });
 });
@@ -1093,7 +1163,7 @@ describe('displayStack ()', function () {
         done();
     });
 
-    it('should include constructor functions correctly', function (done) {
+    it('includes constructor functions correctly', function (done) {
 
         var Something = function (next) {
 
@@ -1111,7 +1181,7 @@ describe('displayStack ()', function () {
 
 describe('abort()', function () {
 
-    it('should exit process when not in test mode', function (done) {
+    it('exits process when not in test mode', function (done) {
 
         var env = process.env.NODE_ENV;
         var write = process.stdout.write;
@@ -1132,7 +1202,7 @@ describe('abort()', function () {
         Hoek.abort('Boom');
     });
 
-    it('should throw when not in test mode and abortThrow is true', function (done) {
+    it('throws when not in test mode and abortThrow is true', function (done) {
 
         var env = process.env.NODE_ENV;
         process.env.NODE_ENV = 'nottatest';
@@ -1150,7 +1220,7 @@ describe('abort()', function () {
         done();
     });
 
-    it('should respect hideStack argument', function (done) {
+    it('respects hideStack argument', function (done) {
 
         var env = process.env.NODE_ENV;
         var write = process.stdout.write;
@@ -1203,7 +1273,7 @@ describe('abort()', function () {
         done();
     });
 
-    it('should default to showing stack', function (done) {
+    it('defaults to showing stack', function (done) {
 
         var env = process.env.NODE_ENV;
         var write = process.stdout.write;
@@ -1231,7 +1301,7 @@ describe('abort()', function () {
 
 describe('assert()', function () {
 
-    it('should throw an Error when using assert in a test', function (done) {
+    it('throws an Error when using assert in a test', function (done) {
 
         var fn = function () {
 
@@ -1242,7 +1312,7 @@ describe('assert()', function () {
         done();
     });
 
-    it('should throw an Error when using assert in a test with no message', function (done) {
+    it('throws an Error when using assert in a test with no message', function (done) {
 
         var fn = function () {
 
@@ -1253,7 +1323,7 @@ describe('assert()', function () {
         done();
     });
 
-    it('should throw an Error when using assert in a test with multipart message', function (done) {
+    it('throws an Error when using assert in a test with multipart message', function (done) {
 
         var fn = function () {
 
@@ -1264,7 +1334,18 @@ describe('assert()', function () {
         done();
     });
 
-    it('should throw an Error when using assert in a test with object message', function (done) {
+    it('throws an Error when using assert in a test with multipart message (empty)', function (done) {
+
+        var fn = function () {
+
+            Hoek.assert(false, 'This', 'is', '', 'my message');
+        };
+
+        expect(fn).to.throw('This is my message');
+        done();
+    });
+
+    it('throws an Error when using assert in a test with object message', function (done) {
 
         var fn = function () {
 
@@ -1275,7 +1356,7 @@ describe('assert()', function () {
         done();
     });
 
-    it('should throw an Error when using assert in a test with error object message', function (done) {
+    it('throws an Error when using assert in a test with error object message', function (done) {
 
         var fn = function () {
 
@@ -1315,7 +1396,7 @@ describe('Bench', function () {
 
 describe('escapeRegex()', function () {
 
-    it('should escape all special regular expression characters', function (done) {
+    it('escapes all special regular expression characters', function (done) {
 
         var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');
         expect(a).to.equal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
@@ -1409,14 +1490,14 @@ describe('escapeHeaderAttribute()', function () {
         done();
     });
 
-    it('should escape all special HTTP header attribute characters', function (done) {
+    it('escapes all special HTTP header attribute characters', function (done) {
 
         var a = Hoek.escapeHeaderAttribute('I said go!!!#"' + String.fromCharCode(92));
         expect(a).to.equal('I said go!!!#\\"\\\\');
         done();
     });
 
-    it('should throw on large unicode characters', function (done) {
+    it('throws on large unicode characters', function (done) {
 
         var fn = function () {
 
@@ -1427,7 +1508,7 @@ describe('escapeHeaderAttribute()', function () {
         done();
     });
 
-    it('should throw on CRLF to prevent response splitting', function (done) {
+    it('throws on CRLF to prevent response splitting', function (done) {
 
         var fn = function () {
 
@@ -1441,7 +1522,7 @@ describe('escapeHeaderAttribute()', function () {
 
 describe('escapeHtml()', function () {
 
-    it('should escape all special HTML characters', function (done) {
+    it('escapes all special HTML characters', function (done) {
 
         var a = Hoek.escapeHtml('&<>"\'`');
         expect(a).to.equal('&amp;&lt;&gt;&quot;&#x27;&#x60;');
