@@ -433,7 +433,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('should combine an empty object with a non-empty object', function (done) {
+    it('combines an empty object with a non-empty object', function (done) {
 
         var a = {};
         var b = nestedObj;
@@ -444,7 +444,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('should override values in target', function (done) {
+    it('overrides values in target', function (done) {
 
         var a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
         var b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
@@ -459,7 +459,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('should override values in target (flip)', function (done) {
+    it('overrides values in target (flip)', function (done) {
 
         var a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
         var b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
@@ -861,7 +861,7 @@ describe('deepEqual()', function () {
 
 describe('unique()', function () {
 
-    it('should ensure uniqueness within array of objects based on subkey', function (done) {
+    it('ensures uniqueness within array of objects based on subkey', function (done) {
 
         var a = Hoek.unique(dupsArray, 'x');
         expect(a).to.deep.equal(reducedDupsArray);
@@ -884,7 +884,7 @@ describe('mapToObject()', function () {
         done();
     });
 
-    it('should convert basic array to existential object', function (done) {
+    it('converts basic array to existential object', function (done) {
 
         var keys = [1, 2, 3, 4];
         var a = Hoek.mapToObject(keys);
@@ -894,7 +894,7 @@ describe('mapToObject()', function () {
         done();
     });
 
-    it('should convert array of objects to existential object', function (done) {
+    it('converts array of objects to existential object', function (done) {
 
         var keys = [{ x: 1 }, { x: 2 }, { x: 3 }, { y: 4 }];
         var subkey = 'x';
@@ -1163,7 +1163,7 @@ describe('displayStack ()', function () {
         done();
     });
 
-    it('should include constructor functions correctly', function (done) {
+    it('includes constructor functions correctly', function (done) {
 
         var Something = function (next) {
 
@@ -1181,7 +1181,7 @@ describe('displayStack ()', function () {
 
 describe('abort()', function () {
 
-    it('should exit process when not in test mode', function (done) {
+    it('exits process when not in test mode', function (done) {
 
         var env = process.env.NODE_ENV;
         var write = process.stdout.write;
@@ -1202,7 +1202,7 @@ describe('abort()', function () {
         Hoek.abort('Boom');
     });
 
-    it('should throw when not in test mode and abortThrow is true', function (done) {
+    it('throws when not in test mode and abortThrow is true', function (done) {
 
         var env = process.env.NODE_ENV;
         process.env.NODE_ENV = 'nottatest';
@@ -1220,7 +1220,7 @@ describe('abort()', function () {
         done();
     });
 
-    it('should respect hideStack argument', function (done) {
+    it('respects hideStack argument', function (done) {
 
         var env = process.env.NODE_ENV;
         var write = process.stdout.write;
@@ -1273,7 +1273,7 @@ describe('abort()', function () {
         done();
     });
 
-    it('should default to showing stack', function (done) {
+    it('defaults to showing stack', function (done) {
 
         var env = process.env.NODE_ENV;
         var write = process.stdout.write;
@@ -1301,7 +1301,7 @@ describe('abort()', function () {
 
 describe('assert()', function () {
 
-    it('should throw an Error when using assert in a test', function (done) {
+    it('throws an Error when using assert in a test', function (done) {
 
         var fn = function () {
 
@@ -1312,7 +1312,7 @@ describe('assert()', function () {
         done();
     });
 
-    it('should throw an Error when using assert in a test with no message', function (done) {
+    it('throws an Error when using assert in a test with no message', function (done) {
 
         var fn = function () {
 
@@ -1323,7 +1323,7 @@ describe('assert()', function () {
         done();
     });
 
-    it('should throw an Error when using assert in a test with multipart message', function (done) {
+    it('throws an Error when using assert in a test with multipart message', function (done) {
 
         var fn = function () {
 
@@ -1334,7 +1334,18 @@ describe('assert()', function () {
         done();
     });
 
-    it('should throw an Error when using assert in a test with object message', function (done) {
+    it('throws an Error when using assert in a test with multipart message (empty)', function (done) {
+
+        var fn = function () {
+
+            Hoek.assert(false, 'This', 'is', '', 'my message');
+        };
+
+        expect(fn).to.throw('This is my message');
+        done();
+    });
+
+    it('throws an Error when using assert in a test with object message', function (done) {
 
         var fn = function () {
 
@@ -1345,7 +1356,7 @@ describe('assert()', function () {
         done();
     });
 
-    it('should throw an Error when using assert in a test with error object message', function (done) {
+    it('throws an Error when using assert in a test with error object message', function (done) {
 
         var fn = function () {
 
@@ -1385,7 +1396,7 @@ describe('Bench', function () {
 
 describe('escapeRegex()', function () {
 
-    it('should escape all special regular expression characters', function (done) {
+    it('escapes all special regular expression characters', function (done) {
 
         var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');
         expect(a).to.equal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
@@ -1479,14 +1490,14 @@ describe('escapeHeaderAttribute()', function () {
         done();
     });
 
-    it('should escape all special HTTP header attribute characters', function (done) {
+    it('escapes all special HTTP header attribute characters', function (done) {
 
         var a = Hoek.escapeHeaderAttribute('I said go!!!#"' + String.fromCharCode(92));
         expect(a).to.equal('I said go!!!#\\"\\\\');
         done();
     });
 
-    it('should throw on large unicode characters', function (done) {
+    it('throws on large unicode characters', function (done) {
 
         var fn = function () {
 
@@ -1497,7 +1508,7 @@ describe('escapeHeaderAttribute()', function () {
         done();
     });
 
-    it('should throw on CRLF to prevent response splitting', function (done) {
+    it('throws on CRLF to prevent response splitting', function (done) {
 
         var fn = function () {
 
@@ -1511,7 +1522,7 @@ describe('escapeHeaderAttribute()', function () {
 
 describe('escapeHtml()', function () {
 
-    it('should escape all special HTML characters', function (done) {
+    it('escapes all special HTML characters', function (done) {
 
         var a = Hoek.escapeHtml('&<>"\'`');
         expect(a).to.equal('&amp;&lt;&gt;&quot;&#x27;&#x60;');
