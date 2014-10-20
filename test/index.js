@@ -902,6 +902,25 @@ describe('mapToObject()', function () {
     });
 });
 
+describe('difference()', function () {
+
+    it('returns the difference in objects of two arrays', function (done) {
+
+        var array1 = [1, 2, 3, 4, 4, 5, 5];
+        var array2 = [5, 4, 5, 6, 7];
+        var difference = Hoek.difference(array1, array2);
+        expect(difference).to.deep.equal([1, 2, 3, 6, 7]);
+        done();
+    });
+
+    it('returns an empty array if either input is null', function (done) {
+
+        expect(Hoek.difference([1], null).length).to.equal(0);
+        expect(Hoek.difference(null, [1]).length).to.equal(0);
+        done();
+    });
+});
+
 describe('intersect()', function () {
 
     it('returns the common objects of two arrays', function (done) {

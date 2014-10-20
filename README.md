@@ -223,6 +223,18 @@ var array2 = [1, 4, 5];
 var newArray = Hoek.intersect(array1, array2); // results in [1]
 ```
 
+### difference(array1, array2)
+
+Find the different unique items in two arrays
+
+```javascript
+
+var array1 = [1, 2, 3];
+var array2 = [1, 4, 5];
+
+var newArray = Hoek.difference(array1, array2); // results in [2, 3, 4, 5]
+```
+
 ### flatten(array, [target])
 
 Flatten an array
