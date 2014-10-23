@@ -836,7 +836,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compared object prototypes', function (done) {
+    it('compares object prototypes', function (done) {
 
         var Obj = function () {
 
@@ -855,6 +855,19 @@ describe('deepEqual()', function () {
         expect(Hoek.deepEqual(new Obj(), new Ref())).to.be.false;
         expect(Hoek.deepEqual(new Obj(), new Obj())).to.be.true;
         expect(Hoek.deepEqual(new Ref(), new Ref())).to.be.true;
+        done();
+    });
+
+    it('compares plain objects', function (done) {
+
+        var a = Object.create(null);
+        var b = Object.create(null);
+
+        a.b = 'c';
+        b.b = 'c';
+
+        expect(Hoek.deepEqual(a, b)).to.be.true;
+        expect(Hoek.deepEqual(a, { b: 'c' })).to.be.false;
         done();
     });
 });
