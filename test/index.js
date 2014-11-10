@@ -293,6 +293,54 @@ describe('clone()', function () {
         expect(execCount).to.equal(1);
         done();
     });
+
+    it('clones an object with property getter and setter', function (done) {
+
+        var obj = {
+            _test: 0
+        };
+
+        Object.defineProperty(obj, 'test', {
+            enumerable: true,
+            configurable: true,
+            get: function () {
+
+                return this._test;
+            },
+            set: function (value) {
+
+                this._test = value - 1;
+            }
+        });
+
+        var copy = Hoek.clone(obj);
+        expect(copy.test).to.equal(0);
+        copy.test = 5;
+        expect(copy.test).to.equal(4);
+        done();
+    });
+
+    it('clones an object with only property setter', function (done) {
+
+        var obj = {
+            _test: 0
+        };
+
+        Object.defineProperty(obj, 'test', {
+            enumerable: true,
+            configurable: true,
+            set: function (value) {
+
+                this._test = value - 1;
+            }
+        });
+
+        var copy = Hoek.clone(obj);
+        expect(copy._test).to.equal(0);
+        copy.test = 5;
+        expect(copy._test).to.equal(4);
+        done();
+    });
 });
 
 describe('merge()', function () {
@@ -1894,6 +1942,43 @@ describe('uniqueFilename()', function () {
         expect(result).to.contain('test/');
         expect(result).to.contain('.mp3');
 
+        done();
+    });
+});
+
+describe('stringify()', function (done) {
+
+    it('converts object to string', function (done) {
+
+        var obj = { a: 1 };
+        expect(Hoek.stringify(obj)).to.equal('{"a":1}');
+        done();
+    });
+
+    it('returns error in result string', function (done) {
+
+        var obj = { a: 1 };
+        obj.b = obj;
+        expect(Hoek.stringify(obj)).to.equal('[Cannot display object: Converting circular structure to JSON]');
+        done();
+    });
+});
+
+describe('shallow()', function (done) {
+
+    it('shallow copies an object', function (done) {
+
+        var obj = {
+            a: 5,
+            b: {
+                c: 6
+            }
+        };
+
+        var shallow = Hoek.shallow(obj);
+        expect(shallow).to.not.equal(obj);
+        expect(shallow).to.deep.equal(obj);
+        expect(shallow.b).to.equal(obj.b);
         done();
     });
 });
