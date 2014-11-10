@@ -23,6 +23,8 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [flatten](#flattenarray-target "flatten")
   * [reach](#reachobj-chain-options "reach")
   * [transform](#transformobj-transform-options "transform")
+  * [shallow](#shallowobj "shallow")
+  * [stringify](#stringifyobj "stringify")
 * [Timer](#timer "Timer")
 * [Bench](#bench "Bench")
 * [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
@@ -311,6 +313,27 @@ var result = Hoek.transform(source, {
 //     },
 //     title: 'Warehouse'
 // }
+```
+
+### shallow(obj)
+
+Performs a shallow copy by copying the references of all the top level children where:
+- `obj` - the object to be copied.
+
+```javascript
+var shallow = Hoek.shallow({ a: { b: 1 } });
+```
+
+### stringify(obj)
+
+Converts an object to string using the built-in `JSON.stringify()` method with the difference that any errors are caught
+and reported back in the form of the returned string. Used as a shortcut for displaying information to the console (e.g. in
+error message) without the need to worry about invalid conversion.
+
+```javascript
+var a = {};
+a.b = a;
+Hoek.stringify(a);		// Returns '[Cannot display object: Converting circular structure to JSON]'
 ```
 
 # Timer

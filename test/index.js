@@ -1945,3 +1945,40 @@ describe('uniqueFilename()', function () {
         done();
     });
 });
+
+describe('stringify()', function (done) {
+
+    it('converts object to string', function (done) {
+
+        var obj = { a: 1 };
+        expect(Hoek.stringify(obj)).to.equal('{"a":1}');
+        done();
+    });
+
+    it('returns error in result string', function (done) {
+
+        var obj = { a: 1 };
+        obj.b = obj;
+        expect(Hoek.stringify(obj)).to.equal('[Cannot display object: Converting circular structure to JSON]');
+        done();
+    });
+});
+
+describe('shallow()', function (done) {
+
+    it('shallow copies an object', function (done) {
+
+        var obj = {
+            a: 5,
+            b: {
+                c: 6
+            }
+        };
+
+        var shallow = Hoek.shallow(obj);
+        expect(shallow).to.not.equal(obj);
+        expect(shallow).to.deep.equal(obj);
+        expect(shallow.b).to.equal(obj.b);
+        done();
+    });
+});
