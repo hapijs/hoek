@@ -293,6 +293,54 @@ describe('clone()', function () {
         expect(execCount).to.equal(1);
         done();
     });
+
+    it('clones an object with property getter and setter', function (done) {
+
+        var obj = {
+            _test: 0
+        };
+
+        Object.defineProperty(obj, 'test', {
+            enumerable: true,
+            configurable: true,
+            get: function () {
+
+                return this._test;
+            },
+            set: function (value) {
+
+                this._test = value - 1;
+            }
+        });
+
+        var copy = Hoek.clone(obj);
+        expect(copy.test).to.equal(0);
+        copy.test = 5;
+        expect(copy.test).to.equal(4);
+        done();
+    });
+
+    it('clones an object with only property setter', function (done) {
+
+        var obj = {
+            _test: 0
+        };
+
+        Object.defineProperty(obj, 'test', {
+            enumerable: true,
+            configurable: true,
+            set: function (value) {
+
+                this._test = value - 1;
+            }
+        });
+
+        var copy = Hoek.clone(obj);
+        expect(copy._test).to.equal(0);
+        copy.test = 5;
+        expect(copy._test).to.equal(4);
+        done();
+    });
 });
 
 describe('merge()', function () {
