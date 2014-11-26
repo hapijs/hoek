@@ -1,9 +1,10 @@
 // Load modules
 
 var Fs = require('fs');
-var Lab = require('lab');
 var Path = require('path');
+var Code = require('code');
 var Hoek = require('../lib');
+var Lab = require('lab');
 
 
 // Declare internals
@@ -14,9 +15,9 @@ var internals = {};
 // Test shortcuts
 
 var lab = exports.lab = Lab.script();
-var expect = Lab.expect;
 var describe = lab.experiment;
 var it = lab.test;
+var expect = Code.expect;
 
 
 var nestedObj = {
@@ -70,10 +71,10 @@ describe('clone()', function () {
         var a = {};
         a.x = a;
 
-        var test = (function () {
+        var test = function () {
 
             var b = Hoek.clone(a);
-        });
+        };
 
         expect(test).to.not.throw();
         done();
@@ -98,18 +99,7 @@ describe('clone()', function () {
 
     it('clones an object with a null prototype', function (done) {
 
-        var obj = {};
-        obj.__proto__ = null;
-        var b = Hoek.clone(obj);
-
-        expect(b).to.deep.equal(obj);
-        done();
-    });
-
-    it('clones an object with an undefined prototype', function (done) {
-
-        var obj = {};
-        obj.__proto__ = undefined;
+        var obj = Object.create(null);
         var b = Hoek.clone(obj);
 
         expect(b).to.deep.equal(obj);
@@ -383,7 +373,7 @@ describe('merge()', function () {
 
         Hoek.merge(b, a);
         expect(a.x[0]).to.equal('n');
-        expect(a.x.n).to.not.exist;
+        expect(a.x.n).to.not.exist();
         done();
     });
 
@@ -402,7 +392,7 @@ describe('merge()', function () {
 
         Hoek.merge(a, b);
         expect(a.x.n).to.equal('1');
-        expect(a.x[0]).to.not.exist;
+        expect(a.x[0]).to.not.exist();
         done();
     });
 
@@ -424,7 +414,7 @@ describe('merge()', function () {
     it('does not throw if source is undefined', function (done) {
 
         var a = {};
-        var b = undefined;
+        var b;
         var c = null;
 
         expect(function () {
@@ -713,6 +703,90 @@ describe('applyToDefaultsWithShallow()', function () {
         expect(merged.a).to.not.equal(defaults.a);
         expect(merged.c).to.not.equal(options.c);
         expect(merged.c).to.not.equal(defaults.c);
+        done();
+    });
+
+    it('shallow copies the listed keys in the defaults', function (done) {
+
+        var defaults = {
+            a: {
+                b: 1
+            }
+        };
+
+        var merged = Hoek.applyToDefaultsWithShallow(defaults, {}, ['a']);
+        expect(merged.a).to.equal(defaults.a);
+        done();
+    });
+
+    it('shallow copies the listed keys in the defaults (true)', function (done) {
+
+        var defaults = {
+            a: {
+                b: 1
+            }
+        };
+
+        var merged = Hoek.applyToDefaultsWithShallow(defaults, true, ['a']);
+        expect(merged.a).to.equal(defaults.a);
+        done();
+    });
+
+    it('returns null on false', function (done) {
+
+        var defaults = {
+            a: {
+                b: 1
+            }
+        };
+
+        var merged = Hoek.applyToDefaultsWithShallow(defaults, false, ['a']);
+        expect(merged).to.equal(null);
+        done();
+    });
+
+    it('throws on missing defaults', function (done) {
+
+        expect(function () {
+
+            Hoek.applyToDefaultsWithShallow(null, {}, ['a']);
+        }).to.throw('Invalid defaults value: must be an object');
+        done();
+    });
+
+    it('throws on invalid defaults', function (done) {
+
+        expect(function () {
+
+            Hoek.applyToDefaultsWithShallow('abc', {}, ['a']);
+        }).to.throw('Invalid defaults value: must be an object');
+        done();
+    });
+
+    it('throws on invalid options', function (done) {
+
+        expect(function () {
+
+            Hoek.applyToDefaultsWithShallow({}, 'abc', ['a']);
+        }).to.throw('Invalid options value: must be true, falsy or an object');
+        done();
+    });
+
+    it('throws on missing keys', function (done) {
+
+        expect(function () {
+
+            Hoek.applyToDefaultsWithShallow({}, true);
+        }).to.throw('Invalid keys');
+        done();
+    });
+
+    it('throws on invalid keys', function (done) {
+
+        expect(function () {
+
+            Hoek.applyToDefaultsWithShallow({}, true, 'a');
+        }).to.throw('Invalid keys');
         done();
     });
 });
@@ -1530,13 +1604,13 @@ describe('Base64Url', function () {
 
         it('returns error on undefined input', function (done) {
 
-            expect(Hoek.base64urlDecode().message).to.exist;
+            expect(Hoek.base64urlDecode().message).to.exist();
             done();
         });
 
         it('returns error on invalid input', function (done) {
 
-            expect(Hoek.base64urlDecode('*').message).to.exist;
+            expect(Hoek.base64urlDecode('*').message).to.exist();
             done();
         });
     });
@@ -1737,7 +1811,7 @@ describe('ignore()', function () {
 
     it('exists', function (done) {
 
-        expect(Hoek.ignore).to.exist;
+        expect(Hoek.ignore).to.exist();
         expect(typeof Hoek.ignore).to.equal('function');
         done();
     });
@@ -1747,7 +1821,7 @@ describe('inherits()', function () {
 
     it('exists', function (done) {
 
-        expect(Hoek.inherits).to.exist;
+        expect(Hoek.inherits).to.exist();
         expect(typeof Hoek.inherits).to.equal('function');
         done();
     });
@@ -1757,7 +1831,7 @@ describe('format()', function () {
 
     it('exists', function (done) {
 
-        expect(Hoek.format).to.exist;
+        expect(Hoek.format).to.exist();
         expect(typeof Hoek.format).to.equal('function');
         done();
     });
@@ -1781,7 +1855,7 @@ describe('transform()', function () {
             province: null
         },
         title: 'Warehouse',
-        state: 'CA',
+        state: 'CA'
     };
 
     it('transforms an object based on the input object', function (done) {
@@ -1870,7 +1944,7 @@ describe('transform()', function () {
             var result = Hoek.transform(source, {
                 lineOne: {}
             });
-        }).to.throw('All mappings must be "." delineated string');
+        }).to.throw('All mappings must be "." delineated strings');
 
         done();
     });
@@ -1885,9 +1959,17 @@ describe('transform()', function () {
         done();
     });
 
-    it('is safe to pass null or undefined', function (done) {
+    it('is safe to pass null', function (done) {
 
         var result = Hoek.transform(null, {});
+        expect(result).to.deep.equal({});
+
+        done();
+    });
+
+    it('is safe to pass undefined', function (done) {
+
+        var result = Hoek.transform(undefined, {});
         expect(result).to.deep.equal({});
 
         done();
@@ -1900,8 +1982,8 @@ describe('uniqueFilename()', function () {
 
         var result = Hoek.uniqueFilename('./test/modules');
 
-        expect(result).to.exist;
-        expect(result).to.be.a('string');
+        expect(result).to.exist();
+        expect(result).to.be.a.string();
         expect(result).to.contain('test/modules');
         done();
     });
