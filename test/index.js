@@ -795,37 +795,37 @@ describe('deepEqual()', function () {
 
     it('compares simple values', function (done) {
 
-        expect(Hoek.deepEqual('x', 'x')).to.be.true;
-        expect(Hoek.deepEqual('x', 'y')).to.be.false;
-        expect(Hoek.deepEqual('x1', 'x')).to.be.false;
-        expect(Hoek.deepEqual(-0, +0)).to.be.false;
-        expect(Hoek.deepEqual(-0, -0)).to.be.true;
-        expect(Hoek.deepEqual(+0, +0)).to.be.true;
-        expect(Hoek.deepEqual(+0, -0)).to.be.false;
-        expect(Hoek.deepEqual(1, 1)).to.be.true;
-        expect(Hoek.deepEqual(0, 0)).to.be.true;
-        expect(Hoek.deepEqual(-1, 1)).to.be.false;
-        expect(Hoek.deepEqual(NaN, 0)).to.be.false;
-        expect(Hoek.deepEqual(NaN, NaN)).to.be.true;
+        expect(Hoek.deepEqual('x', 'x')).to.be.true();
+        expect(Hoek.deepEqual('x', 'y')).to.be.false();
+        expect(Hoek.deepEqual('x1', 'x')).to.be.false();
+        expect(Hoek.deepEqual(-0, +0)).to.be.false();
+        expect(Hoek.deepEqual(-0, -0)).to.be.true();
+        expect(Hoek.deepEqual(+0, +0)).to.be.true();
+        expect(Hoek.deepEqual(+0, -0)).to.be.false();
+        expect(Hoek.deepEqual(1, 1)).to.be.true();
+        expect(Hoek.deepEqual(0, 0)).to.be.true();
+        expect(Hoek.deepEqual(-1, 1)).to.be.false();
+        expect(Hoek.deepEqual(NaN, 0)).to.be.false();
+        expect(Hoek.deepEqual(NaN, NaN)).to.be.true();
         done();
     });
 
     it('compares different types', function (done) {
 
-        expect(Hoek.deepEqual([], 5)).to.be.false;
-        expect(Hoek.deepEqual(5, [])).to.be.false;
-        expect(Hoek.deepEqual({}, null)).to.be.false;
-        expect(Hoek.deepEqual(null, {})).to.be.false;
-        expect(Hoek.deepEqual('abc', {})).to.be.false;
-        expect(Hoek.deepEqual({}, 'abc')).to.be.false;
+        expect(Hoek.deepEqual([], 5)).to.be.false();
+        expect(Hoek.deepEqual(5, [])).to.be.false();
+        expect(Hoek.deepEqual({}, null)).to.be.false();
+        expect(Hoek.deepEqual(null, {})).to.be.false();
+        expect(Hoek.deepEqual('abc', {})).to.be.false();
+        expect(Hoek.deepEqual({}, 'abc')).to.be.false();
         done();
     });
 
     it('compares empty structures', function (done) {
 
-        expect(Hoek.deepEqual([], [])).to.be.true;
-        expect(Hoek.deepEqual({}, {})).to.be.true;
-        expect(Hoek.deepEqual([], {})).to.be.false;
+        expect(Hoek.deepEqual([], [])).to.be.true();
+        expect(Hoek.deepEqual({}, {})).to.be.true();
+        expect(Hoek.deepEqual([], {})).to.be.false();
         done();
     });
 
@@ -833,7 +833,7 @@ describe('deepEqual()', function () {
 
         var compare = function () {
 
-            expect(Hoek.deepEqual([], arguments)).to.be.false;
+            expect(Hoek.deepEqual([], arguments)).to.be.false();
         };
 
         compare();
@@ -848,7 +848,7 @@ describe('deepEqual()', function () {
 
             var inner = function () {
 
-                expect(Hoek.deepEqual(arg1, arguments)).to.be.true;
+                expect(Hoek.deepEqual(arg1, arguments)).to.be.true();
             };
 
             inner();
@@ -860,47 +860,47 @@ describe('deepEqual()', function () {
 
     it('compares dates', function (done) {
 
-        expect(Hoek.deepEqual(new Date(), new Date())).to.be.true;
-        expect(Hoek.deepEqual(new Date(100), new Date(101))).to.be.false;
-        expect(Hoek.deepEqual(new Date(), {})).to.be.false;
+        expect(Hoek.deepEqual(new Date(), new Date())).to.be.true();
+        expect(Hoek.deepEqual(new Date(100), new Date(101))).to.be.false();
+        expect(Hoek.deepEqual(new Date(), {})).to.be.false();
         done();
     });
 
     it('compares regular expressions', function (done) {
 
-        expect(Hoek.deepEqual(/\s/, new RegExp('\\\s'))).to.be.true;
-        expect(Hoek.deepEqual(/\s/g, /\s/g)).to.be.true;
-        expect(Hoek.deepEqual(/a/, {})).to.be.false;
-        expect(Hoek.deepEqual(/\s/g, /\s/i)).to.be.false;
-        expect(Hoek.deepEqual(/a/g, /b/g)).to.be.false;
+        expect(Hoek.deepEqual(/\s/, new RegExp('\\\s'))).to.be.true();
+        expect(Hoek.deepEqual(/\s/g, /\s/g)).to.be.true();
+        expect(Hoek.deepEqual(/a/, {})).to.be.false();
+        expect(Hoek.deepEqual(/\s/g, /\s/i)).to.be.false();
+        expect(Hoek.deepEqual(/a/g, /b/g)).to.be.false();
         done();
     });
 
     it('compares arrays', function (done) {
 
-        expect(Hoek.deepEqual([[1]], [[1]])).to.be.true;
-        expect(Hoek.deepEqual([1, 2, 3], [1, 2, 3])).to.be.true;
-        expect(Hoek.deepEqual([1, 2, 3], [1, 3, 2])).to.be.false;
-        expect(Hoek.deepEqual([1, 2, 3], [1, 2])).to.be.false;
-        expect(Hoek.deepEqual([1], [1])).to.be.true;
+        expect(Hoek.deepEqual([[1]], [[1]])).to.be.true();
+        expect(Hoek.deepEqual([1, 2, 3], [1, 2, 3])).to.be.true();
+        expect(Hoek.deepEqual([1, 2, 3], [1, 3, 2])).to.be.false();
+        expect(Hoek.deepEqual([1, 2, 3], [1, 2])).to.be.false();
+        expect(Hoek.deepEqual([1], [1])).to.be.true();
         done();
     });
 
     it('compares buffers', function (done) {
 
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2, 3]))).to.be.true;
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 3, 2]))).to.be.false;
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2]))).to.be.false;
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), {})).to.be.false;
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), [1, 2, 3])).to.be.false;
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2, 3]))).to.be.true();
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 3, 2]))).to.be.false();
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2]))).to.be.false();
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), {})).to.be.false();
+        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), [1, 2, 3])).to.be.false();
         done();
     });
 
     it('compares objects', function (done) {
 
-        expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).to.be.true;
-        expect(Hoek.deepEqual({ foo: 'bar' }, { foo: 'baz' })).to.be.false;
-        expect(Hoek.deepEqual({ foo: { bar: 'foo' } }, { foo: { bar: 'baz' } })).to.be.false;
+        expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).to.be.true();
+        expect(Hoek.deepEqual({ foo: 'bar' }, { foo: 'baz' })).to.be.false();
+        expect(Hoek.deepEqual({ foo: { bar: 'foo' } }, { foo: { bar: 'baz' } })).to.be.false();
         done();
     });
 
@@ -910,7 +910,7 @@ describe('deepEqual()', function () {
         a.x = a;
 
         var b = Hoek.clone(a);
-        expect(Hoek.deepEqual(a, b)).to.be.true;
+        expect(Hoek.deepEqual(a, b)).to.be.true();
         done();
     });
 
@@ -931,7 +931,7 @@ describe('deepEqual()', function () {
         });
 
         var copy = Hoek.clone(obj);
-        expect(Hoek.deepEqual(obj, copy)).to.be.true;
+        expect(Hoek.deepEqual(obj, copy)).to.be.true();
         expect(execCount).to.equal(0);
         expect(copy.test).to.equal(1);
         expect(execCount).to.equal(1);
@@ -954,7 +954,7 @@ describe('deepEqual()', function () {
             get: function () { return 2; }
         });
 
-        expect(Hoek.deepEqual(obj, ref)).to.be.false;
+        expect(Hoek.deepEqual(obj, ref)).to.be.false();
         done();
     });
 
@@ -974,9 +974,9 @@ describe('deepEqual()', function () {
 
         Ref.prototype.b = function () { return this.a; };
 
-        expect(Hoek.deepEqual(new Obj(), new Ref())).to.be.false;
-        expect(Hoek.deepEqual(new Obj(), new Obj())).to.be.true;
-        expect(Hoek.deepEqual(new Ref(), new Ref())).to.be.true;
+        expect(Hoek.deepEqual(new Obj(), new Ref())).to.be.false();
+        expect(Hoek.deepEqual(new Obj(), new Obj())).to.be.true();
+        expect(Hoek.deepEqual(new Ref(), new Ref())).to.be.true();
         done();
     });
 
@@ -988,8 +988,8 @@ describe('deepEqual()', function () {
         a.b = 'c';
         b.b = 'c';
 
-        expect(Hoek.deepEqual(a, b)).to.be.true;
-        expect(Hoek.deepEqual(a, { b: 'c' })).to.be.false;
+        expect(Hoek.deepEqual(a, b)).to.be.true();
+        expect(Hoek.deepEqual(a, { b: 'c' })).to.be.false();
         done();
     });
 });
@@ -1089,66 +1089,66 @@ describe('contain()', function () {
 
     it('tests strings', function (done) {
 
-        expect(Hoek.contain('abc', 'ab')).to.be.true;
-        expect(Hoek.contain('abc', 'abc', { only: true })).to.be.true;
-        expect(Hoek.contain('aaa', 'a', { only: true })).to.be.true;
-        expect(Hoek.contain('abc', 'b', { once: true })).to.be.true;
-        expect(Hoek.contain('abc', ['a', 'c'])).to.be.true;
-        expect(Hoek.contain('abc', ['a', 'd'], { part: true })).to.be.true;
+        expect(Hoek.contain('abc', 'ab')).to.be.true();
+        expect(Hoek.contain('abc', 'abc', { only: true })).to.be.true();
+        expect(Hoek.contain('aaa', 'a', { only: true })).to.be.true();
+        expect(Hoek.contain('abc', 'b', { once: true })).to.be.true();
+        expect(Hoek.contain('abc', ['a', 'c'])).to.be.true();
+        expect(Hoek.contain('abc', ['a', 'd'], { part: true })).to.be.true();
 
-        expect(Hoek.contain('abc', 'ac')).to.be.false;
-        expect(Hoek.contain('abcd', 'abc', { only: true })).to.be.false;
-        expect(Hoek.contain('aab', 'a', { only: true })).to.be.false;
-        expect(Hoek.contain('abb', 'b', { once: true })).to.be.false;
-        expect(Hoek.contain('abc', ['a', 'd'])).to.be.false;
-        expect(Hoek.contain('abc', ['ab', 'bc'])).to.be.false;                      // Overlapping values not supported
+        expect(Hoek.contain('abc', 'ac')).to.be.false();
+        expect(Hoek.contain('abcd', 'abc', { only: true })).to.be.false();
+        expect(Hoek.contain('aab', 'a', { only: true })).to.be.false();
+        expect(Hoek.contain('abb', 'b', { once: true })).to.be.false();
+        expect(Hoek.contain('abc', ['a', 'd'])).to.be.false();
+        expect(Hoek.contain('abc', ['ab', 'bc'])).to.be.false();                      // Overlapping values not supported
         done();
     });
 
     it('tests arrays', function (done) {
 
-        expect(Hoek.contain([1, 2, 3], 1)).to.be.true;
-        expect(Hoek.contain([{ a: 1 }], { a: 1 }, { deep: true })).to.be.true;
-        expect(Hoek.contain([1, 2, 3], [1, 2])).to.be.true;
-        expect(Hoek.contain([{ a: 1 }], [{ a: 1 }], { deep: true })).to.be.true;
-        expect(Hoek.contain([1, 1, 2], [1, 2], { only: true })).to.be.true;
-        expect(Hoek.contain([1, 2], [1, 2], { once: true })).to.be.true;
-        expect(Hoek.contain([1, 2, 3], [1, 4], { part: true })).to.be.true;
-        expect(Hoek.contain([[1], [2]], [[1]], { deep: true })).to.be.true;
+        expect(Hoek.contain([1, 2, 3], 1)).to.be.true();
+        expect(Hoek.contain([{ a: 1 }], { a: 1 }, { deep: true })).to.be.true();
+        expect(Hoek.contain([1, 2, 3], [1, 2])).to.be.true();
+        expect(Hoek.contain([{ a: 1 }], [{ a: 1 }], { deep: true })).to.be.true();
+        expect(Hoek.contain([1, 1, 2], [1, 2], { only: true })).to.be.true();
+        expect(Hoek.contain([1, 2], [1, 2], { once: true })).to.be.true();
+        expect(Hoek.contain([1, 2, 3], [1, 4], { part: true })).to.be.true();
+        expect(Hoek.contain([[1], [2]], [[1]], { deep: true })).to.be.true();
 
-        expect(Hoek.contain([1, 2, 3], 4)).to.be.false;
-        expect(Hoek.contain([{ a: 1 }], { a: 2 }, { deep: true })).to.be.false;
-        expect(Hoek.contain([{ a: 1 }], { a: 1 })).to.be.false;
-        expect(Hoek.contain([1, 2, 3], [4, 5])).to.be.false;
-        expect(Hoek.contain([[3], [2]], [[1]])).to.be.false;
-        expect(Hoek.contain([[1], [2]], [[1]])).to.be.false;
-        expect(Hoek.contain([{ a: 1 }], [{ a: 2 }], { deep: true })).to.be.false;
-        expect(Hoek.contain([1, 3, 2], [1, 2], { only: true })).to.be.false;
-        expect(Hoek.contain([1, 2, 2], [1, 2], { once: true })).to.be.false;
-        expect(Hoek.contain([0, 2, 3], [1, 4], { part: true })).to.be.false;
+        expect(Hoek.contain([1, 2, 3], 4)).to.be.false();
+        expect(Hoek.contain([{ a: 1 }], { a: 2 }, { deep: true })).to.be.false();
+        expect(Hoek.contain([{ a: 1 }], { a: 1 })).to.be.false();
+        expect(Hoek.contain([1, 2, 3], [4, 5])).to.be.false();
+        expect(Hoek.contain([[3], [2]], [[1]])).to.be.false();
+        expect(Hoek.contain([[1], [2]], [[1]])).to.be.false();
+        expect(Hoek.contain([{ a: 1 }], [{ a: 2 }], { deep: true })).to.be.false();
+        expect(Hoek.contain([1, 3, 2], [1, 2], { only: true })).to.be.false();
+        expect(Hoek.contain([1, 2, 2], [1, 2], { once: true })).to.be.false();
+        expect(Hoek.contain([0, 2, 3], [1, 4], { part: true })).to.be.false();
         done();
     });
 
     it('tests objects', function (done) {
 
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'a')).to.be.true;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'c'])).to.be.true;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'b', 'c'], { only: true })).to.be.true;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1 })).to.be.true;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, c: 3 })).to.be.true;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true })).to.be.true;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }, { only: true })).to.be.true;
-        expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] }, { deep: true })).to.be.true;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'a')).to.be.true();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'c'])).to.be.true();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'b', 'c'], { only: true })).to.be.true();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1 })).to.be.true();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, c: 3 })).to.be.true();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true })).to.be.true();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }, { only: true })).to.be.true();
+        expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] }, { deep: true })).to.be.true();
 
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'd')).to.be.false;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'd'])).to.be.false;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3, d: 4 }, ['a', 'b', 'c'], { only: true })).to.be.false;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2 })).to.be.false;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2, b: 2 }, { part: true })).to.be.false;             // part does not ignore bad value
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 3 })).to.be.false;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 })).to.be.false;
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 }, { only: true })).to.be.false;
-        expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] })).to.be.false;
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'd')).to.be.false();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'd'])).to.be.false();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3, d: 4 }, ['a', 'b', 'c'], { only: true })).to.be.false();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2 })).to.be.false();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2, b: 2 }, { part: true })).to.be.false();             // part does not ignore bad value
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 3 })).to.be.false();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 })).to.be.false();
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 }, { only: true })).to.be.false();
+        expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] })).to.be.false();
         done();
     });
 });
