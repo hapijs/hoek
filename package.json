@@ -1,7 +1,7 @@
 {
   "name": "hoek",
   "description": "General purpose node utilities",
-  "version": "2.9.0",
+  "version": "2.9.1",
   "repository": "git://github.com/hapijs/hoek",
   "main": "index",
   "keywords": [
@@ -12,7 +12,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "lab": "4.x.x"
+    "code": "1.x.x",
+    "lab": "5.x.x"
   },
   "scripts": {
     "test": "make test-cov"
