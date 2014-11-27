@@ -706,6 +706,144 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
+    it('shallow copies the nested keys (override)', function (done) {
+
+        var defaults = {
+            a: {
+                b: 5
+            },
+            c: {
+                d: 7,
+                g: 1
+            }
+        };
+
+        var options = {
+            a: {
+                b: 4
+            },
+            c: {
+                d: 6,
+                g: {
+                    h: 8
+                }
+            }
+        };
+
+        var merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
+        expect(merged).to.deep.equal({ a: { b: 4 }, c: { d: 6, g: { h: 8 } } });
+        expect(merged.c.g).to.equal(options.c.g);
+        done();
+    });
+
+    it('shallow copies the nested keys (missing)', function (done) {
+
+        var defaults = {
+            a: {
+                b: 5
+            }
+        };
+
+        var options = {
+            a: {
+                b: 4
+            },
+            c: {
+                g: {
+                    h: 8
+                }
+            }
+        };
+
+        var merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
+        expect(merged).to.deep.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
+        expect(merged.c.g).to.equal(options.c.g);
+        done();
+    });
+
+    it('shallow copies the nested keys (override)', function (done) {
+
+        var defaults = {
+            a: {
+                b: 5
+            },
+            c: {
+                g: {
+                    d: 7
+                }
+            }
+        };
+
+        var options = {
+            a: {
+                b: 4
+            },
+            c: {
+                g: {
+                    h: 8
+                }
+            }
+        };
+
+        var merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
+        expect(merged).to.deep.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
+        expect(merged.c.g).to.equal(options.c.g);
+        done();
+    });
+
+    it('shallow copies the nested keys (deeper)', function (done) {
+
+        var defaults = {
+            a: {
+                b: 5
+            }
+        };
+
+        var options = {
+            a: {
+                b: 4
+            },
+            c: {
+                g: {
+                    r: {
+                        h: 8
+                    }
+                }
+            }
+        };
+
+        var merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g.r']);
+        expect(merged).to.deep.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
+        expect(merged.c.g.r).to.equal(options.c.g.r);
+        done();
+    });
+
+    it('shallow copies the nested keys (not present)', function (done) {
+
+        var defaults = {
+            a: {
+                b: 5
+            }
+        };
+
+        var options = {
+            a: {
+                b: 4
+            },
+            c: {
+                g: {
+                    r: {
+                        h: 8
+                    }
+                }
+            }
+        };
+
+        var merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['x.y']);
+        expect(merged).to.deep.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
+        done();
+    });
+
     it('shallow copies the listed keys in the defaults', function (done) {
 
         var defaults = {
