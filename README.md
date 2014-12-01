@@ -50,7 +50,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
 
 # Introduction
 
-The *Hoek* general purpose node utilities library is used to aid in a variety of manners. It comes with useful methods for Arrays (clone, merge, applyToDefaults), Objects (removeKeys, copy), Asserting and more.
+The *Hoek* library contains some common functions used within the hapi ecosystem. It comes with useful methods for Arrays (clone, merge, applyToDefaults), Objects (removeKeys, copy), Asserting and more.
 
 For example, to use Hoek to set configuration with default options:
 ```javascript
