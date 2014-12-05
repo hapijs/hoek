@@ -1318,10 +1318,23 @@ describe('reach()', function () {
             }
         },
         i: function () { },
-        j: null
+        j: null,
+        k: [4, 8, 9, 1]
     };
 
     obj.i.x = 5;
+
+    it('returns first value of array', function (done) {
+
+        expect(Hoek.reach(obj, 'k.0')).to.equal(4);
+        done();
+    });
+
+    it('returns last value of array using negative index', function (done) {
+
+        expect(Hoek.reach(obj, 'k.-2')).to.equal(9);
+        done();
+    });
 
     it('returns a valid member', function (done) {
 
