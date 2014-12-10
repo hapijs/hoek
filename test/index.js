@@ -1629,6 +1629,17 @@ describe('assert()', function () {
         done();
     });
 
+    it('throws an Error when using assert in a test with multipart string and error messages', function (done) {
+
+        var fn = function () {
+
+            Hoek.assert(false, 'This', 'is', new Error('spinal'), new Error('tap'));
+        };
+
+        expect(fn).to.throw('This is spinal tap');
+        done();
+    });
+
     it('throws an Error when using assert in a test with error object message', function (done) {
 
         var fn = function () {
@@ -1637,6 +1648,25 @@ describe('assert()', function () {
         };
 
         expect(fn).to.throw('This is spinal tap');
+        done();
+    });
+
+    it('throws the same Error that is passed to it if there is only one error passed', function (done) {
+        var error = new Error('ruh roh');
+        var error2 = new Error('ruh roh');
+
+        var fn = function () {
+
+            Hoek.assert(false, error);
+        };
+
+        try {
+            fn();
+        } catch (err) {
+            expect(error).to.equal(error);  // should be the same reference
+            expect(error).to.not.equal(error2); // error with the same message should not match
+        }
+
         done();
     });
 });
