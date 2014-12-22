@@ -45,6 +45,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [ignore](#ignore "ignore")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilename "uniqueFilename")
+  * [isInteger](#isInteger "isInteger")
 
 
 
@@ -514,4 +515,11 @@ Returns a randomly generated file name at the specified `path`. The result is a 
 
 ```javascript
 var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
+```
+
+### isInteger(value)
+    Check `value` to see if it is an integer.  Returns true/false.
+
+```javascript
+var result = Hoek.isInteger('23')
 ```
