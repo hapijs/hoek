@@ -518,7 +518,8 @@ var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/p
 ```
 
 ### isInteger(value)
-    Check `value` to see if it is an integer.  Returns true/false.
+
+Check `value` to see if it is an integer.  Returns true/false.
 
 ```javascript
 var result = Hoek.isInteger('23')
