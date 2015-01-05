@@ -275,12 +275,20 @@ Converts an object key chain string to reference
     - `strict` - if `true`, will throw an error on missing member, default is `false`
     - `functions` - if `true` allow traversing functions for properties. `false` will throw an error if a function is part of the chain.
 
+A chain including negative numbers will work like negative indices on an
+array.
+
 ```javascript
 
 var chain = 'a.b.c';
 var obj = {a : {b : { c : 1}}};
 
 Hoek.reach(obj, chain); // returns 1
+
+var chain = 'a.b.-1';
+var obj = {a : {b : [2,3,6]}};
+
+Hoek.reach(obj, chain); // returns 6
 ```
 
 ### transform(obj, transform, [options])
