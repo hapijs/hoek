@@ -35,7 +35,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [escapeHeaderAttribute](#escapeheaderattributeattribute "escapeHeaderAttribute")
   * [escapeRegex](#escaperegexstring "escapeRegex")
 * [Errors](#errors "Errors")
-  * [assert](#assertmessage "assert")
+  * [assert](#assertcondition-message "assert")
   * [abort](#abortmessage "abort")
   * [displayStack](#displaystackslice "displayStack")
   * [callStack](#callstackslice "callStack")
@@ -416,13 +416,22 @@ var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4
 
 # Errors
 
-### assert(message)
+### assert(condition, message)
 
 ```javascript
 
-var a = 1, b =2;
+var a = 1, b = 2;
 
-Hoek.assert(a === b, 'a should equal b');  // ABORT: a should equal b
+Hoek.assert(a === b, 'a should equal b');  // Throws 'a should equal b'
+```
+
+Note that you may also pass an already created Error object as the second parameter, and `assert` will throw that object.
+
+```javascript
+
+var a = 1, b = 2;
+
+Hoek.assert(a === b, new Error('a should equal b')); // Throws the given error object
 ```
 
 ### abort(message)
