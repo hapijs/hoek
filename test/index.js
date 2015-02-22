@@ -986,7 +986,7 @@ describe('deepEqual()', function () {
 
             var inner = function () {
 
-                expect(Hoek.deepEqual(arg1, arguments)).to.be.true();
+                expect(Hoek.deepEqual(arg1, arguments)).to.be.false(); // callee is not the same
             };
 
             inner();
