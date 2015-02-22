@@ -1130,6 +1130,15 @@ describe('deepEqual()', function () {
         expect(Hoek.deepEqual(a, { b: 'c' })).to.be.false();
         done();
     });
+
+    it('compares an object with an empty object', function (done) {
+
+        var a = { a: 1, b: 2 };
+
+        expect(Hoek.deepEqual({}, a)).to.be.false();
+        expect(Hoek.deepEqual(a, {})).to.be.false();
+        done();
+    });
 });
 
 describe('unique()', function () {
