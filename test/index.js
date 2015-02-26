@@ -331,6 +331,28 @@ describe('clone()', function () {
         expect(copy._test).to.equal(4);
         done();
     });
+
+    it('clones an object with non-enumerable properties', function (done) {
+
+        var obj = {
+            _test: 0
+        };
+
+        Object.defineProperty(obj, 'test', {
+            enumerable: false,
+            configurable: true,
+            set: function (value) {
+
+                this._test = value - 1;
+            }
+        });
+
+        var copy = Hoek.clone(obj);
+        expect(copy._test).to.equal(0);
+        copy.test = 5;
+        expect(copy._test).to.equal(4);
+        done();
+    });
 });
 
 describe('merge()', function () {
@@ -998,7 +1020,7 @@ describe('deepEqual()', function () {
 
     it('compares dates', function (done) {
 
-        expect(Hoek.deepEqual(new Date(), new Date())).to.be.true();
+        expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date(2015, 1, 1))).to.be.true();
         expect(Hoek.deepEqual(new Date(100), new Date(101))).to.be.false();
         expect(Hoek.deepEqual(new Date(), {})).to.be.false();
         done();
