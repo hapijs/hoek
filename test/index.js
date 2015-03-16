@@ -1161,6 +1161,15 @@ describe('deepEqual()', function () {
         expect(Hoek.deepEqual(a, {})).to.be.false();
         done();
     });
+
+    it('compares an object ignoring the prototype', function (done) {
+
+        var a = Object.create(null);
+        var b = {};
+
+        expect(Hoek.deepEqual(a, b, { prototype: false})).to.be.true();
+        done();
+    });
 });
 
 describe('unique()', function () {
