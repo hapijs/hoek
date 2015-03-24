@@ -179,12 +179,14 @@ var options = { server: { port: 8080 } };
 var config = Hoek.applyToDefaults(defaults, options); // results in { server: { port: 8080 }, name: 'example' }
 ```
 
-### deepEqual(b, a)
+### deepEqual(b, a, [options])
 
-Performs a deep comparison of the two values including support for circular dependencies, prototype, and properties.
+Performs a deep comparison of the two values including support for circular dependencies, prototype, and properties. To skip prototype comparisons, use `options.prototype = false`
 
 ```javascript
-Hoek.deepEqual({ a: [1, 2], b: 'string', c: { d: true } }, { a: [1, 2], b: 'string', c: { d: true } });
+Hoek.deepEqual({ a: [1, 2], b: 'string', c: { d: true } }, { a: [1, 2], b: 'string', c: { d: true } }); //results in true
+Hoek.deepEqual(Object.create(null), {}, { prototype: false }); //results in true
+Hoek.deepEqual(Object.create(null), {}); //results in false
 ```
 
 ### unique(array, key)
@@ -499,7 +501,7 @@ nextFn();
 console.log('Do this first');
 
 // Results in:
-// 
+//
 // Do this first
 // Do this later
 ```
