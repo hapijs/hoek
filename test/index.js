@@ -1172,6 +1172,13 @@ describe('unique()', function () {
         done();
     });
 
+    it('ensures uniqueness within array of objects based on combination of subkeys', function (done) {
+
+        var a = Hoek.unique(dupsArray, ['x', 'z']);
+        expect(a).to.deep.equal(reducedDupsArray);
+        done();
+    });
+
     it('removes duplicated without key', function (done) {
 
         expect(Hoek.unique([1, 2, 3, 4, 2, 1, 5])).to.deep.equal([1, 2, 3, 4, 5]);
