@@ -1170,6 +1170,29 @@ describe('deepEqual()', function () {
         expect(Hoek.deepEqual(a, b, { prototype: false})).to.be.true();
         done();
     });
+
+    it('compares complex objects', function (done) {
+
+        var a = {
+            provider: 'custom',
+            token: '456',
+            expiresIn: 3600,
+            refreshToken: undefined,
+            query: {},
+            profile: {
+                id: '1234567890',
+                name: {
+                    first: 'steve',
+                    last: 'smith'
+                },
+                headline: 'Master of the universe',
+                raw: profile
+            }
+        };
+
+        expect(Hoek.deepEqual(a, a)).to.be.true();
+        done();
+    });
 });
 
 describe('unique()', function () {
