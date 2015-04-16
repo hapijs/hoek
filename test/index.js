@@ -633,6 +633,28 @@ describe('applyToDefaults()', function () {
         expect(result.g).to.deep.equal({ h: 5 });
         done();
     });
+
+    it('applies object to defaults with null', function (done) {
+
+        var obj = {
+            a: null,
+            c: {
+                e: [4]
+            },
+            f: 0,
+            g: {
+                h: 5
+            }
+        };
+
+        var result = Hoek.applyToDefaults(defaults, obj, true);
+        expect(result.c.e).to.deep.equal([4]);
+        expect(result.a).to.equal(null);
+        expect(result.b).to.equal(2);
+        expect(result.f).to.equal(0);
+        expect(result.g).to.deep.equal({ h: 5 });
+        done();
+    });
 });
 
 describe('cloneWithShallow()', function () {
