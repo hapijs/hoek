@@ -1170,6 +1170,15 @@ describe('deepEqual()', function () {
         expect(Hoek.deepEqual(a, b, { prototype: false})).to.be.true();
         done();
     });
+
+    it('compares Error objects', function (done) {
+
+        var a = new Error('Error');
+        var b = new Error('Error');
+
+        expect(Hoek.deepEqual(a, b)).to.be.true();
+        done();
+    });
 });
 
 describe('unique()', function () {
@@ -2249,7 +2258,7 @@ describe('uniqueFilename()', function () {
     });
 });
 
-describe('stringify()', function (done) {
+describe('stringify()', function () {
 
     it('converts object to string', function (done) {
 
@@ -2267,7 +2276,7 @@ describe('stringify()', function (done) {
     });
 });
 
-describe('shallow()', function (done) {
+describe('shallow()', function () {
 
     it('shallow copies an object', function (done) {
 
