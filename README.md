@@ -13,7 +13,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [clone](#cloneobj "clone")
   * [cloneWithShallow](#clonewithshallowobj-keys "cloneWithShallow")
   * [merge](#mergetarget-source-isnulloverride-ismergearrays "merge")
-  * [applyToDefaults](#applytodefaultsdefaults-options "applyToDefaults")
+  * [applyToDefaults](#applytodefaultsdefaults-options-isnulloverride "applyToDefaults")
   * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
   * [deepEqual](#deepequala-b "deepEqual")
   * [unique](#uniquearray-key "unique")
@@ -147,7 +147,8 @@ Hoek.merge(targetArray, sourceArray);              // results in [1, 2, 3, 4, 5]
 Hoek.merge(targetArray, sourceArray, true, false); // results in [4, 5]
 ```
 
-### applyToDefaults(defaults, options)
+### applyToDefaults(defaults, options, isNullOverride)
+isNullOverride defaults to false
 
 Apply options to a copy of the defaults
 
@@ -157,6 +158,16 @@ var defaults = { host: "localhost", port: 8000 };
 var options = { port: 8080 };
 
 var config = Hoek.applyToDefaults(defaults, options); // results in { host: "localhost", port: 8080 }
+```
+
+Apply options with a null value to a copy of the defaults
+
+```javascript
+
+var defaults = { host: "localhost", port: 8000 };
+var options = { host: null, port: 8080 };
+
+var config = Hoek.applyToDefaults(defaults, options, true); // results in { host: null, port: 8080 }
 ```
 
 ### applyToDefaultsWithShallow(defaults, options, keys)
