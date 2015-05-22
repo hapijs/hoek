@@ -178,11 +178,17 @@ describe('clone()', function () {
     it('copies functions with properties', function (done) {
 
         var a = {
-            x: function () { return 1; },
+            x: function () {
+
+                return 1;
+            },
             y: {}
         };
         a.x.z = 'string in function';
-        a.x.v = function () { return 2; };
+        a.x.v = function () {
+
+            return 2;
+        };
         a.y.u = a.x;
 
         var b = Hoek.clone(a);
@@ -194,6 +200,7 @@ describe('clone()', function () {
     });
 
     it('should copy a buffer', function (done) {
+
         var tls = {
             key: new Buffer([1, 2, 3, 4, 5]),
             cert: new Buffer([1, 2, 3, 4, 5, 6, 10])
@@ -214,7 +221,10 @@ describe('clone()', function () {
             this.a = 5;
         };
 
-        Obj.prototype.b = function () { return 'c'; };
+        Obj.prototype.b = function () {
+
+            return 'c';
+        };
 
         var a = new Obj();
         var b = Hoek.clone(a);
@@ -245,7 +255,10 @@ describe('clone()', function () {
             this.value = 5;
         };
 
-        Obj.prototype.b = function () { return 'c'; };
+        Obj.prototype.b = function () {
+
+            return 'c';
+        };
         Obj.prototype.isImmutable = true;
 
         var obj = {
@@ -1126,14 +1139,20 @@ describe('deepEqual()', function () {
         Object.defineProperty(obj, 'test', {
             enumerable: true,
             configurable: true,
-            get: function () { return 1; }
+            get: function () {
+
+                return 1;
+            }
         });
 
         var ref = {};
         Object.defineProperty(ref, 'test', {
             enumerable: true,
             configurable: true,
-            get: function () { return 2; }
+            get: function () {
+
+                return 2;
+            }
         });
 
         expect(Hoek.deepEqual(obj, ref)).to.be.false();
@@ -1147,14 +1166,20 @@ describe('deepEqual()', function () {
             this.a = 5;
         };
 
-        Obj.prototype.b = function () { return this.a; };
+        Obj.prototype.b = function () {
+
+            return this.a;
+        };
 
         var Ref = function () {
 
             this.a = 5;
         };
 
-        Ref.prototype.b = function () { return this.a; };
+        Ref.prototype.b = function () {
+
+            return this.a;
+        };
 
         expect(Hoek.deepEqual(new Obj(), new Ref())).to.be.false();
         expect(Hoek.deepEqual(new Obj(), new Obj())).to.be.true();
@@ -1371,13 +1396,14 @@ describe('contain()', function () {
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 }}}, { a: { b: { c: 1 }}}, { deep: true, part: false })).to.be.false();
 
         // Getter check
-        var Foo = function(bar) {
+        var Foo = function (bar) {
 
             this.bar = bar;
         };
         Object.defineProperty(Foo.prototype, 'baz', {
             enumerable: true,
             get: function () {
+
                 return this.bar;
             }
         });
@@ -1767,6 +1793,7 @@ describe('assert()', function () {
     });
 
     it('throws the same Error that is passed to it if there is only one error passed', function (done) {
+
         var error = new Error('ruh roh');
         var error2 = new Error('ruh roh');
 
@@ -2042,7 +2069,10 @@ describe('isAbsoltePath()', function () {
     it('identifies if path is absolute with fake node support', { parallel: false }, function (done) {
 
         var orig = Path.isAbsolute;
-        Path.isAbsolute = function (path) { return path[0] === '/'; };
+        Path.isAbsolute = function (path) {
+
+            return path[0] === '/';
+        };
 
         expect(Hoek.isAbsolutePath('', 'linux')).to.equal(false);
         expect(Hoek.isAbsolutePath('a', 'linux')).to.equal(false);
@@ -2224,6 +2254,7 @@ describe('transform()', function () {
     it('only allows strings in the map', function (done) {
 
         expect(function () {
+
             var result = Hoek.transform(source, {
                 lineOne: {}
             });
