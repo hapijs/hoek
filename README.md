@@ -22,6 +22,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [contain](#containref-values-options "contain")
   * [flatten](#flattenarray-target "flatten")
   * [reach](#reachobj-chain-options "reach")
+  * [reachTemplate](#reachobj-template-options "reachTemplate")
   * [transform](#transformobj-transform-options "transform")
   * [shallow](#shallowobj "shallow")
   * [stringify](#stringifyobj "stringify")
@@ -302,6 +303,23 @@ var chain = 'a.b.-1';
 var obj = {a : {b : [2,3,6]}};
 
 Hoek.reach(obj, chain); // returns 6
+```
+
+### reachTemplate(obj, template, [options])
+
+Replaces string parameters (`{name}`) with their corresponding object key values by applying the
+(`reach()`)[#reachobj-chain-options] method where:
+
+- `obj` - the context object used for key lookup.
+- `template` - a string containing `{}` parameters.
+- `options` - optional (`reach()`)[#reachobj-chain-options] options.
+
+```javascript
+
+var chain = 'a.b.c';
+var obj = {a : {b : { c : 1}}};
+
+Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
 ```
 
 ### transform(obj, transform, [options])

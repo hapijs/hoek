@@ -259,6 +259,7 @@ describe('clone()', function () {
 
             return 'c';
         };
+
         Obj.prototype.isImmutable = true;
 
         var obj = {
@@ -1214,7 +1215,7 @@ describe('deepEqual()', function () {
         var a = Object.create(null);
         var b = {};
 
-        expect(Hoek.deepEqual(a, b, { prototype: false})).to.be.true();
+        expect(Hoek.deepEqual(a, b, { prototype: false })).to.be.true();
         done();
     });
 
@@ -1223,7 +1224,7 @@ describe('deepEqual()', function () {
         var a = [Object.create(null)];
         var b = [{}];
 
-        expect(Hoek.deepEqual(a, b, { prototype: false})).to.be.true();
+        expect(Hoek.deepEqual(a, b, { prototype: false })).to.be.true();
         done();
     });
 });
@@ -1388,18 +1389,19 @@ describe('contain()', function () {
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 })).to.be.false();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 }, { only: true })).to.be.false();
         expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] })).to.be.false();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 }}}, { a: { b: { c: 1 }}})).to.be.false();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 }}}, { a: { b: { c: 1 }}}, { deep: true })).to.be.true();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 }}}, { a: { b: { c: 1 }}}, { deep: true, only: true })).to.be.false();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 }}}, { a: { b: { c: 1 }}}, { deep: true, only: false })).to.be.true();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 }}}, { a: { b: { c: 1 }}}, { deep: true, part: true })).to.be.true();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 }}}, { a: { b: { c: 1 }}}, { deep: true, part: false })).to.be.false();
+        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } })).to.be.false();
+        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true })).to.be.true();
+        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: true })).to.be.false();
+        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: false })).to.be.true();
+        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: true })).to.be.true();
+        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: false })).to.be.false();
 
         // Getter check
         var Foo = function (bar) {
 
             this.bar = bar;
         };
+
         Object.defineProperty(Foo.prototype, 'baz', {
             enumerable: true,
             get: function () {
@@ -1410,10 +1412,10 @@ describe('contain()', function () {
 
         expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true })).to.be.true();
         expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true, part: true })).to.be.true();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' }}, { deep: true })).to.be.true();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' }}, { deep: true, only: true })).to.be.false();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' }}, { deep: true, part: false })).to.be.false();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' }}, { deep: true, part: true })).to.be.true();
+        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true })).to.be.true();
+        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, only: true })).to.be.false();
+        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).to.be.false();
+        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).to.be.true();
 
         done();
     });
@@ -1553,6 +1555,49 @@ describe('reach()', function () {
     it('allows a falsey value to be used as the default value', function (done) {
 
         expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
+        done();
+    });
+});
+
+describe('reachTemplate()', function () {
+
+    it('applies object to template', function (done) {
+
+        var obj = {
+            a: {
+                b: {
+                    c: {
+                        d: 1
+                    }
+                }
+            },
+            j: null,
+            k: [4, 8, 9, 1]
+        };
+
+        var template = '{k.0}:{k.-2}:{a.b.c.d}:{x.y}:{j}';
+
+        expect(Hoek.reachTemplate(obj, template)).to.equal('4:9:1::');
+        done();
+    });
+
+    it('applies object to template (options)', function (done) {
+
+        var obj = {
+            a: {
+                b: {
+                    c: {
+                        d: 1
+                    }
+                }
+            },
+            j: null,
+            k: [4, 8, 9, 1]
+        };
+
+        var template = '{k/0}:{k/-2}:{a/b/c/d}:{x/y}:{j}';
+
+        expect(Hoek.reachTemplate(obj, template, '/')).to.equal('4:9:1::');
         done();
     });
 });
