@@ -1237,9 +1237,83 @@ describe('unique()', function () {
         done();
     });
 
+    it('ensures uniqueness within array of objects based on combination of subkeys of different types', function (done) {
+
+        var objUniqueTypes = [{ a: '1', b: 1}, {a: 1, b: '1'}];
+        expect(Hoek.unique(objUniqueTypes)).to.deep.equal(objUniqueTypes);
+        done();
+    });
+
+    it('ensures uniqueness within array of objects based on combination of subkeys with falsey values', function (done) {
+
+        var objEmptyValues = [
+            { a: '1', b: '' },
+            { a: '', b: '1' },
+            { a: '1', b: null },
+            { a: null, b: '1' },
+            { a: '1', b: undefined },
+            { a: undefined, b: '1' },
+            { a: '1', b: NaN },
+            { a: NaN, b: '1' },
+            { a: '1', b: false },
+            { a: false, b: '1' },
+            { a: '1', b: 0 },
+            { a: 0, b: '1' }
+        ];
+        expect(Hoek.unique(objEmptyValues, ['a', 'b'])).to.deep.equal(objEmptyValues);
+        done();
+    });
+
+    it('ensures uniqueness within array of objects based on combination of subkeys with falsey values', function (done) {
+
+        var objEmptyValues = [
+            { a: '1', b: '0' },
+            { a: '0', b: '1' },
+            { a: '1', b: {} },
+            { a: {}, b: '1' },
+            { a: '1', b: [] },
+            { a: [], b: '1' },
+            { a: '1', b: function() {} },
+            { a: function() {}, b: '1' },
+            { a: '1', b: true },
+            { a: true, b: '1' },
+            { a: '1', b: 1 },
+            { a: 1, b: '1' }
+        ];
+        expect(Hoek.unique(objEmptyValues, ['a', 'b'])).to.deep.equal(objEmptyValues);
+        done();
+    });
+
+    it('ensures uniqueness within array of objects based on combination of subkeys', function (done) {
+
+        var a = Hoek.unique(dupsArray, ['x', 'z']);
+        expect(a).to.deep.equal(reducedDupsArray);
+        done();
+    });
+
     it('removes duplicated without key', function (done) {
 
         expect(Hoek.unique([1, 2, 3, 4, 2, 1, 5])).to.deep.equal([1, 2, 3, 4, 5]);
+        done();
+    });
+
+    it('ensures uniqueness within array of falsey values without key', function (done) {
+
+        var objFalseyValues = [undefined, null, '', false, NaN, 0];
+        expect(Hoek.unique(objFalseyValues)).to.deep.equal(objFalseyValues);
+        done();
+    });
+
+    it('ensures uniqueness within array of truthy values without key', function (done) {
+
+        var objTruthyValues = ['0', true, -1, {}, [], function(){}];
+        expect(Hoek.unique(objTruthyValues)).to.deep.equal(objTruthyValues);
+        done();
+    });
+
+    it('ensures uniqueness within array of items of different types without key', function (done) {
+
+        expect(Hoek.unique(['1', 1])).to.deep.equal(['1', 1]);
         done();
     });
 });

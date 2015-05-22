@@ -213,6 +213,10 @@ var newArray = Hoek.unique(array);    // results in [1,2,3,4,5,6]
 array = [{id: 1}, {id: 1}, {id: 2}];
 
 newArray = Hoek.unique(array, "id");  // results in [{id: 1}, {id: 2}]
+
+array = [{id: 1, val: 2 }, {id: 2 val 1}, {id: 2, val 1}];
+
+newArray = Hoek.unique(array, ["id", "val"]);  // results in [{id: 1, val: 2}, {id: 2, val: 1}]
 ```
 
 ### mapToObject(array, key)
