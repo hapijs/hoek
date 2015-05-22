@@ -1559,6 +1559,49 @@ describe('reach()', function () {
     });
 });
 
+describe('reachTemplate()', function () {
+
+    it('applies object to template', function (done) {
+
+        var obj = {
+            a: {
+                b: {
+                    c: {
+                        d: 1
+                    }
+                }
+            },
+            j: null,
+            k: [4, 8, 9, 1]
+        };
+
+        var template = '{k.0}:{k.-2}:{a.b.c.d}:{x.y}:{j}';
+
+        expect(Hoek.reachTemplate(obj, template)).to.equal('4:9:1::');
+        done();
+    });
+
+    it('applies object to template (options)', function (done) {
+
+        var obj = {
+            a: {
+                b: {
+                    c: {
+                        d: 1
+                    }
+                }
+            },
+            j: null,
+            k: [4, 8, 9, 1]
+        };
+
+        var template = '{k/0}:{k/-2}:{a/b/c/d}:{x/y}:{j}';
+
+        expect(Hoek.reachTemplate(obj, template, '/')).to.equal('4:9:1::');
+        done();
+    });
+});
+
 describe('callStack()', function () {
 
     it('returns the full call stack', function (done) {
