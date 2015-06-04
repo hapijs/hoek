@@ -324,7 +324,7 @@ Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
 
 ### transform(obj, transform, [options])
 
-Transforms an existing object into a new one based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options.
+Transforms an existing object into a new one based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options. The first argument can also be an array of objects. In that case the method will return an array of transformed objects. 
 
 ```javascript
 var source = {
