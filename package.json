@@ -3,7 +3,7 @@
   "description": "General purpose node utilities",
   "version": "2.14.0",
   "repository": "git://github.com/hapijs/hoek",
-  "main": "index",
+  "main": "lib/index.js",
   "keywords": [
     "utilities"
   ],
@@ -16,7 +16,8 @@
     "lab": "5.x.x"
   },
   "scripts": {
-    "test": "make test-cov"
+    "test": "lab -a code -t 100 -L",
+    "test-cov-html": "lab -a code -t 100 -L -r html -o coverage.html"
   },
   "license": "BSD-3-Clause"
 }
