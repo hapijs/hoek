@@ -2279,28 +2279,28 @@ describe('transform()', function () {
         });
 
         expect(result).to.deep.equal([{
-                person: {
-                    address: {
-                        lineOne: '123 main street',
-                        lineTwo: 'PO Box 1234',
-                        region: 'CA',
-                        zip: 3321232,
-                        location: null
-                    }
-                },
-                title: 'Warehouse'
+            person: {
+                address: {
+                    lineOne: '123 main street',
+                    lineTwo: 'PO Box 1234',
+                    region: 'CA',
+                    zip: 3321232,
+                    location: null
+                }
             },
-            {
-                person: {
-                    address: {
-                        lineOne: '456 market street',
-                        lineTwo: 'PO Box 5678',
-                        region: 'NY',
-                        zip: 9876,
-                        location: null
-                    }
-                },
-                title: 'Garage'
+            title: 'Warehouse'
+        },
+        {
+            person: {
+                address: {
+                    lineOne: '456 market street',
+                    lineTwo: 'PO Box 5678',
+                    region: 'NY',
+                    zip: 9876,
+                    location: null
+                }
+            },
+            title: 'Garage'
         }]);
 
         done();
