@@ -4,6 +4,9 @@
   "version": "2.14.0",
   "repository": "git://github.com/hapijs/hoek",
   "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "keywords": [
     "utilities"
   ],
