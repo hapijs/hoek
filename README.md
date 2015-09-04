@@ -45,8 +45,8 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
-  * [uniqueFilename](#uniquefilename "uniqueFilename")
-  * [isInteger](#isInteger "isInteger")
+  * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
+  * [isInteger](#isintegervalue "isInteger")
 
 
 
