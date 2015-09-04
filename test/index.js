@@ -2278,7 +2278,8 @@ describe('transform()', function () {
             'person.address.location': 'zip.province'
         });
 
-        expect(result).to.deep.equal([{
+        expect(result).to.deep.equal([
+            {
                 person: {
                     address: {
                         lineOne: '123 main street',
@@ -2301,7 +2302,8 @@ describe('transform()', function () {
                     }
                 },
                 title: 'Garage'
-        }]);
+            }
+        ]);
 
         done();
     });
