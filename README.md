@@ -46,6 +46,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [ignore](#ignore "ignore")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
+  * [isAbsolutePath](#isabsolutepathpath-platform "isAbsolutePath")
   * [isInteger](#isintegervalue "isInteger")
 
 
@@ -564,6 +565,13 @@ Returns a randomly generated file name at the specified `path`. The result is a 
 ```javascript
 var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
 ```
+
+### isAbsolutePath(path, [platform])
+
+Determines whether `path` is an absolute path. Returns `true` or `false`.
+
+- `path` - A file path to test for whether it is absolute or not.
+- `platform` - An optional parameter used for specifying the platform. Defaults to `process.platform`.
 
 ### isInteger(value)
 
