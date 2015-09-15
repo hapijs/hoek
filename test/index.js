@@ -1454,6 +1454,13 @@ describe('reach()', function () {
 
     obj.i.x = 5;
 
+    it('returns object itself', function (done) {
+
+        expect(Hoek.reach(obj, '')).to.equal(obj);
+        expect(Hoek.reach(obj)).to.equal(obj);
+        done();
+    });
+
     it('returns first value of array', function (done) {
 
         expect(Hoek.reach(obj, 'k.0')).to.equal(4);
