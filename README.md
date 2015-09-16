@@ -293,7 +293,7 @@ Converts an object key chain string to reference
 A chain including negative numbers will work like negative indices on an
 array.
 
-If chain is a falsy value, the object itself will be returned.
+If chain is `null`, `undefined` or `false`, the object itself will be returned.
 
 ```javascript
 

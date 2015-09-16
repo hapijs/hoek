@@ -1456,7 +1456,8 @@ describe('reach()', function () {
 
     it('returns object itself', function (done) {
 
-        expect(Hoek.reach(obj, '')).to.equal(obj);
+        expect(Hoek.reach(obj, null)).to.equal(obj);
+        expect(Hoek.reach(obj, false)).to.equal(obj);
         expect(Hoek.reach(obj)).to.equal(obj);
         done();
     });
