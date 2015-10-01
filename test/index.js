@@ -73,7 +73,7 @@ describe('clone()', function () {
 
         var test = function () {
 
-            var b = Hoek.clone(a);
+            Hoek.clone(a);
         };
 
         expect(test).to.not.throw();
@@ -585,7 +585,7 @@ describe('merge()', function () {
 
         var a = { x: new Buffer('abc') };
 
-        var b = Hoek.merge({ x: {} }, a);
+        Hoek.merge({ x: {} }, a);
         expect(a.x.toString()).to.equal('abc');
         done();
     });
@@ -1652,7 +1652,7 @@ describe('displayStack ()', function () {
             next();
         };
 
-        var something = new Something(function () {
+        new Something(function () {
 
             var stack = Hoek.displayStack();
             expect(stack[1]).to.contain('new Something');
@@ -2388,7 +2388,7 @@ describe('transform()', function () {
 
         expect(function () {
 
-            var result = Hoek.transform(source, {
+            Hoek.transform(source, {
                 lineOne: {}
             });
         }).to.throw('All mappings must be "." delineated strings');
@@ -2400,7 +2400,7 @@ describe('transform()', function () {
 
         expect(function () {
 
-            var result = Hoek.transform(NaN, {});
+            Hoek.transform(NaN, {});
         }).to.throw('Invalid source object: must be null, undefined, an object, or an array');
 
         done();
