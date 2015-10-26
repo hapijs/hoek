@@ -1,3 +1,4 @@
+'use strict';
 // Load modules
 
 var Fs = require('fs');
@@ -1059,7 +1060,7 @@ describe('deepEqual()', function () {
 
             var inner = function () {
 
-                expect(Hoek.deepEqual(arg1, arguments)).to.be.false(); // callee is not the same
+                expect(Hoek.deepEqual(arg1, arguments)).to.be.true(); // callee is not supported in strict mode, was previously false becuse callee was different
             };
 
             inner();
@@ -1631,7 +1632,7 @@ describe('callStack()', function () {
 
         var stack = Hoek.callStack();
         expect(stack[0][0]).to.contain('index.js');
-        expect(stack[0][2]).to.equal(26);
+        expect(stack[0][2]).to.equal(86);
         done();
     });
 });

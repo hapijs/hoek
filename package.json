@@ -16,7 +16,7 @@
     "lab": "6.x.x"
   },
   "scripts": {
-    "test": "lab -a code -t 100 -L",
+    "test": "lab -a code -t 100 -Lv",
     "test-cov-html": "lab -a code -t 100 -L -r html -o coverage.html"
   },
   "license": "BSD-3-Clause"
