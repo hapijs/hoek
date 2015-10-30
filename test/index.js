@@ -1,4 +1,5 @@
 'use strict';
+
 // Load modules
 
 const Fs = require('fs');
@@ -38,9 +39,9 @@ const nestedObj = {
 const dupsArray = [nestedObj, { z: 'z' }, nestedObj];
 const reducedDupsArray = [nestedObj, { z: 'z' }];
 
-describe('clone()', function () {
+describe('clone()', () => {
 
-    it('clones a nested object', function (done) {
+    it('clones a nested object', (done) => {
 
         const a = nestedObj;
         const b = Hoek.clone(a);
@@ -50,7 +51,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones a null object', function (done) {
+    it('clones a null object', (done) => {
 
         const b = Hoek.clone(null);
 
@@ -58,7 +59,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('should not convert undefined properties to null', function (done) {
+    it('should not convert undefined properties to null', (done) => {
 
         const obj = { something: undefined };
         const b = Hoek.clone(obj);
@@ -67,21 +68,19 @@ describe('clone()', function () {
         done();
     });
 
-    it('should not throw on circular reference', function (done) {
+    it('should not throw on circular reference', (done) => {
 
         const a = {};
         a.x = a;
 
-        const test = function () {
+        expect(() => {
 
             Hoek.clone(a);
-        };
-
-        expect(test).to.not.throw();
+        }).to.not.throw();
         done();
     });
 
-    it('clones circular reference', function (done) {
+    it('clones circular reference', (done) => {
 
         const x = {
             'z': new Date()
@@ -98,7 +97,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones an object with a null prototype', function (done) {
+    it('clones an object with a null prototype', (done) => {
 
         const obj = Object.create(null);
         const b = Hoek.clone(obj);
@@ -107,7 +106,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones deeply nested object', function (done) {
+    it('clones deeply nested object', (done) => {
 
         const a = {
             x: {
@@ -128,7 +127,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones arrays', function (done) {
+    it('clones arrays', (done) => {
 
         const a = [1, 2, 3];
 
@@ -138,7 +137,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('performs actual copy for shallow keys (no pass by reference)', function (done) {
+    it('performs actual copy for shallow keys (no pass by reference)', (done) => {
 
         const x = Hoek.clone(nestedObj);
         const y = Hoek.clone(nestedObj);
@@ -163,7 +162,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('performs actual copy for deep keys (no pass by reference)', function (done) {
+    it('performs actual copy for deep keys (no pass by reference)', (done) => {
 
         const x = Hoek.clone(nestedObj);
         const y = Hoek.clone(nestedObj);
@@ -176,7 +175,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('copies functions with properties', function (done) {
+    it('copies functions with properties', (done) => {
 
         const a = {
             x: function () {
@@ -200,7 +199,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('should copy a buffer', function (done) {
+    it('should copy a buffer', (done) => {
 
         const tls = {
             key: new Buffer([1, 2, 3, 4, 5]),
@@ -215,7 +214,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones an object with a prototype', function (done) {
+    it('clones an object with a prototype', (done) => {
 
         const Obj = function () {
 
@@ -236,7 +235,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('reuses cloned Date object', function (done) {
+    it('reuses cloned Date object', (done) => {
 
         const obj = {
             a: new Date()
@@ -249,7 +248,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('shallow copies an object with a prototype and isImmutable flag', function (done) {
+    it('shallow copies an object with a prototype and isImmutable flag', (done) => {
 
         const Obj = function () {
 
@@ -276,7 +275,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones an object with property getter without executing it', function (done) {
+    it('clones an object with property getter without executing it', (done) => {
 
         const obj = {};
         const value = 1;
@@ -299,7 +298,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones an object with property getter and setter', function (done) {
+    it('clones an object with property getter and setter', (done) => {
 
         const obj = {
             _test: 0
@@ -325,7 +324,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones an object with only property setter', function (done) {
+    it('clones an object with only property setter', (done) => {
 
         const obj = {
             _test: 0
@@ -347,7 +346,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones an object with non-enumerable properties', function (done) {
+    it('clones an object with non-enumerable properties', (done) => {
 
         const obj = {
             _test: 0
@@ -369,7 +368,7 @@ describe('clone()', function () {
         done();
     });
 
-    it('clones an object where getOwnPropertyDescriptor returns undefined', function (done) {
+    it('clones an object where getOwnPropertyDescriptor returns undefined', (done) => {
 
         const oldGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
         const obj = { a: 'b' };
@@ -385,9 +384,9 @@ describe('clone()', function () {
     });
 });
 
-describe('merge()', function () {
+describe('merge()', () => {
 
-    it('deep copies source items', function (done) {
+    it('deep copies source items', (done) => {
 
         const target = {
             b: 3,
@@ -410,7 +409,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('merges array over an object', function (done) {
+    it('merges array over an object', (done) => {
 
         const a = {
             x: ['n', 'm']
@@ -429,7 +428,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('merges object over an array', function (done) {
+    it('merges object over an array', (done) => {
 
         const a = {
             x: ['n', 'm']
@@ -448,13 +447,13 @@ describe('merge()', function () {
         done();
     });
 
-    it('does not throw if source is null', function (done) {
+    it('does not throw if source is null', (done) => {
 
         const a = {};
         const b = null;
         let c = null;
 
-        expect(function () {
+        expect(() => {
 
             c = Hoek.merge(a, b);
         }).to.not.throw();
@@ -463,13 +462,13 @@ describe('merge()', function () {
         done();
     });
 
-    it('does not throw if source is undefined', function (done) {
+    it('does not throw if source is undefined', (done) => {
 
         const a = {};
         const b = undefined;
         let c = null;
 
-        expect(function () {
+        expect(() => {
 
             c = Hoek.merge(a, b);
         }).to.not.throw();
@@ -478,9 +477,9 @@ describe('merge()', function () {
         done();
     });
 
-    it('throws if source is not an object', function (done) {
+    it('throws if source is not an object', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             const a = {};
             const b = 0;
@@ -490,9 +489,9 @@ describe('merge()', function () {
         done();
     });
 
-    it('throws if target is not an object', function (done) {
+    it('throws if target is not an object', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             const a = 0;
             const b = {};
@@ -502,9 +501,9 @@ describe('merge()', function () {
         done();
     });
 
-    it('throws if target is not an array and source is', function (done) {
+    it('throws if target is not an array and source is', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             const a = {};
             const b = [1, 2];
@@ -514,7 +513,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('returns the same object when merging arrays', function (done) {
+    it('returns the same object when merging arrays', (done) => {
 
         const a = [];
         const b = [1, 2];
@@ -523,7 +522,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('combines an empty object with a non-empty object', function (done) {
+    it('combines an empty object with a non-empty object', (done) => {
 
         const a = {};
         const b = nestedObj;
@@ -534,7 +533,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('overrides values in target', function (done) {
+    it('overrides values in target', (done) => {
 
         const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
         const b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
@@ -549,7 +548,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('overrides values in target (flip)', function (done) {
+    it('overrides values in target (flip)', (done) => {
 
         const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
         const b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
@@ -564,7 +563,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('retains Date properties', function (done) {
+    it('retains Date properties', (done) => {
 
         const a = { x: new Date(1378776452757) };
 
@@ -573,7 +572,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('retains Date properties when merging keys', function (done) {
+    it('retains Date properties when merging keys', (done) => {
 
         const a = { x: new Date(1378776452757) };
 
@@ -582,7 +581,7 @@ describe('merge()', function () {
         done();
     });
 
-    it('overrides Buffer', function (done) {
+    it('overrides Buffer', (done) => {
 
         const a = { x: new Buffer('abc') };
 
@@ -592,7 +591,7 @@ describe('merge()', function () {
     });
 });
 
-describe('applyToDefaults()', function () {
+describe('applyToDefaults()', () => {
 
     const defaults = {
         a: 1,
@@ -605,44 +604,44 @@ describe('applyToDefaults()', function () {
         g: 'test'
     };
 
-    it('throws when target is null', function (done) {
+    it('throws when target is null', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.applyToDefaults(null, {});
         }).to.throw('Invalid defaults value: must be an object');
         done();
     });
 
-    it('returns null if options is false', function (done) {
+    it('returns null if options is false', (done) => {
 
         const result = Hoek.applyToDefaults(defaults, false);
         expect(result).to.equal(null);
         done();
     });
 
-    it('returns null if options is null', function (done) {
+    it('returns null if options is null', (done) => {
 
         const result = Hoek.applyToDefaults(defaults, null);
         expect(result).to.equal(null);
         done();
     });
 
-    it('returns null if options is undefined', function (done) {
+    it('returns null if options is undefined', (done) => {
 
         const result = Hoek.applyToDefaults(defaults, undefined);
         expect(result).to.equal(null);
         done();
     });
 
-    it('returns a copy of defaults if options is true', function (done) {
+    it('returns a copy of defaults if options is true', (done) => {
 
         const result = Hoek.applyToDefaults(defaults, true);
         expect(result).to.deep.equal(defaults);
         done();
     });
 
-    it('applies object to defaults', function (done) {
+    it('applies object to defaults', (done) => {
 
         const obj = {
             a: null,
@@ -664,7 +663,7 @@ describe('applyToDefaults()', function () {
         done();
     });
 
-    it('applies object to defaults with null', function (done) {
+    it('applies object to defaults with null', (done) => {
 
         const obj = {
             a: null,
@@ -687,9 +686,9 @@ describe('applyToDefaults()', function () {
     });
 });
 
-describe('cloneWithShallow()', function () {
+describe('cloneWithShallow()', () => {
 
-    it('deep clones except for listed keys', function (done) {
+    it('deep clones except for listed keys', (done) => {
 
         const source = {
             a: {
@@ -708,25 +707,25 @@ describe('cloneWithShallow()', function () {
         done();
     });
 
-    it('returns immutable value', function (done) {
+    it('returns immutable value', (done) => {
 
         expect(Hoek.cloneWithShallow(5)).to.equal(5);
         done();
     });
 
-    it('returns null value', function (done) {
+    it('returns null value', (done) => {
 
         expect(Hoek.cloneWithShallow(null)).to.equal(null);
         done();
     });
 
-    it('returns undefined value', function (done) {
+    it('returns undefined value', (done) => {
 
         expect(Hoek.cloneWithShallow(undefined)).to.equal(undefined);
         done();
     });
 
-    it('deep clones except for listed keys (including missing keys)', function (done) {
+    it('deep clones except for listed keys (including missing keys)', (done) => {
 
         const source = {
             a: {
@@ -746,9 +745,9 @@ describe('cloneWithShallow()', function () {
     });
 });
 
-describe('applyToDefaultsWithShallow()', function () {
+describe('applyToDefaultsWithShallow()', () => {
 
-    it('shallow copies the listed keys from options without merging', function (done) {
+    it('shallow copies the listed keys from options without merging', (done) => {
 
         const defaults = {
             a: {
@@ -780,7 +779,7 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('shallow copies the nested keys (override)', function (done) {
+    it('shallow copies the nested keys (override)', (done) => {
 
         const defaults = {
             a: {
@@ -810,7 +809,7 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('shallow copies the nested keys (missing)', function (done) {
+    it('shallow copies the nested keys (missing)', (done) => {
 
         const defaults = {
             a: {
@@ -835,7 +834,7 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('shallow copies the nested keys (override)', function (done) {
+    it('shallow copies the nested keys (override)', (done) => {
 
         const defaults = {
             a: {
@@ -865,7 +864,7 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('shallow copies the nested keys (deeper)', function (done) {
+    it('shallow copies the nested keys (deeper)', (done) => {
 
         const defaults = {
             a: {
@@ -892,7 +891,7 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('shallow copies the nested keys (not present)', function (done) {
+    it('shallow copies the nested keys (not present)', (done) => {
 
         const defaults = {
             a: {
@@ -918,7 +917,7 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('shallow copies the listed keys in the defaults', function (done) {
+    it('shallow copies the listed keys in the defaults', (done) => {
 
         const defaults = {
             a: {
@@ -931,7 +930,7 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('shallow copies the listed keys in the defaults (true)', function (done) {
+    it('shallow copies the listed keys in the defaults (true)', (done) => {
 
         const defaults = {
             a: {
@@ -944,7 +943,7 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('returns null on false', function (done) {
+    it('returns null on false', (done) => {
 
         const defaults = {
             a: {
@@ -957,45 +956,45 @@ describe('applyToDefaultsWithShallow()', function () {
         done();
     });
 
-    it('throws on missing defaults', function (done) {
+    it('throws on missing defaults', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.applyToDefaultsWithShallow(null, {}, ['a']);
         }).to.throw('Invalid defaults value: must be an object');
         done();
     });
 
-    it('throws on invalid defaults', function (done) {
+    it('throws on invalid defaults', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.applyToDefaultsWithShallow('abc', {}, ['a']);
         }).to.throw('Invalid defaults value: must be an object');
         done();
     });
 
-    it('throws on invalid options', function (done) {
+    it('throws on invalid options', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.applyToDefaultsWithShallow({}, 'abc', ['a']);
         }).to.throw('Invalid options value: must be true, falsy or an object');
         done();
     });
 
-    it('throws on missing keys', function (done) {
+    it('throws on missing keys', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.applyToDefaultsWithShallow({}, true);
         }).to.throw('Invalid keys');
         done();
     });
 
-    it('throws on invalid keys', function (done) {
+    it('throws on invalid keys', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.applyToDefaultsWithShallow({}, true, 'a');
         }).to.throw('Invalid keys');
@@ -1003,9 +1002,9 @@ describe('applyToDefaultsWithShallow()', function () {
     });
 });
 
-describe('deepEqual()', function () {
+describe('deepEqual()', () => {
 
-    it('compares simple values', function (done) {
+    it('compares simple values', (done) => {
 
         expect(Hoek.deepEqual('x', 'x')).to.be.true();
         expect(Hoek.deepEqual('x', 'y')).to.be.false();
@@ -1022,7 +1021,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares different types', function (done) {
+    it('compares different types', (done) => {
 
         expect(Hoek.deepEqual([], 5)).to.be.false();
         expect(Hoek.deepEqual(5, [])).to.be.false();
@@ -1033,7 +1032,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares empty structures', function (done) {
+    it('compares empty structures', (done) => {
 
         expect(Hoek.deepEqual([], [])).to.be.true();
         expect(Hoek.deepEqual({}, {})).to.be.true();
@@ -1041,7 +1040,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares empty arguments object', function (done) {
+    it('compares empty arguments object', (done) => {
 
         const compare = function () {
 
@@ -1052,7 +1051,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares empty arguments objects', function (done) {
+    it('compares empty arguments objects', (done) => {
 
         const compare = function () {
 
@@ -1070,7 +1069,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares dates', function (done) {
+    it('compares dates', (done) => {
 
         expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date(2015, 1, 1))).to.be.true();
         expect(Hoek.deepEqual(new Date(100), new Date(101))).to.be.false();
@@ -1078,7 +1077,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares regular expressions', function (done) {
+    it('compares regular expressions', (done) => {
 
         expect(Hoek.deepEqual(/\s/, new RegExp('\\\s'))).to.be.true();
         expect(Hoek.deepEqual(/\s/g, /\s/g)).to.be.true();
@@ -1088,7 +1087,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares arrays', function (done) {
+    it('compares arrays', (done) => {
 
         expect(Hoek.deepEqual([[1]], [[1]])).to.be.true();
         expect(Hoek.deepEqual([1, 2, 3], [1, 2, 3])).to.be.true();
@@ -1098,7 +1097,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares buffers', function (done) {
+    it('compares buffers', (done) => {
 
         expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2, 3]))).to.be.true();
         expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 3, 2]))).to.be.false();
@@ -1108,7 +1107,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares objects', function (done) {
+    it('compares objects', (done) => {
 
         expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).to.be.true();
         expect(Hoek.deepEqual({ foo: 'bar' }, { foo: 'baz' })).to.be.false();
@@ -1116,7 +1115,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('handles circular dependency', function (done) {
+    it('handles circular dependency', (done) => {
 
         const a = {};
         a.x = a;
@@ -1126,7 +1125,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares an object with property getter without executing it', function (done) {
+    it('compares an object with property getter without executing it', (done) => {
 
         const obj = {};
         const value = 1;
@@ -1150,7 +1149,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares objects with property getters', function (done) {
+    it('compares objects with property getters', (done) => {
 
         const obj = {};
         Object.defineProperty(obj, 'test', {
@@ -1176,7 +1175,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares object prototypes', function (done) {
+    it('compares object prototypes', (done) => {
 
         const Obj = function () {
 
@@ -1204,7 +1203,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares plain objects', function (done) {
+    it('compares plain objects', (done) => {
 
         const a = Object.create(null);
         const b = Object.create(null);
@@ -1217,7 +1216,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares an object with an empty object', function (done) {
+    it('compares an object with an empty object', (done) => {
 
         const a = { a: 1, b: 2 };
 
@@ -1226,7 +1225,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares an object ignoring the prototype', function (done) {
+    it('compares an object ignoring the prototype', (done) => {
 
         const a = Object.create(null);
         const b = {};
@@ -1235,7 +1234,7 @@ describe('deepEqual()', function () {
         done();
     });
 
-    it('compares an object ignoring the prototype recursively', function (done) {
+    it('compares an object ignoring the prototype recursively', (done) => {
 
         const a = [Object.create(null)];
         const b = [{}];
@@ -1245,42 +1244,40 @@ describe('deepEqual()', function () {
     });
 });
 
-describe('unique()', function () {
+describe('unique()', () => {
 
-    it('ensures uniqueness within array of objects based on subkey', function (done) {
+    it('ensures uniqueness within array of objects based on subkey', (done) => {
 
         const a = Hoek.unique(dupsArray, 'x');
         expect(a).to.deep.equal(reducedDupsArray);
         done();
     });
 
-    it('removes duplicated without key', function (done) {
+    it('removes duplicated without key', (done) => {
 
         expect(Hoek.unique([1, 2, 3, 4, 2, 1, 5])).to.deep.equal([1, 2, 3, 4, 5]);
         done();
     });
 });
 
-describe('mapToObject()', function () {
+describe('mapToObject()', () => {
 
-    it('returns null on null array', function (done) {
+    it('returns null on null array', (done) => {
 
         const a = Hoek.mapToObject(null);
         expect(a).to.equal(null);
         done();
     });
 
-    it('converts basic array to existential object', function (done) {
+    it('converts basic array to existential object', (done) => {
 
         const keys = [1, 2, 3, 4];
         const a = Hoek.mapToObject(keys);
-        for (const i in keys) {
-            expect(a[keys[i]]).to.equal(true);
-        }
+        expect(Object.keys(a)).to.deep.equal(['1', '2', '3', '4']);
         done();
     });
 
-    it('converts array of objects to existential object', function (done) {
+    it('converts array of objects to existential object', (done) => {
 
         const keys = [{ x: 1 }, { x: 2 }, { x: 3 }, { y: 4 }];
         const subkey = 'x';
@@ -1290,9 +1287,9 @@ describe('mapToObject()', function () {
     });
 });
 
-describe('intersect()', function () {
+describe('intersect()', () => {
 
-    it('returns the common objects of two arrays', function (done) {
+    it('returns the common objects of two arrays', (done) => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
@@ -1301,7 +1298,7 @@ describe('intersect()', function () {
         done();
     });
 
-    it('returns just the first common object of two arrays', function (done) {
+    it('returns just the first common object of two arrays', (done) => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
@@ -1310,7 +1307,7 @@ describe('intersect()', function () {
         done();
     });
 
-    it('returns null when no common and returning just the first common object of two arrays', function (done) {
+    it('returns null when no common and returning just the first common object of two arrays', (done) => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [6, 7];
@@ -1319,14 +1316,14 @@ describe('intersect()', function () {
         done();
     });
 
-    it('returns an empty array if either input is null', function (done) {
+    it('returns an empty array if either input is null', (done) => {
 
         expect(Hoek.intersect([1], null).length).to.equal(0);
         expect(Hoek.intersect(null, [1]).length).to.equal(0);
         done();
     });
 
-    it('returns the common objects of object and array', function (done) {
+    it('returns the common objects of object and array', (done) => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
@@ -1336,9 +1333,9 @@ describe('intersect()', function () {
     });
 });
 
-describe('contain()', function () {
+describe('contain()', () => {
 
-    it('tests strings', function (done) {
+    it('tests strings', (done) => {
 
         expect(Hoek.contain('abc', 'ab')).to.be.true();
         expect(Hoek.contain('abc', 'abc', { only: true })).to.be.true();
@@ -1356,7 +1353,7 @@ describe('contain()', function () {
         done();
     });
 
-    it('tests arrays', function (done) {
+    it('tests arrays', (done) => {
 
         expect(Hoek.contain([1, 2, 3], 1)).to.be.true();
         expect(Hoek.contain([{ a: 1 }], { a: 1 }, { deep: true })).to.be.true();
@@ -1380,7 +1377,7 @@ describe('contain()', function () {
         done();
     });
 
-    it('tests objects', function (done) {
+    it('tests objects', (done) => {
 
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'a')).to.be.true();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'c'])).to.be.true();
@@ -1437,9 +1434,9 @@ describe('contain()', function () {
     });
 });
 
-describe('flatten()', function () {
+describe('flatten()', () => {
 
-    it('returns a flat array', function (done) {
+    it('returns a flat array', (done) => {
 
         const result = Hoek.flatten([1, 2, [3, 4, [5, 6], [7], 8], [9], [10, [11, 12]], 13]);
         expect(result.length).to.equal(13);
@@ -1448,7 +1445,7 @@ describe('flatten()', function () {
     });
 });
 
-describe('reach()', function () {
+describe('reach()', () => {
 
     const obj = {
         a: {
@@ -1470,7 +1467,7 @@ describe('reach()', function () {
 
     obj.i.x = 5;
 
-    it('returns object itself', function (done) {
+    it('returns object itself', (done) => {
 
         expect(Hoek.reach(obj, null)).to.equal(obj);
         expect(Hoek.reach(obj, false)).to.equal(obj);
@@ -1478,51 +1475,51 @@ describe('reach()', function () {
         done();
     });
 
-    it('returns first value of array', function (done) {
+    it('returns first value of array', (done) => {
 
         expect(Hoek.reach(obj, 'k.0')).to.equal(4);
         done();
     });
 
-    it('returns last value of array using negative index', function (done) {
+    it('returns last value of array using negative index', (done) => {
 
         expect(Hoek.reach(obj, 'k.-2')).to.equal(9);
         done();
     });
 
-    it('returns a valid member', function (done) {
+    it('returns a valid member', (done) => {
 
         expect(Hoek.reach(obj, 'a.b.c.d')).to.equal(1);
         done();
     });
 
-    it('returns a valid member with separator override', function (done) {
+    it('returns a valid member with separator override', (done) => {
 
         expect(Hoek.reach(obj, 'a/b/c/d', '/')).to.equal(1);
         done();
     });
 
-    it('returns undefined on null object', function (done) {
+    it('returns undefined on null object', (done) => {
 
         expect(Hoek.reach(null, 'a.b.c.d')).to.equal(undefined);
         done();
     });
 
-    it('returns undefined on missing object member', function (done) {
+    it('returns undefined on missing object member', (done) => {
 
         expect(Hoek.reach(obj, 'a.b.c.d.x')).to.equal(undefined);
         done();
     });
 
-    it('returns undefined on missing function member', function (done) {
+    it('returns undefined on missing function member', (done) => {
 
         expect(Hoek.reach(obj, 'i.y', { functions: true })).to.equal(undefined);
         done();
     });
 
-    it('throws on missing member in strict mode', function (done) {
+    it('throws on missing member in strict mode', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.reach(obj, 'a.b.c.o.x', { strict: true });
         }).to.throw('Missing segment o in reach path  a.b.c.o.x');
@@ -1530,33 +1527,33 @@ describe('reach()', function () {
         done();
     });
 
-    it('returns undefined on invalid member', function (done) {
+    it('returns undefined on invalid member', (done) => {
 
         expect(Hoek.reach(obj, 'a.b.c.d-.x')).to.equal(undefined);
         done();
     });
 
-    it('returns function member', function (done) {
+    it('returns function member', (done) => {
 
         expect(typeof Hoek.reach(obj, 'i')).to.equal('function');
         done();
     });
 
-    it('returns function property', function (done) {
+    it('returns function property', (done) => {
 
         expect(Hoek.reach(obj, 'i.x')).to.equal(5);
         done();
     });
 
-    it('returns null', function (done) {
+    it('returns null', (done) => {
 
         expect(Hoek.reach(obj, 'j')).to.equal(null);
         done();
     });
 
-    it('throws on function property when functions not allowed', function (done) {
+    it('throws on function property when functions not allowed', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.reach(obj, 'i.x', { functions: false });
         }).to.throw('Invalid segment x in reach path  i.x');
@@ -1564,28 +1561,28 @@ describe('reach()', function () {
         done();
     });
 
-    it('will return a default value if property is not found', function (done) {
+    it('will return a default value if property is not found', (done) => {
 
         expect(Hoek.reach(obj, 'a.b.q', { default: 'defaultValue' })).to.equal('defaultValue');
         done();
     });
 
-    it('will return a default value if path is not found', function (done) {
+    it('will return a default value if path is not found', (done) => {
 
         expect(Hoek.reach(obj, 'q', { default: 'defaultValue' })).to.equal('defaultValue');
         done();
     });
 
-    it('allows a falsey value to be used as the default value', function (done) {
+    it('allows a falsey value to be used as the default value', (done) => {
 
         expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
         done();
     });
 });
 
-describe('reachTemplate()', function () {
+describe('reachTemplate()', () => {
 
-    it('applies object to template', function (done) {
+    it('applies object to template', (done) => {
 
         const obj = {
             a: {
@@ -1605,7 +1602,7 @@ describe('reachTemplate()', function () {
         done();
     });
 
-    it('applies object to template (options)', function (done) {
+    it('applies object to template (options)', (done) => {
 
         const obj = {
             a: {
@@ -1626,34 +1623,34 @@ describe('reachTemplate()', function () {
     });
 });
 
-describe('callStack()', function () {
+describe('callStack()', () => {
 
-    it('returns the full call stack', function (done) {
+    it('returns the full call stack', (done) => {
 
         const stack = Hoek.callStack();
         expect(stack[0][0]).to.contain('index.js');
-        expect(stack[0][2]).to.equal(86);
+        expect(stack[0][2]).to.equal(76);
         done();
     });
 });
 
-describe('displayStack ()', function () {
+describe('displayStack ()', () => {
 
-    it('returns the full call stack for display', function (done) {
+    it('returns the full call stack for display', (done) => {
 
         const stack = Hoek.displayStack();
         expect(stack[0]).to.contain(Path.normalize('/test/index.js') + ':');
         done();
     });
 
-    it('includes constructor functions correctly', function (done) {
+    it('includes constructor functions correctly', (done) => {
 
         const Something = function (next) {
 
             next();
         };
 
-        new Something(function () {
+        new Something(() => {
 
             const stack = Hoek.displayStack();
             expect(stack[1]).to.contain('new Something');
@@ -1662,9 +1659,9 @@ describe('displayStack ()', function () {
     });
 });
 
-describe('abort()', function () {
+describe('abort()', () => {
 
-    it('exits process when not in test mode', function (done) {
+    it('exits process when not in test mode', (done) => {
 
         const env = process.env.NODE_ENV;
         const write = process.stdout.write;
@@ -1685,30 +1682,28 @@ describe('abort()', function () {
         Hoek.abort('Boom');
     });
 
-    it('throws when not in test mode and abortThrow is true', function (done) {
+    it('throws when not in test mode and abortThrow is true', (done) => {
 
         const env = process.env.NODE_ENV;
         process.env.NODE_ENV = 'nottatest';
         Hoek.abortThrow = true;
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.abort('my error message');
-        };
-
-        expect(fn).to.throw('my error message');
+        }).to.throw('my error message');
         Hoek.abortThrow = false;
         process.env.NODE_ENV = env;
 
         done();
     });
 
-    it('respects hideStack argument', function (done) {
+    it('respects hideStack argument', (done) => {
 
         const env = process.env.NODE_ENV;
         const write = process.stdout.write;
         const exit = process.exit;
-        const output = '';
+        let output = '';
 
         process.exit = function () { };
         process.env.NODE_ENV = '';
@@ -1728,12 +1723,12 @@ describe('abort()', function () {
         done();
     });
 
-    it('throws in test mode', function (done) {
+    it('throws in test mode', (done) => {
 
         const env = process.env.NODE_ENV;
         process.env.NODE_ENV = 'test';
 
-        expect(function () {
+        expect(() => {
 
             Hoek.abort('my error message', true);
         }).to.throw('my error message');
@@ -1742,12 +1737,12 @@ describe('abort()', function () {
         done();
     });
 
-    it('throws in test mode with default message', function (done) {
+    it('throws in test mode with default message', (done) => {
 
         const env = process.env.NODE_ENV;
         process.env.NODE_ENV = 'test';
 
-        expect(function () {
+        expect(() => {
 
             Hoek.abort('', true);
         }).to.throw('Unknown error');
@@ -1756,12 +1751,12 @@ describe('abort()', function () {
         done();
     });
 
-    it('defaults to showing stack', function (done) {
+    it('defaults to showing stack', (done) => {
 
         const env = process.env.NODE_ENV;
         const write = process.stdout.write;
         const exit = process.exit;
-        const output = '';
+        let output = '';
 
         process.exit = function () { };
         process.env.NODE_ENV = '';
@@ -1782,86 +1777,72 @@ describe('abort()', function () {
     });
 });
 
-describe('assert()', function () {
+describe('assert()', () => {
 
-    it('throws an Error when using assert in a test', function (done) {
+    it('throws an Error when using assert in a test', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.assert(false, 'my error message');
-        };
-
-        expect(fn).to.throw('my error message');
+        }).to.throw('my error message');
         done();
     });
 
-    it('throws an Error when using assert in a test with no message', function (done) {
+    it('throws an Error when using assert in a test with no message', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.assert(false);
-        };
-
-        expect(fn).to.throw('Unknown error');
+        }).to.throw('Unknown error');
         done();
     });
 
-    it('throws an Error when using assert in a test with multipart message', function (done) {
+    it('throws an Error when using assert in a test with multipart message', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.assert(false, 'This', 'is', 'my message');
-        };
-
-        expect(fn).to.throw('This is my message');
+        }).to.throw('This is my message');
         done();
     });
 
-    it('throws an Error when using assert in a test with multipart message (empty)', function (done) {
+    it('throws an Error when using assert in a test with multipart message (empty)', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.assert(false, 'This', 'is', '', 'my message');
-        };
-
-        expect(fn).to.throw('This is my message');
+        }).to.throw('This is my message');
         done();
     });
 
-    it('throws an Error when using assert in a test with object message', function (done) {
+    it('throws an Error when using assert in a test with object message', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.assert(false, 'This', 'is', { spinal: 'tap' });
-        };
-
-        expect(fn).to.throw('This is {"spinal":"tap"}');
+        }).to.throw('This is {"spinal":"tap"}');
         done();
     });
 
-    it('throws an Error when using assert in a test with multipart string and error messages', function (done) {
+    it('throws an Error when using assert in a test with multipart string and error messages', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.assert(false, 'This', 'is', new Error('spinal'), new Error('tap'));
-        };
-
-        expect(fn).to.throw('This is spinal tap');
+        }).to.throw('This is spinal tap');
         done();
     });
 
-    it('throws an Error when using assert in a test with error object message', function (done) {
+    it('throws an Error when using assert in a test with error object message', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.assert(false, new Error('This is spinal tap'));
-        };
-
-        expect(fn).to.throw('This is spinal tap');
+        }).to.throw('This is spinal tap');
         done();
     });
 
-    it('throws the same Error that is passed to it if there is only one error passed', function (done) {
+    it('throws the same Error that is passed to it if there is only one error passed', (done) => {
 
         const error = new Error('ruh roh');
         const error2 = new Error('ruh roh');
@@ -1882,12 +1863,12 @@ describe('assert()', function () {
     });
 });
 
-describe('Timer', function () {
+describe('Timer', () => {
 
-    it('returns time elapsed', function (done) {
+    it('returns time elapsed', (done) => {
 
         const timer = new Hoek.Timer();
-        setTimeout(function () {
+        setTimeout(() => {
 
             expect(timer.elapsed()).to.be.above(9);
             done();
@@ -1895,12 +1876,12 @@ describe('Timer', function () {
     });
 });
 
-describe('Bench', function () {
+describe('Bench', () => {
 
-    it('returns time elapsed', function (done) {
+    it('returns time elapsed', (done) => {
 
         const timer = new Hoek.Bench();
-        setTimeout(function () {
+        setTimeout(() => {
 
             expect(timer.elapsed()).to.be.above(9);
             done();
@@ -1908,9 +1889,9 @@ describe('Bench', function () {
     });
 });
 
-describe('escapeRegex()', function () {
+describe('escapeRegex()', () => {
 
-    it('escapes all special regular expression characters', function (done) {
+    it('escapes all special regular expression characters', (done) => {
 
         const a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');
         expect(a).to.equal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
@@ -1918,33 +1899,33 @@ describe('escapeRegex()', function () {
     });
 });
 
-describe('Base64Url', function () {
+describe('Base64Url', () => {
 
     const base64str = 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w';
     const str = unescape('%00%01%02%03%04%05%06%07%08%09%0A%0B%0C%0D%0E%0F%10%11%12%13%14%15%16%17%18%19%1A%1B%1C%1D%1E%1F%20%21%22%23%24%25%26%27%28%29*+%2C-./0123456789%3A%3B%3C%3D%3E%3F@ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D%7E%7F%80%81%82%83%84%85%86%87%88%89%8A%8B%8C%8D%8E%8F%90%91%92%93%94%95%96%97%98%99%9A%9B%9C%9D%9E%9F%A0%A1%A2%A3%A4%A5%A6%A7%A8%A9%AA%AB%AC%AD%AE%AF%B0%B1%B2%B3%B4%B5%B6%B7%B8%B9%BA%BB%BC%BD%BE%BF%C0%C1%C2%C3%C4%C5%C6%C7%C8%C9%CA%CB%CC%CD%CE%CF%D0%D1%D2%D3%D4%D5%D6%D7%D8%D9%DA%DB%DC%DD%DE%DF%E0%E1%E2%E3%E4%E5%E6%E7%E8%E9%EA%EB%EC%ED%EE%EF%F0%F1%F2%F3%F4%F5%F6%F7%F8%F9%FA%FB%FC%FD%FE%FF');
 
-    describe('base64urlEncode()', function () {
+    describe('base64urlEncode()', () => {
 
-        it('should base64 URL-safe a string', function (done) {
+        it('should base64 URL-safe a string', (done) => {
 
             expect(Hoek.base64urlEncode(str)).to.equal(base64str);
             done();
         });
 
-        it('encodes a buffer', function (done) {
+        it('encodes a buffer', (done) => {
 
             expect(Hoek.base64urlEncode(new Buffer(str, 'binary'))).to.equal(base64str);
             done();
         });
 
-        it('should base64 URL-safe a hex string', function (done) {
+        it('should base64 URL-safe a hex string', (done) => {
 
             const buffer = new Buffer(str, 'binary');
             expect(Hoek.base64urlEncode(buffer.toString('hex'), 'hex')).to.equal(base64str);
             done();
         });
 
-        it('works on larger input strings', function (done) {
+        it('works on larger input strings', (done) => {
 
             const input = Fs.readFileSync(Path.join(__dirname, 'index.js')).toString();
             const encoded = Hoek.base64urlEncode(input);
@@ -1959,21 +1940,21 @@ describe('Base64Url', function () {
         });
     });
 
-    describe('base64urlDecode()', function () {
+    describe('base64urlDecode()', () => {
 
-        it('should un-base64 URL-safe a string', function (done) {
+        it('should un-base64 URL-safe a string', (done) => {
 
             expect(Hoek.base64urlDecode(base64str)).to.equal(str);
             done();
         });
 
-        it('should un-base64 URL-safe a string into hex', function (done) {
+        it('should un-base64 URL-safe a string into hex', (done) => {
 
             expect(Hoek.base64urlDecode(base64str, 'hex')).to.equal(new Buffer(str, 'binary').toString('hex'));
             done();
         });
 
-        it('should un-base64 URL-safe a string and return a buffer', function (done) {
+        it('should un-base64 URL-safe a string and return a buffer', (done) => {
 
             const buf = Hoek.base64urlDecode(base64str, 'buffer');
             expect(buf instanceof Buffer).to.equal(true);
@@ -1981,13 +1962,13 @@ describe('Base64Url', function () {
             done();
         });
 
-        it('returns error on undefined input', function (done) {
+        it('returns error on undefined input', (done) => {
 
             expect(Hoek.base64urlDecode().message).to.exist();
             done();
         });
 
-        it('returns error on invalid input', function (done) {
+        it('returns error on invalid input', (done) => {
 
             expect(Hoek.base64urlDecode('*').message).to.exist();
             done();
@@ -1995,62 +1976,58 @@ describe('Base64Url', function () {
     });
 });
 
-describe('escapeHeaderAttribute()', function () {
+describe('escapeHeaderAttribute()', () => {
 
-    it('should not alter ascii values', function (done) {
+    it('should not alter ascii values', (done) => {
 
         const a = Hoek.escapeHeaderAttribute('My Value');
         expect(a).to.equal('My Value');
         done();
     });
 
-    it('escapes all special HTTP header attribute characters', function (done) {
+    it('escapes all special HTTP header attribute characters', (done) => {
 
         const a = Hoek.escapeHeaderAttribute('I said go!!!#"' + String.fromCharCode(92));
         expect(a).to.equal('I said go!!!#\\"\\\\');
         done();
     });
 
-    it('throws on large unicode characters', function (done) {
+    it('throws on large unicode characters', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.escapeHeaderAttribute('this is a test' + String.fromCharCode(500) + String.fromCharCode(300));
-        };
-
-        expect(fn).to.throw(Error);
+        }).to.throw(Error);
         done();
     });
 
-    it('throws on CRLF to prevent response splitting', function (done) {
+    it('throws on CRLF to prevent response splitting', (done) => {
 
-        const fn = function () {
+        expect(() => {
 
             Hoek.escapeHeaderAttribute('this is a test\r\n');
-        };
-
-        expect(fn).to.throw(Error);
+        }).to.throw(Error);
         done();
     });
 });
 
-describe('escapeHtml()', function () {
+describe('escapeHtml()', () => {
 
-    it('escapes all special HTML characters', function (done) {
+    it('escapes all special HTML characters', (done) => {
 
         const a = Hoek.escapeHtml('&<>"\'`');
         expect(a).to.equal('&amp;&lt;&gt;&quot;&#x27;&#x60;');
         done();
     });
 
-    it('returns empty string on falsy input', function (done) {
+    it('returns empty string on falsy input', (done) => {
 
         const a = Hoek.escapeHtml('');
         expect(a).to.equal('');
         done();
     });
 
-    it('returns unchanged string on no reserved input', function (done) {
+    it('returns unchanged string on no reserved input', (done) => {
 
         const a = Hoek.escapeHtml('abc');
         expect(a).to.equal('abc');
@@ -2058,11 +2035,11 @@ describe('escapeHtml()', function () {
     });
 });
 
-describe('nextTick()', function () {
+describe('nextTick()', () => {
 
-    it('calls the provided callback on nextTick', function (done) {
+    it('calls the provided callback on nextTick', (done) => {
 
-        const a = 0;
+        let a = 0;
 
         const inc = function (step, next) {
 
@@ -2072,26 +2049,26 @@ describe('nextTick()', function () {
 
         const ticked = Hoek.nextTick(inc);
 
-        ticked(5, function () {
+        ticked(5, () => {
 
             expect(a).to.equal(6);
             done();
         });
 
         expect(a).to.equal(0);
-        inc(1, function () {
+        inc(1, () => {
 
             expect(a).to.equal(1);
         });
     });
 });
 
-describe('once()', function () {
+describe('once()', () => {
 
-    it('allows function to only execute once', function (done) {
+    it('allows function to only execute once', (done) => {
 
-        const gen = 0;
-        const add = function (x) {
+        let gen = 0;
+        let add = function (x) {
 
             gen += x;
         };
@@ -2106,9 +2083,9 @@ describe('once()', function () {
         done();
     });
 
-    it('double once wraps one time', function (done) {
+    it('double once wraps one time', (done) => {
 
-        const method = function () { };
+        let method = function () { };
         method = Hoek.once(method);
         method.x = 1;
         method = Hoek.once(method);
@@ -2117,9 +2094,9 @@ describe('once()', function () {
     });
 });
 
-describe('isAbsoltePath()', function () {
+describe('isAbsoltePath()', () => {
 
-    it('identifies if path is absolute on Unix without node support', { parallel: false }, function (done) {
+    it('identifies if path is absolute on Unix without node support', { parallel: false }, (done) => {
 
         const orig = Path.isAbsolute;
         Path.isAbsolute = undefined;
@@ -2135,7 +2112,7 @@ describe('isAbsoltePath()', function () {
         done();
     });
 
-    it('identifies if path is absolute with fake node support', { parallel: false }, function (done) {
+    it('identifies if path is absolute with fake node support', { parallel: false }, (done) => {
 
         const orig = Path.isAbsolute;
         Path.isAbsolute = function (path) {
@@ -2154,7 +2131,7 @@ describe('isAbsoltePath()', function () {
         done();
     });
 
-    it('identifies if path is absolute on Windows without node support', { parallel: false }, function (done) {
+    it('identifies if path is absolute on Windows without node support', { parallel: false }, (done) => {
 
         const orig = Path.isAbsolute;
         Path.isAbsolute = undefined;
@@ -2175,9 +2152,9 @@ describe('isAbsoltePath()', function () {
     });
 });
 
-describe('isInteger()', function () {
+describe('isInteger()', () => {
 
-    it('validates integers', function (done) {
+    it('validates integers', (done) => {
 
         expect(Hoek.isInteger(0)).to.equal(true);
         expect(Hoek.isInteger(1)).to.equal(true);
@@ -2189,9 +2166,9 @@ describe('isInteger()', function () {
     });
 });
 
-describe('ignore()', function () {
+describe('ignore()', () => {
 
-    it('exists', function (done) {
+    it('exists', (done) => {
 
         expect(Hoek.ignore).to.exist();
         expect(typeof Hoek.ignore).to.equal('function');
@@ -2199,9 +2176,9 @@ describe('ignore()', function () {
     });
 });
 
-describe('inherits()', function () {
+describe('inherits()', () => {
 
-    it('exists', function (done) {
+    it('exists', (done) => {
 
         expect(Hoek.inherits).to.exist();
         expect(typeof Hoek.inherits).to.equal('function');
@@ -2209,23 +2186,23 @@ describe('inherits()', function () {
     });
 });
 
-describe('format()', function () {
+describe('format()', () => {
 
-    it('exists', function (done) {
+    it('exists', (done) => {
 
         expect(Hoek.format).to.exist();
         expect(typeof Hoek.format).to.equal('function');
         done();
     });
 
-    it('is a reference to Util.format', function (done) {
+    it('is a reference to Util.format', (done) => {
 
         expect(Hoek.format('hello %s', 'world')).to.equal('hello world');
         done();
     });
 });
 
-describe('transform()', function () {
+describe('transform()', () => {
 
     const source = {
         address: {
@@ -2264,7 +2241,7 @@ describe('transform()', function () {
         state: 'NY'
     }];
 
-    it('transforms an object based on the input object', function (done) {
+    it('transforms an object based on the input object', (done) => {
 
         const result = Hoek.transform(source, {
             'person.address.lineOne': 'address.one',
@@ -2291,7 +2268,7 @@ describe('transform()', function () {
         done();
     });
 
-    it('transforms an array of objects based on the input object', function (done) {
+    it('transforms an array of objects based on the input object', (done) => {
 
         const result = Hoek.transform(sourcesArray, {
             'person.address.lineOne': 'address.one',
@@ -2332,7 +2309,7 @@ describe('transform()', function () {
         done();
     });
 
-    it('uses the reach options passed into it', function (done) {
+    it('uses the reach options passed into it', (done) => {
 
         const schema = {
             'person.address.lineOne': 'address-one',
@@ -2364,7 +2341,7 @@ describe('transform()', function () {
         done();
     });
 
-    it('works to create shallow objects', function (done) {
+    it('works to create shallow objects', (done) => {
 
         const result = Hoek.transform(source, {
             lineOne: 'address.one',
@@ -2385,9 +2362,9 @@ describe('transform()', function () {
         done();
     });
 
-    it('only allows strings in the map', function (done) {
+    it('only allows strings in the map', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.transform(source, {
                 lineOne: {}
@@ -2397,9 +2374,9 @@ describe('transform()', function () {
         done();
     });
 
-    it('throws an error on invalid arguments', function (done) {
+    it('throws an error on invalid arguments', (done) => {
 
-        expect(function () {
+        expect(() => {
 
             Hoek.transform(NaN, {});
         }).to.throw('Invalid source object: must be null, undefined, an object, or an array');
@@ -2407,7 +2384,7 @@ describe('transform()', function () {
         done();
     });
 
-    it('is safe to pass null', function (done) {
+    it('is safe to pass null', (done) => {
 
         const result = Hoek.transform(null, {});
         expect(result).to.deep.equal({});
@@ -2415,7 +2392,7 @@ describe('transform()', function () {
         done();
     });
 
-    it('is safe to pass undefined', function (done) {
+    it('is safe to pass undefined', (done) => {
 
         const result = Hoek.transform(undefined, {});
         expect(result).to.deep.equal({});
@@ -2424,9 +2401,9 @@ describe('transform()', function () {
     });
 });
 
-describe('uniqueFilename()', function () {
+describe('uniqueFilename()', () => {
 
-    it('generates a random file path', function (done) {
+    it('generates a random file path', (done) => {
 
         const result = Hoek.uniqueFilename('./test/modules');
 
@@ -2436,15 +2413,15 @@ describe('uniqueFilename()', function () {
         done();
     });
 
-    it('is random enough to use in fast loops', function (done) {
+    it('is random enough to use in fast loops', (done) => {
 
         const results = [];
 
-        for (const i = 0; i < 10; ++i) {
+        for (let i = 0; i < 10; ++i) {
             results[i] = Hoek.uniqueFilename('./test/modules');
         }
 
-        const filter = results.filter(function (item, index, array) {
+        const filter = results.filter((item, index, array) => {
 
             return array.indexOf(item) === index;
         });
@@ -2455,7 +2432,7 @@ describe('uniqueFilename()', function () {
 
     });
 
-    it('combines the random elements with a supplied character', function (done) {
+    it('combines the random elements with a supplied character', (done) => {
 
         const result = Hoek.uniqueFilename('./test', 'txt');
 
@@ -2465,7 +2442,7 @@ describe('uniqueFilename()', function () {
         done();
     });
 
-    it('accepts extensions with a "." in it', function (done) {
+    it('accepts extensions with a "." in it', (done) => {
 
         const result = Hoek.uniqueFilename('./test', '.mp3');
 
@@ -2476,16 +2453,16 @@ describe('uniqueFilename()', function () {
     });
 });
 
-describe('stringify()', function (done) {
+describe('stringify()', (done) => {
 
-    it('converts object to string', function (done) {
+    it('converts object to string', (done) => {
 
         const obj = { a: 1 };
         expect(Hoek.stringify(obj)).to.equal('{"a":1}');
         done();
     });
 
-    it('returns error in result string', function (done) {
+    it('returns error in result string', (done) => {
 
         const obj = { a: 1 };
         obj.b = obj;
@@ -2494,9 +2471,9 @@ describe('stringify()', function (done) {
     });
 });
 
-describe('shallow()', function (done) {
+describe('shallow()', (done) => {
 
-    it('shallow copies an object', function (done) {
+    it('shallow copies an object', (done) => {
 
         const obj = {
             a: 5,
