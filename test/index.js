@@ -1629,7 +1629,6 @@ describe('callStack()', () => {
 
         const stack = Hoek.callStack();
         expect(stack[0][0]).to.contain('index.js');
-        expect(stack[0][2]).to.equal(76);
         done();
     });
 });
