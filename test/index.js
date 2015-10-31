@@ -1853,7 +1853,8 @@ describe('assert()', () => {
 
         try {
             fn();
-        } catch (err) {
+        }
+        catch (err) {
             expect(error).to.equal(error);  // should be the same reference
             expect(error).to.not.equal(error2); // error with the same message should not match
         }
