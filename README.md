@@ -224,10 +224,10 @@ Convert an Array into an Object
 ```javascript
 
 var array = [1,2,3];
-var newObject = Hoek.mapToObject(array);   // results in [{"1": true}, {"2": true}, {"3": true}]
+var newObject = Hoek.mapToObject(array);   // results in {"1": true, "2": true, "3": true}
 
 array = [{id: 1}, {id: 2}];
-newObject = Hoek.mapToObject(array, "id"); // results in [{"id": 1}, {"id": 2}]
+newObject = Hoek.mapToObject(array, "id"); // results in {"1": true, "2": true}
 ```
 
 ### intersect(array1, array2)
