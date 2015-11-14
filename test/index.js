@@ -1094,6 +1094,9 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual([1, 2, 3], [1, 3, 2])).to.be.false();
         expect(Hoek.deepEqual([1, 2, 3], [1, 2])).to.be.false();
         expect(Hoek.deepEqual([1], [1])).to.be.true();
+        const item1 = { key: 'value1' };
+        const item2 = { key: 'value2' };
+        expect(Hoek.deepEqual([item1, item1], [item1, item2])).to.be.false();
         done();
     });
 
