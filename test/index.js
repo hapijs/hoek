@@ -1909,6 +1909,17 @@ describe('Base64Url', () => {
 
     describe('base64urlEncode()', () => {
 
+        it('should assert function input is a string or buffer', (done) => {
+
+            const number = 1024;
+            const func = () => {
+
+                return Hoek.base64urlEncode(number);
+            };
+            expect(func).throws(Error);
+            done();
+        });
+
         it('should base64 URL-safe a string', (done) => {
 
             expect(Hoek.base64urlEncode(str)).to.equal(base64str);
@@ -1945,6 +1956,7 @@ describe('Base64Url', () => {
 
     describe('base64urlDecode()', () => {
 
+
         it('should un-base64 URL-safe a string', (done) => {
 
             expect(Hoek.base64urlDecode(base64str)).to.equal(str);
@@ -1965,9 +1977,9 @@ describe('Base64Url', () => {
             done();
         });
 
-        it('returns error on undefined input', (done) => {
+        it('returns error on invalid input', (done) => {
 
-            expect(Hoek.base64urlDecode().message).to.exist();
+            expect(Hoek.base64urlDecode(1024).message).to.exist();
             done();
         });
 

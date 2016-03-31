@@ -400,11 +400,11 @@ human-readable timestamps. More accurate for benchmarking or internal timers.
 
 ### base64urlEncode(value)
 
-Encodes value in Base64 or URL encoding
+Encodes value of string or buffer type in Base64 or URL encoding, function will assert input value is correct.
 
 ### base64urlDecode(value)
 
-Decodes data in Base64 or URL encoding.
+Decodes string into Base64 or URL encoding, function returns an error on invalid input and returns a string or buffer depending on encoding provided.  Default encoding is binary.
 # Escaping Characters
 
 Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
