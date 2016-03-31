@@ -2412,7 +2412,7 @@ describe('uniqueFilename()', () => {
 
         expect(result).to.exist();
         expect(result).to.be.a.string();
-        expect(result).to.contain('test/modules');
+        expect(result).to.contain(`test${Path.sep}modules`);
         done();
     });
 
@@ -2439,7 +2439,7 @@ describe('uniqueFilename()', () => {
 
         const result = Hoek.uniqueFilename('./test', 'txt');
 
-        expect(result).to.contain('test/');
+        expect(result).to.contain(`test${Path.sep}`);
         expect(result).to.contain('.txt');
 
         done();
@@ -2449,7 +2449,7 @@ describe('uniqueFilename()', () => {
 
         const result = Hoek.uniqueFilename('./test', '.mp3');
 
-        expect(result).to.contain('test/');
+        expect(result).to.contain(`test${Path.sep}`);
         expect(result).to.contain('.mp3');
 
         done();
