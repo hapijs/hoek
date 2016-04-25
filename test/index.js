@@ -2327,15 +2327,46 @@ describe('transform()', () => {
     it('uses the reach options passed into it', (done) => {
 
         const schema = {
-            'person.address.lineOne': 'address-one',
-            'person.address.lineTwo': 'address-two',
+            'person-address-lineOne': 'address-one',
+            'person-address-lineTwo': 'address-two',
             'title': 'title',
-            'person.address.region': 'state',
-            'person.prefix': 'person-title',
-            'person.zip': 'zip-code'
+            'person-address-region': 'state',
+            'person-prefix': 'person-title',
+            'person-zip': 'zip-code'
         };
         const options = {
             separator: '-',
+            default: 'unknown'
+        };
+        const result = Hoek.transform(source, schema, options);
+
+        expect(result).to.deep.equal({
+            person: {
+                address: {
+                    lineOne: '123 main street',
+                    lineTwo: 'PO Box 1234',
+                    region: 'CA'
+                },
+                prefix: 'unknown',
+                zip: 3321232
+            },
+            title: 'Warehouse'
+        });
+
+        done();
+    });
+
+    it('uses a default separator for keys if options does not specify on', (done) => {
+
+        const schema = {
+            'person.address.lineOne': 'address.one',
+            'person.address.lineTwo': 'address.two',
+            'title': 'title',
+            'person.address.region': 'state',
+            'person.prefix': 'person.title',
+            'person.zip': 'zip.code'
+        };
+        const options = {
             default: 'unknown'
         };
         const result = Hoek.transform(source, schema, options);
