@@ -10,6 +10,21 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
 
 **hoek** is sponsored by [&yet](https://andyet.com)
 
+## Usage
+
+The *Hoek* library contains some common functions used within the hapi ecosystem. It comes with useful methods for Arrays (clone, merge, applyToDefaults), Objects (removeKeys, copy), Asserting and more.
+
+For example, to use Hoek to set configuration with default options:
+```javascript
+const Hoek = require('hoek');
+
+const default = {url : "www.github.com", port : "8000", debug : true};
+
+const config = Hoek.applyToDefaults(default, {port : "3000", admin : true});
+
+// In this case, config would be { url: 'www.github.com', port: '3000', debug: true, admin: true }
+```
+
 ## Documentation
 
 [**API Reference**](API.md)

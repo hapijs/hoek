@@ -42,23 +42,6 @@
 
 
 
-# Introduction
-
-The *Hoek* library contains some common functions used within the hapi ecosystem. It comes with useful methods for Arrays (clone, merge, applyToDefaults), Objects (removeKeys, copy), Asserting and more.
-
-For example, to use Hoek to set configuration with default options:
-```javascript
-var Hoek = require('hoek');
-
-var default = {url : "www.github.com", port : "8000", debug : true};
-
-var config = Hoek.applyToDefaults(default, {port : "3000", admin : true});
-
-// In this case, config would be { url: 'www.github.com', port: '3000', debug: true, admin: true }
-```
-
-Under each of the sections (such as Array), there are subsections which correspond to Hoek methods. Each subsection will explain how to use the corresponding method. In each js excerpt below, the `var Hoek = require('hoek');` is omitted for brevity.
-
 ## Object
 
 Hoek provides several helpful methods for objects and arrays.
