@@ -36,8 +36,32 @@ const nestedObj = {
     z: new Date(1378775452757)
 };
 
-const dupsArray = [nestedObj, { z: 'z' }, nestedObj];
-const reducedDupsArray = [nestedObj, { z: 'z' }];
+internals.unique = {
+    item: {
+        objects: [nestedObj, { z: 'z' }]
+    }
+};
+
+internals.unique.objectsByKey = {
+    dups: [internals.unique.item.objects[0], internals.unique.item.objects[1], internals.unique.item.objects[0]],
+    result: [internals.unique.item.objects[0], internals.unique.item.objects[1]]
+};
+internals.unique.objects = {
+    dups: [internals.unique.item.objects[1], internals.unique.item.objects[0], internals.unique.item.objects[0]],
+    result: [internals.unique.item.objects[1], internals.unique.item.objects[0]]
+};
+internals.unique.integers = {
+    dups: [1, 2, 3, 2, 2, 1, 3, 4, 5],
+    result: [1, 2, 3, 4, 5]
+};
+internals.unique.strings = {
+    dups: ['a', 'b', 'c', 'd', 'a', 'c', 'e'],
+    result: ['a', 'b', 'c', 'd', 'e']
+};
+internals.unique.mixed = {
+    dups: [1, 2, 'a', 'b', internals.unique.item.objects[0], 'a', '2', 3, internals.unique.item.objects[0]],
+    result: [1, 2, 'a', ',b', internals.unique.item.objects[0], 3]
+};
 
 describe('clone()', () => {
 
@@ -1249,16 +1273,49 @@ describe('deepEqual()', () => {
 
 describe('unique()', () => {
 
+    const deprecatedUnique = function (array, key) { // previous method of unique from hapi 3.0.4
+
+        const index = {};
+        const result = [];
+
+        for (let i = 0; i < array.length; ++i) {
+            const id = (key ? array[i][key] : array[i]);
+            if (index[id] !== true) {
+
+                result.push(array[i]);
+                index[id] = true;
+            }
+        }
+
+        return result;
+    };
+
     it('ensures uniqueness within array of objects based on subkey', (done) => {
 
-        const a = Hoek.unique(dupsArray, 'x');
-        expect(a).to.deep.equal(reducedDupsArray);
+        expect(Hoek.unique(internals.unique.objectsByKey.dups, 'x')).to.deep.equal(internals.unique.objectsByKey.result);
+        expect(deprecatedUnique(internals.unique.objectsByKey.dups, 'x')).to.deep.equal(internals.unique.objectsByKey.result);
+
         done();
     });
 
-    it('removes duplicated without key', (done) => {
+    it('removes duplicated integers without key', (done) => {
 
-        expect(Hoek.unique([1, 2, 3, 4, 2, 1, 5])).to.deep.equal([1, 2, 3, 4, 5]);
+        expect(Hoek.unique(internals.unique.integers.dups)).to.deep.equal(internals.unique.integers.result);
+        expect(deprecatedUnique(internals.unique.integers.dups)).to.deep.equal(internals.unique.integers.result);
+        done();
+    });
+
+    it('removes duplicated strings without key', (done) => {
+
+        expect(Hoek.unique(internals.unique.strings.dups)).to.deep.equal(internals.unique.strings.result);
+        expect(deprecatedUnique(internals.unique.strings.dups)).to.deep.equal(internals.unique.strings.result);
+        done();
+    });
+
+    it('removes duplicated objects without key', (done) => { // this was not supported in earlier versions
+
+        expect(Hoek.unique(internals.unique.objects.dups)).to.deep.equal(internals.unique.objects.result);
+        expect(deprecatedUnique(internals.unique.objects.dups)).to.not.deep.equal(internals.unique.objects.result);
         done();
     });
 });
