@@ -1966,6 +1966,17 @@ describe('Base64Url', () => {
 
     describe('base64urlEncode()', () => {
 
+        it('should assert function input is a string or buffer', (done) => {
+
+            const number = 1024;
+            const func = () => {
+
+                return Hoek.base64urlEncode(number);
+            };
+            expect(func).throws(Error);
+            done();
+        });
+
         it('should base64 URL-safe a string', (done) => {
 
             expect(Hoek.base64urlEncode(str)).to.equal(base64str);
@@ -2002,6 +2013,7 @@ describe('Base64Url', () => {
 
     describe('base64urlDecode()', () => {
 
+
         it('should un-base64 URL-safe a string', (done) => {
 
             expect(Hoek.base64urlDecode(base64str)).to.equal(str);
@@ -2022,9 +2034,9 @@ describe('Base64Url', () => {
             done();
         });
 
-        it('returns error on undefined input', (done) => {
+        it('returns error on invalid input', (done) => {
 
-            expect(Hoek.base64urlDecode().message).to.exist();
+            expect(Hoek.base64urlDecode(1024).message).to.exist();
             done();
         });
 
@@ -2154,63 +2166,6 @@ describe('once()', () => {
     });
 });
 
-describe('isAbsoltePath()', () => {
-
-    it('identifies if path is absolute on Unix without node support', { parallel: false }, (done) => {
-
-        const orig = Path.isAbsolute;
-        Path.isAbsolute = undefined;
-
-        expect(Hoek.isAbsolutePath('')).to.equal(false);
-        expect(Hoek.isAbsolutePath('a')).to.equal(false);
-        expect(Hoek.isAbsolutePath('./a')).to.equal(false);
-        expect(Hoek.isAbsolutePath('/a')).to.equal(true);
-        expect(Hoek.isAbsolutePath('/')).to.equal(true);
-
-        Path.isAbsolute = orig;
-
-        done();
-    });
-
-    it('identifies if path is absolute with fake node support', { parallel: false }, (done) => {
-
-        const orig = Path.isAbsolute;
-        Path.isAbsolute = function (path) {
-
-            return path[0] === '/';
-        };
-
-        expect(Hoek.isAbsolutePath('', 'linux')).to.equal(false);
-        expect(Hoek.isAbsolutePath('a', 'linux')).to.equal(false);
-        expect(Hoek.isAbsolutePath('./a', 'linux')).to.equal(false);
-        expect(Hoek.isAbsolutePath('/a', 'linux')).to.equal(true);
-        expect(Hoek.isAbsolutePath('/', 'linux')).to.equal(true);
-
-        Path.isAbsolute = orig;
-
-        done();
-    });
-
-    it('identifies if path is absolute on Windows without node support', { parallel: false }, (done) => {
-
-        const orig = Path.isAbsolute;
-        Path.isAbsolute = undefined;
-
-        expect(Hoek.isAbsolutePath('//server/file', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('//server/file', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('\\\\server\\file', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('C:/Users/', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('C:\\Users\\', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('C:cwd/another', 'win32')).to.equal(false);
-        expect(Hoek.isAbsolutePath('C:cwd\\another', 'win32')).to.equal(false);
-        expect(Hoek.isAbsolutePath('directory/directory', 'win32')).to.equal(false);
-        expect(Hoek.isAbsolutePath('directory\\directory', 'win32')).to.equal(false);
-
-        Path.isAbsolute = orig;
-
-        done();
-    });
-});
 
 describe('isInteger()', () => {
 
@@ -2372,15 +2327,46 @@ describe('transform()', () => {
     it('uses the reach options passed into it', (done) => {
 
         const schema = {
-            'person.address.lineOne': 'address-one',
-            'person.address.lineTwo': 'address-two',
+            'person-address-lineOne': 'address-one',
+            'person-address-lineTwo': 'address-two',
             'title': 'title',
-            'person.address.region': 'state',
-            'person.prefix': 'person-title',
-            'person.zip': 'zip-code'
+            'person-address-region': 'state',
+            'person-prefix': 'person-title',
+            'person-zip': 'zip-code'
         };
         const options = {
             separator: '-',
+            default: 'unknown'
+        };
+        const result = Hoek.transform(source, schema, options);
+
+        expect(result).to.deep.equal({
+            person: {
+                address: {
+                    lineOne: '123 main street',
+                    lineTwo: 'PO Box 1234',
+                    region: 'CA'
+                },
+                prefix: 'unknown',
+                zip: 3321232
+            },
+            title: 'Warehouse'
+        });
+
+        done();
+    });
+
+    it('uses a default separator for keys if options does not specify on', (done) => {
+
+        const schema = {
+            'person.address.lineOne': 'address.one',
+            'person.address.lineTwo': 'address.two',
+            'title': 'title',
+            'person.address.region': 'state',
+            'person.prefix': 'person.title',
+            'person.zip': 'zip.code'
+        };
+        const options = {
             default: 'unknown'
         };
         const result = Hoek.transform(source, schema, options);
