@@ -532,7 +532,7 @@ onceFn(); // results in undefined
 
 A simple no-op function. It does nothing at all.
 
-### wrap(bind, method, args)
+### promiseWrap(bind, method, args)
 
 Returns a new promise that is resolved with what the `method` is called with as first argument.
 
