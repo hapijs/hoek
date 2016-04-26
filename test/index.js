@@ -2537,7 +2537,7 @@ describe('shallow()', (done) => {
 });
 
 
-describe('wrap()', () => {
+describe('promiseWrap()', () => {
 
     it('converts callback to promise, only callback function is arg, single argument callback, success', () => {
 
