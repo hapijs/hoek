@@ -547,8 +547,7 @@ const foo = function (options, callback) {
     callback('success');
 };
 
-return foo({ 'someOption': 'value' })
-.then((result) => {
+return foo({ 'someOption': 'value' }).then((result) => {
 
     // result in "success"
 });

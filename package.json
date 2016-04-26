@@ -16,8 +16,8 @@
     "lab": "10.x.x"
   },
   "scripts": {
-    "test": "node node_modules/.bin/lab -a code -t 100 -L",
-    "test-cov-html": "node node_modules/.bin/lab -a code -t 100 -L -r html -o coverage.html"
+    "test": "lab -a code -t 100 -L",
+    "test-cov-html": "lab -a code -t 100 -L -r html -o coverage.html"
   },
   "license": "BSD-3-Clause"
 }

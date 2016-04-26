@@ -2550,8 +2550,7 @@ describe('wrap()', () => {
             callback('success');
         };
 
-        return test()
-        .then((result) => {
+        return test().then((result) => {
 
             expect(result).to.be.equal('success');
         });
@@ -2568,8 +2567,7 @@ describe('wrap()', () => {
             callback(new Error('fail'));
         };
 
-        return test()
-        .then(() => {
+        return test().then(() => {
 
             Code.fail('should not happen');
         })
@@ -2592,8 +2590,7 @@ describe('wrap()', () => {
             callback('success');
         };
 
-        return test(optionsArgs)
-        .then((result) => {
+        return test(optionsArgs).then((result) => {
 
             expect(result).to.be.equal('success');
         });
