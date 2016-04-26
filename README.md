@@ -44,6 +44,7 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [nextTick](#nexttickfn "nextTick")
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
+  * [wrap](#wrap "wrap")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
   * [isAbsolutePath](#isabsolutepathpath-platform "isAbsolutePath")
@@ -556,6 +557,28 @@ onceFn(); // results in undefined
 ### ignore
 
 A simple no-op function. It does nothing at all.
+
+### wrap(bind, method, args)
+
+Returns a new promise that is resolved with what the `method` is called with as first argument.
+
+```javascript
+
+const foo = function (options, callback) {
+
+    if (!callback) {
+        return Hoek.wrap(this, foo, [options]);
+    }
+
+    callback('success');
+};
+
+return foo({ 'someOption': 'value' })
+.then((result) => {
+
+    // result in "success"
+});
+```
 
 ## Miscellaneous
 
