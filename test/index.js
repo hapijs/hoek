@@ -2324,6 +2324,15 @@ describe('transform()', () => {
         done();
     });
 
+    it('transforms an array to object by mapping keys', (done) => {
+
+        const result = Hoek.transform([1, 2, 3], ['a', 'b', 'c']);
+
+        expect(result).to.deep.equal({ a: 1, b: 2, c: 3 });
+
+        done();
+    });
+
     it('uses the reach options passed into it', (done) => {
 
         const schema = {
@@ -2537,7 +2546,7 @@ describe('shallow()', (done) => {
 });
 
 
-describe('wrap()', () => {
+describe('promiseWrap()', () => {
 
     it('converts callback to promise, only callback function is arg, single argument callback, success', () => {
 
@@ -2593,6 +2602,68 @@ describe('wrap()', () => {
         return test(optionsArgs).then((result) => {
 
             expect(result).to.be.equal('success');
+        });
+    });
+
+    it('converts callback to promise, simple callback, double argument callback, success', () => {
+
+        const test = function (options, callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, [options], ['error', 'value']);
+            }
+
+            callback(null, 'success');
+        };
+
+        return test().then((result) => {
+
+            expect(result.error).to.be.equal(null);
+            expect(result.value).to.be.equal('success');
+        });
+    });
+
+    it('converts callback to promise, simple callback, double argument callback, simple error', () => {
+
+        const test = function (options, callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, [options]);
+            }
+
+            callback(new Error('fail'), 'someValue');
+        };
+
+        return test().then(() => {
+
+            Code.fail('should not happen');
+        })
+        .catch((error) => {
+
+            expect(error.message).to.be.equal('fail');
+            expect(error.value).to.not.be.equal('someValue');
+        });
+    });
+
+    it('converts callback to promise, args before callback, double argument callback, complex error', () => {
+
+        const test = function (options, callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, [options], ['error', 'value']);
+            }
+
+            callback(new Error('fail'), 'someValue');
+        };
+
+        return test().then((result) => {
+
+            Code.fail('should not happen');
+        })
+        .catch((error) => {
+
+            expect(error.message).to.be.equal('fail');
+            expect(error.value).to.be.equal('someValue');
         });
     });
 });

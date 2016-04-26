@@ -303,6 +303,7 @@ Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
 ### transform(obj, transform, [options])
 
 Transforms an existing object into a new one based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options. The first argument can also be an array of objects. In that case the method will return an array of transformed objects. Note that `options.separator` will be respected for the keys in the transform object as well as values.
+If both `obj` and transform are `arrays`, it will convert the `obj` array to object by using keys from the `transform ` array
 
 ```javascript
 var source = {
@@ -331,6 +332,9 @@ var result = Hoek.transform(source, {
 //     },
 //     title: 'Warehouse'
 // }
+
+const result = Hoek.transform([1, 2, 3], ['a', 'b', 'c']);
+// Results in { a: 1, b: 2, c: 3 }
 ```
 
 ### shallow(obj)
@@ -532,9 +536,10 @@ onceFn(); // results in undefined
 
 A simple no-op function. It does nothing at all.
 
-### promiseWrap(bind, method, args)
+### promiseWrap(bind, method, args, transform)
 
 Returns a new promise that is resolved with what the `method` is called with as first argument.
+`transform` is optional , if supplied it will apply `Hoek.transform(arguments, transform)` on the resolved/rejected object.
 
 ```javascript
 
@@ -550,6 +555,20 @@ const foo = function (options, callback) {
 return foo({ 'someOption': 'value' }).then((result) => {
 
     // result in "success"
+});
+
+const bar = function (options, callback) {
+
+    if (!callback) {
+        return Hoek.promiseWrap(this, bar, [options], ['error', 'value']);
+    }
+
+    callback(null, 'success');
+};
+
+return bar().then((result) => {
+
+    // result is {error: null , value: 'success'}
 });
 ```
 
