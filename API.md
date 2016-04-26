@@ -36,7 +36,7 @@
   * [nextTick](#nexttickfn "nextTick")
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
-  * [wrap](#wrap "wrap")
+  * [promiseWrap](#promiseWrap "promiseWrap")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
   * [isInteger](#isintegervalue "isInteger")
@@ -541,7 +541,7 @@ Returns a new promise that is resolved with what the `method` is called with as 
 const foo = function (options, callback) {
 
     if (!callback) {
-        return Hoek.wrap(this, foo, [options]);
+        return Hoek.promiseWrap(this, foo, [options]);
     }
 
     callback('success');

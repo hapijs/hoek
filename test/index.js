@@ -2544,7 +2544,7 @@ describe('wrap()', () => {
         const test = function (callback) {
 
             if (!callback) {
-                return Hoek.wrap(this, test);
+                return Hoek.promiseWrap(this, test);
             }
 
             callback('success');
@@ -2561,7 +2561,7 @@ describe('wrap()', () => {
         const test = function (callback) {
 
             if (!callback) {
-                return Hoek.wrap(this, test);
+                return Hoek.promiseWrap(this, test);
             }
 
             callback(new Error('fail'));
@@ -2583,7 +2583,7 @@ describe('wrap()', () => {
         const test = function (options, callback) {
 
             if (!callback) {
-                return Hoek.wrap(this, test, [options]);
+                return Hoek.promiseWrap(this, test, [options]);
             }
 
             expect(options).to.be.equal(optionsArgs);
