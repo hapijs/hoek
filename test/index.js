@@ -2628,6 +2628,23 @@ describe('promiseWrap()', () => {
         });
     });
 
+    it('args before callback, simple error string', () => {
+
+        const test = function (options, callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, [options]);
+            }
+
+            callback('fail', 'someValue');
+        };
+
+        return test().then((result) => {
+
+            expect(result).to.be.equal('fail');
+        });
+    });
+
     it('args before callback, complex error', () => {
 
         const test = function (options, callback) {
