@@ -543,32 +543,52 @@ Returns a new promise that is resolved with what the `method` is called with as 
 
 ```javascript
 
-const foo = function (options, callback) {
+const simpleSuccess = function (callback) {
 
     if (!callback) {
-        return Hoek.promiseWrap(this, foo, [options]);
-    }
-
-    callback('success');
-};
-
-return foo({ 'someOption': 'value' }).then((result) => {
-
-    // result in "success"
-});
-
-const bar = function (options, callback) {
-
-    if (!callback) {
-        return Hoek.promiseWrap(this, bar, [options], ['error', 'value']);
+        return Hoek.promiseWrap(this, simpleSuccess);
     }
 
     callback(null, 'success');
 };
 
-return bar().then((result) => {
+return simpleSuccess().then((result) => {
 
-    // result is {error: null , value: 'success'}
+    // result is "success"
+});
+```
+
+```javascript
+
+const complexSuccess = function (callback) {
+
+    if (!callback) {
+        return Hoek.promiseWrap(this, complexSuccess, null, ['error', 'value1', 'value2']);
+    }
+
+    callback(null, 'success', 'works');
+};
+
+return complexSuccess().then((result) => {
+
+    // result is {error: null, "value1": "success", "value2": "works"}
+});
+```
+
+```javascript
+
+const complexError = function (options, callback) {
+
+    if (!callback) {
+        return Hoek.promiseWrap(this, bar, [options], ['error', 'value']);
+    }
+
+    callback(new Error('fail'), 'someDataEvenIfError');
+};
+
+return complexError({ 'someOption': 'value' }).catch((result) => {
+
+    // result is {"error": Error('fail') , "value": 'someDataEvenIfError'}
 });
 ```
 

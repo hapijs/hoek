@@ -2548,7 +2548,7 @@ describe('shallow()', (done) => {
 
 describe('promiseWrap()', () => {
 
-    it('converts callback to promise, only callback function is arg, single argument callback, success', () => {
+    it('only callback function is arg, simple success', () => {
 
         const test = function (callback) {
 
@@ -2556,7 +2556,7 @@ describe('promiseWrap()', () => {
                 return Hoek.promiseWrap(this, test);
             }
 
-            callback('success');
+            callback(null, 'success');
         };
 
         return test().then((result) => {
@@ -2565,7 +2565,7 @@ describe('promiseWrap()', () => {
         });
     });
 
-    it('converts callback to promise, only callback function is arg, single argument callback, error', () => {
+    it('only callback function is arg, simple error', () => {
 
         const test = function (callback) {
 
@@ -2586,44 +2586,27 @@ describe('promiseWrap()', () => {
         });
     });
 
-    it('converts callback to promise, args before callback, single argument callback, success', () => {
+    it('only callback function is arg, complex success', () => {
 
-        const optionsArgs = { 'foo': 'bar' };
-        const test = function (options, callback) {
-
-            if (!callback) {
-                return Hoek.promiseWrap(this, test, [options]);
-            }
-
-            expect(options).to.be.equal(optionsArgs);
-            callback('success');
-        };
-
-        return test(optionsArgs).then((result) => {
-
-            expect(result).to.be.equal('success');
-        });
-    });
-
-    it('converts callback to promise, simple callback, double argument callback, success', () => {
-
-        const test = function (options, callback) {
+        const test = function (callback) {
 
             if (!callback) {
-                return Hoek.promiseWrap(this, test, [options], ['error', 'value']);
+                return Hoek.promiseWrap(this, test, null, ['error', 'status', 'secondValue', 'thirdValue']);
             }
 
-            callback(null, 'success');
+            callback(null, 'success', 'works', 'fine');
         };
 
         return test().then((result) => {
 
             expect(result.error).to.be.equal(null);
-            expect(result.value).to.be.equal('success');
+            expect(result.status).to.be.equal('success');
+            expect(result.secondValue).to.be.equal('works');
+            expect(result.thirdValue).to.be.equal('fine');
         });
     });
 
-    it('converts callback to promise, simple callback, double argument callback, simple error', () => {
+    it('args before callback, simple error', () => {
 
         const test = function (options, callback) {
 
@@ -2645,7 +2628,7 @@ describe('promiseWrap()', () => {
         });
     });
 
-    it('converts callback to promise, args before callback, double argument callback, complex error', () => {
+    it('args before callback, complex error', () => {
 
         const test = function (options, callback) {
 
@@ -2660,10 +2643,10 @@ describe('promiseWrap()', () => {
 
             Code.fail('should not happen');
         })
-        .catch((error) => {
+        .catch((result) => {
 
-            expect(error.message).to.be.equal('fail');
-            expect(error.value).to.be.equal('someValue');
+            expect(result.error.message).to.be.equal('fail');
+            expect(result.value).to.be.equal('someValue');
         });
     });
 });
