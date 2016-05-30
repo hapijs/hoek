@@ -536,11 +536,11 @@ onceFn(); // results in undefined
 
 A simple no-op function. It does nothing at all.
 
-### promiseWrap(bind, method, args, transform)
+### promiseWrap(bind, method, [args, [transform]])
 
 Returns a new promise that is resolved with what the `method` is called with as first argument.
 `transform` is optional , if supplied it will apply `Hoek.transform(arguments, transform)` on the resolved/rejected object.
-It only rejects if first argument of callback is `instanceOf Error`
+It only rejects if first argument of callback is instance of `Error`.
 
 ```javascript
 
