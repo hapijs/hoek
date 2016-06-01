@@ -70,7 +70,7 @@ describe('clone()', () => {
         const a = nestedObj;
         const b = Hoek.clone(a);
 
-        expect(a).to.deep.equal(b);
+        expect(a).to.equal(b);
         expect(a.z.getTime()).to.equal(b.z.getTime());
         done();
     });
@@ -112,10 +112,10 @@ describe('clone()', () => {
         x.y = x;
 
         const b = Hoek.clone(x);
-        expect(Object.keys(b.y)).to.deep.equal(Object.keys(x));
-        expect(b.z).to.not.equal(x.z);
-        expect(b.y).to.not.equal(x.y);
-        expect(b.y.z).to.not.equal(x.y.z);
+        expect(Object.keys(b.y)).to.equal(Object.keys(x));
+        expect(b.z).to.not.shallow.equal(x.z);
+        expect(b.y).to.not.shallow.equal(x.y);
+        expect(b.y.z).to.not.shallow.equal(x.y.z);
         expect(b.y).to.equal(b);
         expect(b.y.y.y.y).to.equal(b);
         done();
@@ -126,7 +126,7 @@ describe('clone()', () => {
         const obj = Object.create(null);
         const b = Hoek.clone(obj);
 
-        expect(b).to.deep.equal(obj);
+        expect(b).to.equal(obj);
         done();
     });
 
@@ -146,7 +146,7 @@ describe('clone()', () => {
 
         const b = Hoek.clone(a);
 
-        expect(a).to.deep.equal(b);
+        expect(a).to.equal(b);
         expect(a.x.y.c.getTime()).to.equal(b.x.y.c.getTime());
         done();
     });
@@ -157,7 +157,7 @@ describe('clone()', () => {
 
         const b = Hoek.clone(a);
 
-        expect(a).to.deep.equal(b);
+        expect(a).to.equal(b);
         done();
     });
 
@@ -167,16 +167,16 @@ describe('clone()', () => {
         const y = Hoek.clone(nestedObj);
 
         // Date
-        expect(x.z).to.not.equal(nestedObj.z);
-        expect(x.z).to.not.equal(y.z);
+        expect(x.z).to.not.shallow.equal(nestedObj.z);
+        expect(x.z).to.not.shallow.equal(y.z);
 
         // Regex
-        expect(x.w).to.not.equal(nestedObj.w);
-        expect(x.w).to.not.equal(y.w);
+        expect(x.w).to.not.shallow.equal(nestedObj.w);
+        expect(x.w).to.not.shallow.equal(y.w);
 
         // Array
-        expect(x.v).to.not.equal(nestedObj.v);
-        expect(x.v).to.not.equal(y.v);
+        expect(x.v).to.not.shallow.equal(nestedObj.v);
+        expect(x.v).to.not.shallow.equal(y.v);
 
         // Immutable(s)
         x.y = 5;
@@ -191,8 +191,8 @@ describe('clone()', () => {
         const x = Hoek.clone(nestedObj);
         const y = Hoek.clone(nestedObj);
 
-        expect(x.x.c).to.not.equal(nestedObj.x.c);
-        expect(x.x.c).to.not.equal(y.x.c);
+        expect(x.x.c).to.not.shallow.equal(nestedObj.x.c);
+        expect(x.x.c).to.not.shallow.equal(y.x.c);
 
         expect(x.x.c.getTime()).to.equal(nestedObj.x.c.getTime());
         expect(x.x.c.getTime()).to.equal(y.x.c.getTime());
@@ -255,7 +255,7 @@ describe('clone()', () => {
 
         expect(b.a).to.equal(5);
         expect(b.b()).to.equal('c');
-        expect(a).to.deep.equal(b);
+        expect(a).to.equal(b);
         done();
     });
 
@@ -403,7 +403,7 @@ describe('clone()', () => {
 
         const copy = Hoek.clone(obj);
         Object.getOwnPropertyDescriptor = oldGetOwnPropertyDescriptor;
-        expect(copy).to.deep.equal(obj);
+        expect(copy).to.equal(obj);
         done();
     });
 });
@@ -425,11 +425,11 @@ describe('merge()', () => {
         };
 
         Hoek.merge(target, source);
-        expect(target.c).to.not.equal(source.c);
-        expect(target.c).to.deep.equal(source.c);
-        expect(target.d).to.not.equal(source.d);
-        expect(target.d[0]).to.not.equal(source.d[0]);
-        expect(target.d).to.deep.equal(source.d);
+        expect(target.c).to.not.shallow.equal(source.c);
+        expect(target.c).to.equal(source.c);
+        expect(target.d).to.not.shallow.equal(source.d);
+        expect(target.d[0]).to.not.shallow.equal(source.d[0]);
+        expect(target.d).to.equal(source.d);
         done();
     });
 
@@ -552,8 +552,8 @@ describe('merge()', () => {
         const b = nestedObj;
 
         const c = Hoek.merge(a, b);
-        expect(a).to.deep.equal(b);
-        expect(c).to.deep.equal(b);
+        expect(a).to.equal(b);
+        expect(c).to.equal(b);
         done();
     });
 
@@ -568,7 +568,7 @@ describe('merge()', () => {
         expect(c.z).to.equal(4);
         expect(c.v).to.equal(0);
         expect(c.m).to.equal('123');
-        expect(c.t).to.deep.equal({ u: 6 });
+        expect(c.t).to.equal({ u: 6 });
         done();
     });
 
@@ -583,7 +583,7 @@ describe('merge()', () => {
         expect(d.z).to.equal(3);
         expect(d.v).to.equal(5);
         expect(d.m).to.equal('abc');
-        expect(d.t).to.deep.equal('test');
+        expect(d.t).to.equal('test');
         done();
     });
 
@@ -661,7 +661,7 @@ describe('applyToDefaults()', () => {
     it('returns a copy of defaults if options is true', (done) => {
 
         const result = Hoek.applyToDefaults(defaults, true);
-        expect(result).to.deep.equal(defaults);
+        expect(result).to.equal(defaults);
         done();
     });
 
@@ -679,11 +679,11 @@ describe('applyToDefaults()', () => {
         };
 
         const result = Hoek.applyToDefaults(defaults, obj);
-        expect(result.c.e).to.deep.equal([4]);
+        expect(result.c.e).to.equal([4]);
         expect(result.a).to.equal(1);
         expect(result.b).to.equal(2);
         expect(result.f).to.equal(0);
-        expect(result.g).to.deep.equal({ h: 5 });
+        expect(result.g).to.equal({ h: 5 });
         done();
     });
 
@@ -701,11 +701,11 @@ describe('applyToDefaults()', () => {
         };
 
         const result = Hoek.applyToDefaults(defaults, obj, true);
-        expect(result.c.e).to.deep.equal([4]);
+        expect(result.c.e).to.equal([4]);
         expect(result.a).to.equal(null);
         expect(result.b).to.equal(2);
         expect(result.f).to.equal(0);
-        expect(result.g).to.deep.equal({ h: 5 });
+        expect(result.g).to.equal({ h: 5 });
         done();
     });
 });
@@ -724,9 +724,9 @@ describe('cloneWithShallow()', () => {
         };
 
         const copy = Hoek.cloneWithShallow(source, ['c']);
-        expect(copy).to.deep.equal(source);
-        expect(copy).to.not.equal(source);
-        expect(copy.a).to.not.equal(source.a);
+        expect(copy).to.equal(source);
+        expect(copy).to.not.shallow.equal(source);
+        expect(copy.a).to.not.shallow.equal(source.a);
         expect(copy.b).to.equal(source.b);
         done();
     });
@@ -761,9 +761,9 @@ describe('cloneWithShallow()', () => {
         };
 
         const copy = Hoek.cloneWithShallow(source, ['c', 'v']);
-        expect(copy).to.deep.equal(source);
-        expect(copy).to.not.equal(source);
-        expect(copy.a).to.not.equal(source.a);
+        expect(copy).to.equal(source);
+        expect(copy).to.not.shallow.equal(source);
+        expect(copy.a).to.not.shallow.equal(source.a);
         expect(copy.b).to.equal(source.b);
         done();
     });
@@ -795,7 +795,7 @@ describe('applyToDefaultsWithShallow()', () => {
         };
 
         const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['a']);
-        expect(merged).to.deep.equal({ a: { b: 4 }, c: { d: 6, g: 1, f: 7 } });
+        expect(merged).to.equal({ a: { b: 4 }, c: { d: 6, g: 1, f: 7 } });
         expect(merged.a).to.equal(options.a);
         expect(merged.a).to.not.equal(defaults.a);
         expect(merged.c).to.not.equal(options.c);
@@ -828,7 +828,7 @@ describe('applyToDefaultsWithShallow()', () => {
         };
 
         const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
-        expect(merged).to.deep.equal({ a: { b: 4 }, c: { d: 6, g: { h: 8 } } });
+        expect(merged).to.equal({ a: { b: 4 }, c: { d: 6, g: { h: 8 } } });
         expect(merged.c.g).to.equal(options.c.g);
         done();
     });
@@ -853,7 +853,7 @@ describe('applyToDefaultsWithShallow()', () => {
         };
 
         const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
-        expect(merged).to.deep.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
+        expect(merged).to.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
         expect(merged.c.g).to.equal(options.c.g);
         done();
     });
@@ -883,7 +883,7 @@ describe('applyToDefaultsWithShallow()', () => {
         };
 
         const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
-        expect(merged).to.deep.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
+        expect(merged).to.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
         expect(merged.c.g).to.equal(options.c.g);
         done();
     });
@@ -910,7 +910,7 @@ describe('applyToDefaultsWithShallow()', () => {
         };
 
         const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g.r']);
-        expect(merged).to.deep.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
+        expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
         expect(merged.c.g.r).to.equal(options.c.g.r);
         done();
     });
@@ -937,7 +937,7 @@ describe('applyToDefaultsWithShallow()', () => {
         };
 
         const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['x.y']);
-        expect(merged).to.deep.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
+        expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
         done();
     });
 
@@ -1292,30 +1292,30 @@ describe('unique()', () => {
 
     it('ensures uniqueness within array of objects based on subkey', (done) => {
 
-        expect(Hoek.unique(internals.unique.objectsByKey.dups, 'x')).to.deep.equal(internals.unique.objectsByKey.result);
-        expect(deprecatedUnique(internals.unique.objectsByKey.dups, 'x')).to.deep.equal(internals.unique.objectsByKey.result);
+        expect(Hoek.unique(internals.unique.objectsByKey.dups, 'x')).to.equal(internals.unique.objectsByKey.result);
+        expect(deprecatedUnique(internals.unique.objectsByKey.dups, 'x')).to.equal(internals.unique.objectsByKey.result);
 
         done();
     });
 
     it('removes duplicated integers without key', (done) => {
 
-        expect(Hoek.unique(internals.unique.integers.dups)).to.deep.equal(internals.unique.integers.result);
-        expect(deprecatedUnique(internals.unique.integers.dups)).to.deep.equal(internals.unique.integers.result);
+        expect(Hoek.unique(internals.unique.integers.dups)).to.equal(internals.unique.integers.result);
+        expect(deprecatedUnique(internals.unique.integers.dups)).to.equal(internals.unique.integers.result);
         done();
     });
 
     it('removes duplicated strings without key', (done) => {
 
-        expect(Hoek.unique(internals.unique.strings.dups)).to.deep.equal(internals.unique.strings.result);
-        expect(deprecatedUnique(internals.unique.strings.dups)).to.deep.equal(internals.unique.strings.result);
+        expect(Hoek.unique(internals.unique.strings.dups)).to.equal(internals.unique.strings.result);
+        expect(deprecatedUnique(internals.unique.strings.dups)).to.equal(internals.unique.strings.result);
         done();
     });
 
     it('removes duplicated objects without key', (done) => { // this was not supported in earlier versions
 
-        expect(Hoek.unique(internals.unique.objects.dups)).to.deep.equal(internals.unique.objects.result);
-        expect(deprecatedUnique(internals.unique.objects.dups)).to.not.deep.equal(internals.unique.objects.result);
+        expect(Hoek.unique(internals.unique.objects.dups)).to.equal(internals.unique.objects.result);
+        expect(deprecatedUnique(internals.unique.objects.dups)).to.not.equal(internals.unique.objects.result);
         done();
     });
 });
@@ -1333,7 +1333,7 @@ describe('mapToObject()', () => {
 
         const keys = [1, 2, 3, 4];
         const a = Hoek.mapToObject(keys);
-        expect(Object.keys(a)).to.deep.equal(['1', '2', '3', '4']);
+        expect(Object.keys(a)).to.equal(['1', '2', '3', '4']);
         done();
     });
 
@@ -1342,7 +1342,7 @@ describe('mapToObject()', () => {
         const keys = [{ x: 1 }, { x: 2 }, { x: 3 }, { y: 4 }];
         const subkey = 'x';
         const a = Hoek.mapToObject(keys, subkey);
-        expect(a).to.deep.equal({ 1: true, 2: true, 3: true });
+        expect(a).to.equal({ 1: true, 2: true, 3: true });
         done();
     });
 });
@@ -1500,7 +1500,7 @@ describe('flatten()', () => {
 
         const result = Hoek.flatten([1, 2, [3, 4, [5, 6], [7], 8], [9], [10, [11, 12]], 13]);
         expect(result.length).to.equal(13);
-        expect(result).to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+        expect(result).to.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
         done();
     });
 });
@@ -1915,8 +1915,8 @@ describe('assert()', () => {
             fn();
         }
         catch (err) {
-            expect(error).to.equal(error);  // should be the same reference
-            expect(error).to.not.equal(error2); // error with the same message should not match
+            expect(err).to.equal(error);  // should be the same reference
+            expect(err).to.not.shallow.equal(error2); // error with the same message should not match
         }
 
         done();
@@ -2267,7 +2267,7 @@ describe('transform()', () => {
             'person.address.location': 'zip.province'
         });
 
-        expect(result).to.deep.equal({
+        expect(result).to.equal({
             person: {
                 address: {
                     lineOne: '123 main street',
@@ -2294,7 +2294,7 @@ describe('transform()', () => {
             'person.address.location': 'zip.province'
         });
 
-        expect(result).to.deep.equal([
+        expect(result).to.equal([
             {
                 person: {
                     address: {
@@ -2340,7 +2340,7 @@ describe('transform()', () => {
         };
         const result = Hoek.transform(source, schema, options);
 
-        expect(result).to.deep.equal({
+        expect(result).to.equal({
             person: {
                 address: {
                     lineOne: '123 main street',
@@ -2371,7 +2371,7 @@ describe('transform()', () => {
         };
         const result = Hoek.transform(source, schema, options);
 
-        expect(result).to.deep.equal({
+        expect(result).to.equal({
             person: {
                 address: {
                     lineOne: '123 main street',
@@ -2397,7 +2397,7 @@ describe('transform()', () => {
             province: 'zip.province'
         });
 
-        expect(result).to.deep.equal({
+        expect(result).to.equal({
             lineOne: '123 main street',
             lineTwo: 'PO Box 1234',
             title: 'Warehouse',
@@ -2433,7 +2433,7 @@ describe('transform()', () => {
     it('is safe to pass null', (done) => {
 
         const result = Hoek.transform(null, {});
-        expect(result).to.deep.equal({});
+        expect(result).to.equal({});
 
         done();
     });
@@ -2441,7 +2441,7 @@ describe('transform()', () => {
     it('is safe to pass undefined', (done) => {
 
         const result = Hoek.transform(undefined, {});
-        expect(result).to.deep.equal({});
+        expect(result).to.equal({});
 
         done();
     });
@@ -2529,8 +2529,8 @@ describe('shallow()', (done) => {
         };
 
         const shallow = Hoek.shallow(obj);
-        expect(shallow).to.not.equal(obj);
-        expect(shallow).to.deep.equal(obj);
+        expect(shallow).to.not.shallow.equal(obj);
+        expect(shallow).to.equal(obj);
         expect(shallow.b).to.equal(obj.b);
         done();
     });
