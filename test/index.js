@@ -7,6 +7,7 @@ const Path = require('path');
 const Code = require('code');
 const Hoek = require('../lib');
 const Lab = require('lab');
+const Util = require('util');
 
 
 // Declare internals
@@ -1470,25 +1471,69 @@ describe('contain()', () => {
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: false })).to.be.false();
 
         // Getter check
-        const Foo = function (bar) {
+        {
+            const Foo = function (bar) {
 
-            this.bar = bar;
-        };
+                this.bar = bar;
+            };
 
-        Object.defineProperty(Foo.prototype, 'baz', {
-            enumerable: true,
-            get: function () {
+            Object.defineProperty(Foo.prototype, 'baz', {
+                enumerable: true,
+                get: function () {
 
-                return this.bar;
-            }
-        });
+                    return this.bar;
+                }
+            });
 
-        expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true })).to.be.true();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true, part: true })).to.be.true();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true })).to.be.true();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, only: true })).to.be.false();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).to.be.false();
-        expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).to.be.true();
+            expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true })).to.be.true();
+            expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true, part: true })).to.be.true();
+            expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true })).to.be.true();
+            expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, only: true })).to.be.false();
+            expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).to.be.false();
+            expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).to.be.true();
+            expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true })).to.be.true();
+        }
+
+        // Properties on prototype not visible
+        {
+            const Foo = function () {
+
+                this.a = 1;
+            };
+
+            Object.defineProperty(Foo.prototype, 'b', {
+                enumerable: true,
+                value: 2
+            });
+
+            const Bar = function () {
+
+                Foo.call(this);
+                this.c = 3;
+            };
+
+            Util.inherits(Bar, Foo);
+
+            expect((new Bar()).a).to.equal(1);
+            expect((new Bar()).b).to.equal(2);
+            expect((new Bar()).c).to.equal(3);
+            expect(Hoek.contain(new Bar(), { 'a': 1, 'c': 3 }, { only: true })).to.be.true();
+            expect(Hoek.contain(new Bar(), 'b')).to.be.false();
+        }
+
+        // Non-Enumerable properties
+        {
+            const foo = { a: 1, b: 2 };
+
+            Object.defineProperty(foo, 'c', {
+                enumerable: false,
+                value: 3
+            });
+
+            expect(Hoek.contain(foo, 'c')).to.be.true();
+            expect(Hoek.contain(foo, { 'c': 3 })).to.be.true();
+            expect(Hoek.contain(foo, { 'a': 1, 'b': 2, 'c': 3 }, { only: true })).to.be.true();
+        }
 
         done();
     });
