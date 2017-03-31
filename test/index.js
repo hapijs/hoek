@@ -2222,6 +2222,8 @@ describe('isInteger()', () => {
         expect(Hoek.isInteger('0')).to.equal(false);
         expect(Hoek.isInteger(1.0)).to.equal(true);
         expect(Hoek.isInteger(1.1)).to.equal(false);
+        expect(Hoek.isInteger(90071992547409910.1)).to.equal(false);
+        expect(Hoek.isInteger(NaN)).to.equal(false);
         done();
     });
 });
