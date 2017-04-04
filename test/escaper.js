@@ -98,10 +98,10 @@ describe('escapeJson()', () => {
         done();
     });
 
-    it('encodes control sequence \0 as hex escaped equivalent', (done) => {
+    it('doesn\'t encode \0 as hex escaped equivalent', (done) => {
 
         const encoded = Hoek.escapeJson('\0');
-        expect(encoded).to.equal('\\x00');
+        expect(encoded).to.equal('\0');
         done();
     });
 
@@ -128,24 +128,24 @@ describe('escapeJson()', () => {
         done();
     });
 
-    it('encodes U+13F0 Cherokee Letter Ye as unicode escaped equivalent', (done) => {
+    it('doesn\'t encode U+13F0 Cherokee Letter Ye as unicode escaped equivalent', (done) => {
 
         const encoded = Hoek.escapeJson('Ᏸ');
-        expect(encoded).to.equal('\\u13f0');
+        expect(encoded).to.equal('Ᏸ');
         done();
     });
 
-    it('encodes U+1F4A9 PILE OF POO as unicode escaped equivalent', (done) => {
+    it('doesn\'t encode U+1F4A9 PILE OF POO as unicode escaped equivalent', (done) => {
 
         const encoded = Hoek.escapeJson('💩');
-        expect(encoded).to.equal('\\ud83d\\udca9');
+        expect(encoded).to.equal('💩');
         done();
     });
 
-    it('encodes U+1D306 TETRAGRAM FOR CENTRE as unicode escaped equivalent', (done) => {
+    it('doesn\'t encode U+1D306 TETRAGRAM FOR CENTRE as unicode escaped equivalent', (done) => {
 
         const encoded = Hoek.escapeJson('𝌆');
-        expect(encoded).to.equal('\\ud834\\udf06');
+        expect(encoded).to.equal('𝌆');
         done();
     });
 
