@@ -26,6 +26,7 @@
 * [Escaping Characters](#escaping-characters "Escaping Characters")
   * [escapeHtml](#escapehtmlstring "escapeHtml")
   * [escapeHeaderAttribute](#escapeheaderattributeattribute "escapeHeaderAttribute")
+  * [escapeJson](#escapejsonstring "escapeJson")
   * [escapeRegex](#escaperegexstring "escapeRegex")
 * [Errors](#errors "Errors")
   * [assert](#assertcondition-message "assert")
@@ -412,6 +413,15 @@ Escape attribute value for use in HTTP header
 var a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  //returns I said \"go w\\o me\"
 ```
 
+### escapeJson(string)
+
+Unicode escapes the characters `<`, `>`, and `&` to prevent mime-sniffing older browsers mistaking JSON as HTML, and escapes line and paragraph separators for JSONP and script contexts.
+
+```javascript
+
+var lineSeparator = String.fromCharCode(0x2028);
+var a = Hoek.escapeJson('I said <script>confirm(&).' + lineSeparator);  //returns I said \\u003cscript\\u003econfirm(\\u0026).\\u2028
+```
 
 ### escapeRegex(string)
 
