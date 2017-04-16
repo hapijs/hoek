@@ -1270,6 +1270,51 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(a, b, { prototype: false })).to.be.true();
         done();
     });
+
+    it('compares complex objects', function (done) {
+
+        var a = {
+            provider: 'custom',
+            token: '456',
+            refreshToken: undefined,
+            expiresIn: 3600,
+            query: {},
+            profile: {
+                id: '1234567890',
+                name: { first: 'steve', last: 'smith' },
+                email: undefined,
+                headline: 'Master of the universe',
+                raw: {
+                    id: '1234567890',
+                    firstName: 'steve',
+                    lastName: 'smith',
+                    headline: 'Master of the universe'
+                }
+            }
+        };
+
+        var b = {
+            provider: 'custom',
+            token: '456',
+            expiresIn: 3600,
+            refreshToken: undefined,
+            query: {},
+            profile: {
+                id: '1234567890',
+                name: { first: 'steve', last: 'smith' },
+                headline: 'Master of the universe',
+                raw: {
+                    id: '1234567890',
+                    firstName: 'steve',
+                    lastName: 'smith',
+                    headline: 'Master of the universe'
+                }
+            }
+        };
+
+        expect(a).to.deep.equal(b);
+        done();
+    });
 });
 
 describe('unique()', () => {
