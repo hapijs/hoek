@@ -88,3 +88,93 @@ describe('escapeHtml()', () => {
         done();
     });
 });
+
+describe('escapeJson()', () => {
+
+    it('encodes < and > as unicode escaped equivalents', (done) => {
+
+        const encoded = Hoek.escapeJson('<script><>');
+        expect(encoded).to.equal('\\u003cscript\\u003e\\u003c\\u003e');
+        done();
+    });
+
+    it('doesn\'t encode \0 as hex escaped equivalent', (done) => {
+
+        const encoded = Hoek.escapeJson('\0');
+        expect(encoded).to.equal('\0');
+        done();
+    });
+
+    it('encodes & (ampersand) as unicode escaped equivalent', (done) => {
+
+        const encoded = Hoek.escapeJson('&&');
+        expect(encoded).to.equal('\\u0026\\u0026');
+        done();
+    });
+
+    it('encodes line seperator as unicode escaped equivalent', (done) => {
+
+        const lineSeparator = String.fromCharCode(0x2028);
+        const encoded = Hoek.escapeJson(lineSeparator);
+        expect(encoded).to.equal('\\u2028');
+        done();
+    });
+
+    it('encodes paragraph seperator as unicode escaped equivalent', (done) => {
+
+        const paragraphSeparator = String.fromCharCode(0x2029);
+        const encoded = Hoek.escapeJson(paragraphSeparator);
+        expect(encoded).to.equal('\\u2029');
+        done();
+    });
+
+    it('doesn\'t encode U+13F0 Cherokee Letter Ye as unicode escaped equivalent', (done) => {
+
+        const encoded = Hoek.escapeJson('Ᏸ');
+        expect(encoded).to.equal('Ᏸ');
+        done();
+    });
+
+    it('doesn\'t encode U+1F4A9 PILE OF POO as unicode escaped equivalent', (done) => {
+
+        const encoded = Hoek.escapeJson('💩');
+        expect(encoded).to.equal('💩');
+        done();
+    });
+
+    it('doesn\'t encode U+1D306 TETRAGRAM FOR CENTRE as unicode escaped equivalent', (done) => {
+
+        const encoded = Hoek.escapeJson('𝌆');
+        expect(encoded).to.equal('𝌆');
+        done();
+    });
+
+    it('doesn\'t encode \\ (backslash)', (done) => {
+
+        const encoded = Hoek.escapeJson('\\');
+        expect(encoded).to.equal('\\');
+        done();
+    });
+
+    it('doesn\'t throw an exception when passed null', (done) => {
+
+        const encoded = Hoek.escapeJson(null);
+        expect(encoded).to.equal('');
+        done();
+    });
+
+    it('doesn\'t encode {} characters', (done) => {
+
+        const encoded = Hoek.escapeJson('{}');
+        expect(encoded).to.equal('{}');
+        done();
+    });
+
+    it('doesn\'t encode / (slash) character', (done) => {
+
+        const encoded = Hoek.escapeJson('<script>alert(1)</script>');
+        expect(encoded).to.equal('\\u003cscript\\u003ealert(1)\\u003c/script\\u003e');
+        done();
+    });
+
+});
