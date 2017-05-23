@@ -37,6 +37,7 @@
   * [nextTick](#nexttickfn "nextTick")
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
+  * [promiseWrap](#promiseWrap "promiseWrap")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
   * [isInteger](#isintegervalue "isInteger")
@@ -303,6 +304,7 @@ Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
 ### transform(obj, transform, [options])
 
 Transforms an existing object into a new one based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options. The first argument can also be an array of objects. In that case the method will return an array of transformed objects. Note that `options.separator` will be respected for the keys in the transform object as well as values.
+If both `obj` and transform are `arrays`, it will convert the `obj` array to object by using keys from the `transform ` array
 
 ```javascript
 var source = {
@@ -331,6 +333,9 @@ var result = Hoek.transform(source, {
 //     },
 //     title: 'Warehouse'
 // }
+
+const result = Hoek.transform([1, 2, 3], ['a', 'b', 'c']);
+// Results in { a: 1, b: 2, c: 3 }
 ```
 
 ### shallow(obj)
@@ -540,6 +545,63 @@ onceFn(); // results in undefined
 ### ignore
 
 A simple no-op function. It does nothing at all.
+
+### promiseWrap(bind, method, [args, [transform]])
+
+Returns a new promise that is resolved with what the `method` is called with as first argument.
+`transform` is optional , if supplied it will apply `Hoek.transform(arguments, transform)` on the resolved/rejected object.
+It only rejects if first argument of callback is instance of `Error`.
+
+```javascript
+
+const simpleSuccess = function (callback) {
+
+    if (!callback) {
+        return Hoek.promiseWrap(this, simpleSuccess);
+    }
+
+    callback(null, 'success');
+};
+
+return simpleSuccess().then((result) => {
+
+    // result is "success"
+});
+```
+
+```javascript
+
+const complexSuccess = function (callback) {
+
+    if (!callback) {
+        return Hoek.promiseWrap(this, complexSuccess, null, ['error', 'value1', 'value2']);
+    }
+
+    callback(null, 'success', 'works');
+};
+
+return complexSuccess().then((result) => {
+
+    // result is {error: null, "value1": "success", "value2": "works"}
+});
+```
+
+```javascript
+
+const complexError = function (options, callback) {
+
+    if (!callback) {
+        return Hoek.promiseWrap(this, bar, [options], ['error', 'value']);
+    }
+
+    callback(new Error('fail'), 'someDataEvenIfError');
+};
+
+return complexError({ 'someOption': 'value' }).catch((result) => {
+
+    // result is {"error": Error('fail') , "value": 'someDataEvenIfError'}
+});
+```
 
 ## Miscellaneous
 

@@ -2371,6 +2371,15 @@ describe('transform()', () => {
         done();
     });
 
+    it('transforms an array to object by mapping keys', (done) => {
+
+        const result = Hoek.transform([1, 2, 3], ['a', 'b', 'c']);
+
+        expect(result).to.deep.equal({ a: 1, b: 2, c: 3 });
+
+        done();
+    });
+
     it('uses the reach options passed into it', (done) => {
 
         const schema = {
@@ -2580,5 +2589,128 @@ describe('shallow()', (done) => {
         expect(shallow).to.equal(obj);
         expect(shallow.b).to.equal(obj.b);
         done();
+    });
+});
+
+
+describe('promiseWrap()', () => {
+
+    it('only callback function is arg, simple success', () => {
+
+        const test = function (callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test);
+            }
+
+            callback(null, 'success');
+        };
+
+        return test().then((result) => {
+
+            expect(result).to.be.equal('success');
+        });
+    });
+
+    it('only callback function is arg, simple error', () => {
+
+        const test = function (callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test);
+            }
+
+            callback(new Error('fail'));
+        };
+
+        return test().then(() => {
+
+            Code.fail('should not happen');
+        })
+        .catch((error) => {
+
+            expect(error.message).to.be.equal('fail');
+        });
+    });
+
+    it('only callback function is arg, complex success', () => {
+
+        const test = function (callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, null, ['error', 'status', 'secondValue', 'thirdValue']);
+            }
+
+            callback(null, 'success', 'works', 'fine');
+        };
+
+        return test().then((result) => {
+
+            expect(result.error).to.be.equal(null);
+            expect(result.status).to.be.equal('success');
+            expect(result.secondValue).to.be.equal('works');
+            expect(result.thirdValue).to.be.equal('fine');
+        });
+    });
+
+    it('args before callback, simple error', () => {
+
+        const test = function (options, callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, [options]);
+            }
+
+            callback(new Error('fail'), 'someValue');
+        };
+
+        return test().then(() => {
+
+            Code.fail('should not happen');
+        })
+        .catch((error) => {
+
+            expect(error.message).to.be.equal('fail');
+            expect(error.value).to.not.be.equal('someValue');
+        });
+    });
+
+    it('args before callback, simple error string', () => {
+
+        const test = function (options, callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, [options]);
+            }
+
+            callback('fail', 'someValue');
+        };
+
+        return test().then((result) => {
+
+            expect(result).to.be.equal('fail');
+        });
+    });
+
+    it('args before callback, complex error', () => {
+
+        const test = function (options, callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, [options], ['error', 'value']);
+            }
+
+            callback(new Error('fail'), 'someValue');
+        };
+
+        return test().then((result) => {
+
+            Code.fail('should not happen');
+        })
+        .catch((result) => {
+
+            expect(result.error.message).to.be.equal('fail');
+            expect(result.value).to.be.equal('someValue');
+        });
     });
 });
