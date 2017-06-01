@@ -37,6 +37,7 @@
   * [nextTick](#nexttickfn "nextTick")
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
+  * [promiseWrap](#promiseWrap "promiseWrap")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
   * [isInteger](#isintegervalue "isInteger")
@@ -540,6 +541,27 @@ onceFn(); // results in undefined
 ### ignore
 
 A simple no-op function. It does nothing at all.
+
+### promiseWrap(bind, method, args)
+
+Returns a new promise that is resolved with what the `method` is called with as first argument.
+
+```javascript
+
+const foo = function (options, callback) {
+
+    if (!callback) {
+        return Hoek.promiseWrap(this, foo, [options]);
+    }
+
+    callback('success');
+};
+
+return foo({ 'someOption': 'value' }).then((result) => {
+
+    // result in "success"
+});
+```
 
 ## Miscellaneous
 

@@ -2582,3 +2582,64 @@ describe('shallow()', (done) => {
         done();
     });
 });
+
+
+describe('promiseWrap()', () => {
+
+    it('converts callback to promise, only callback function is arg, single argument callback, success', () => {
+
+        const test = function (callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test);
+            }
+
+            callback('success');
+        };
+
+        return test().then((result) => {
+
+            expect(result).to.be.equal('success');
+        });
+    });
+
+    it('converts callback to promise, only callback function is arg, single argument callback, error', () => {
+
+        const test = function (callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test);
+            }
+
+            callback(new Error('fail'));
+        };
+
+        return test().then(() => {
+
+            Code.fail('should not happen');
+        })
+        .catch((error) => {
+
+            expect(error.message).to.be.equal('fail');
+        });
+    });
+
+    it('converts callback to promise, args before callback, single argument callback, success', () => {
+
+        const optionsArgs = { 'foo': 'bar' };
+        const test = function (options, callback) {
+
+            if (!callback) {
+                return Hoek.promiseWrap(this, test, [options]);
+            }
+
+            expect(options).to.be.equal(optionsArgs);
+            callback('success');
+        };
+
+        return test(optionsArgs).then((result) => {
+
+            expect(result).to.be.equal('success');
+        });
+    });
+});
