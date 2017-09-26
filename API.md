@@ -18,7 +18,6 @@
   * [transform](#transformobj-transform-options "transform")
   * [shallow](#shallowobj "shallow")
   * [stringify](#stringifyobj "stringify")
-* [Timer](#timer "Timer")
 * [Bench](#bench "Bench")
 * [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
   * [base64urlEncode](#base64urlencodevalue "binary64urlEncode")
@@ -34,7 +33,6 @@
   * [displayStack](#displaystackslice "displayStack")
   * [callStack](#callstackslice "callStack")
 * [Function](#function "Function")
-  * [nextTick](#nexttickfn "nextTick")
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
@@ -354,18 +352,6 @@ a.b = a;
 Hoek.stringify(a);		// Returns '[Cannot display object: Converting circular structure to JSON]'
 ```
 
-# Timer
-
-A Timer object. Initializing a new timer object sets the ts to the number of milliseconds elapsed since 1 January 1970 00:00:00 UTC.
-
-```javascript
-
-var timerObj = new Hoek.Timer();
-console.log("Time is now: " + timerObj.ts);
-console.log("Elapsed time from initialization: " + timerObj.elapsed() + 'milliseconds');
-```
-
-
 # Bench
 
 Same as Timer with the exception that `ts` stores the internal node clock which is not related to `Date.now()` and cannot be used to display
@@ -500,27 +486,6 @@ console.log(stack);  // returns something like:
 ```
 
 ## Function
-
-### nextTick(fn)
-
-Returns a new function that wraps `fn` in `process.nextTick`.
-
-```javascript
-
-var myFn = function () {
-    console.log('Do this later');
-};
-
-var nextFn = Hoek.nextTick(myFn);
-
-nextFn();
-console.log('Do this first');
-
-// Results in:
-//
-// Do this first
-// Do this later
-```
 
 ### once(fn)
 
