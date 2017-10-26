@@ -70,7 +70,7 @@ internals.unique.mixed = {
 
 describe('clone()', () => {
 
-    it('clones a nested object', async () => {
+    it('clones a nested object', () => {
 
         const a = nestedObj;
         const b = Hoek.clone(a);
@@ -79,14 +79,14 @@ describe('clone()', () => {
         expect(a.z.getTime()).to.equal(b.z.getTime());
     });
 
-    it('clones a null object', async () => {
+    it('clones a null object', () => {
 
         const b = Hoek.clone(null);
 
         expect(b).to.equal(null);
     });
 
-    it('should not convert undefined properties to null', async () => {
+    it('should not convert undefined properties to null', () => {
 
         const obj = { something: undefined };
         const b = Hoek.clone(obj);
@@ -94,7 +94,7 @@ describe('clone()', () => {
         expect(typeof b.something).to.equal('undefined');
     });
 
-    it('should not throw on circular reference', async () => {
+    it('should not throw on circular reference', () => {
 
         const a = {};
         a.x = a;
@@ -105,7 +105,7 @@ describe('clone()', () => {
         }).to.not.throw();
     });
 
-    it('clones circular reference', async () => {
+    it('clones circular reference', () => {
 
         const x = {
             'z': new Date()
@@ -121,7 +121,7 @@ describe('clone()', () => {
         expect(b.y.y.y.y).to.equal(b);
     });
 
-    it('clones an object with a null prototype', async () => {
+    it('clones an object with a null prototype', () => {
 
         const obj = Object.create(null);
         const b = Hoek.clone(obj);
@@ -129,7 +129,7 @@ describe('clone()', () => {
         expect(b).to.equal(obj);
     });
 
-    it('clones deeply nested object', async () => {
+    it('clones deeply nested object', () => {
 
         const a = {
             x: {
@@ -149,7 +149,7 @@ describe('clone()', () => {
         expect(a.x.y.c.getTime()).to.equal(b.x.y.c.getTime());
     });
 
-    it('clones arrays', async () => {
+    it('clones arrays', () => {
 
         const a = [1, 2, 3];
 
@@ -158,7 +158,7 @@ describe('clone()', () => {
         expect(a).to.equal(b);
     });
 
-    it('performs actual copy for shallow keys (no pass by reference)', async () => {
+    it('performs actual copy for shallow keys (no pass by reference)', () => {
 
         const x = Hoek.clone(nestedObj);
         const y = Hoek.clone(nestedObj);
@@ -181,7 +181,7 @@ describe('clone()', () => {
         expect(x.y).to.not.equal(y.y);
     });
 
-    it('performs actual copy for deep keys (no pass by reference)', async () => {
+    it('performs actual copy for deep keys (no pass by reference)', () => {
 
         const x = Hoek.clone(nestedObj);
         const y = Hoek.clone(nestedObj);
@@ -193,7 +193,7 @@ describe('clone()', () => {
         expect(x.x.c.getTime()).to.equal(y.x.c.getTime());
     });
 
-    it('copies functions with properties', async () => {
+    it('copies functions with properties', () => {
 
         const a = {
             x: function () {
@@ -216,7 +216,7 @@ describe('clone()', () => {
         expect(b.x.z).to.equal('string in function');
     });
 
-    it('should copy a buffer', async () => {
+    it('should copy a buffer', () => {
 
         const tls = {
             key: new Buffer([1, 2, 3, 4, 5]),
@@ -230,7 +230,7 @@ describe('clone()', () => {
         expect(JSON.stringify(copiedTls.cert)).to.equal(JSON.stringify(tls.cert));
     });
 
-    it('clones an object with a prototype', async () => {
+    it('clones an object with a prototype', () => {
 
         const Obj = function () {
 
@@ -250,7 +250,7 @@ describe('clone()', () => {
         expect(a).to.equal(b);
     });
 
-    it('reuses cloned Date object', async () => {
+    it('reuses cloned Date object', () => {
 
         const obj = {
             a: new Date()
@@ -262,7 +262,7 @@ describe('clone()', () => {
         expect(copy.a).to.equal(copy.b);
     });
 
-    it('shallow copies an object with a prototype and isImmutable flag', async () => {
+    it('shallow copies an object with a prototype and isImmutable flag', () => {
 
         const Obj = function () {
 
@@ -288,7 +288,7 @@ describe('clone()', () => {
         expect(obj.a).to.equal(copy.a);
     });
 
-    it('clones an object with property getter without executing it', async () => {
+    it('clones an object with property getter without executing it', () => {
 
         const obj = {};
         const value = 1;
@@ -310,7 +310,7 @@ describe('clone()', () => {
         expect(execCount).to.equal(1);
     });
 
-    it('clones an object with property getter and setter', async () => {
+    it('clones an object with property getter and setter', () => {
 
         const obj = {
             _test: 0
@@ -335,7 +335,7 @@ describe('clone()', () => {
         expect(copy.test).to.equal(4);
     });
 
-    it('clones an object with only property setter', async () => {
+    it('clones an object with only property setter', () => {
 
         const obj = {
             _test: 0
@@ -356,7 +356,7 @@ describe('clone()', () => {
         expect(copy._test).to.equal(4);
     });
 
-    it('clones an object with non-enumerable properties', async () => {
+    it('clones an object with non-enumerable properties', () => {
 
         const obj = {
             _test: 0
@@ -377,7 +377,7 @@ describe('clone()', () => {
         expect(copy._test).to.equal(4);
     });
 
-    it('clones an object where getOwnPropertyDescriptor returns undefined', async () => {
+    it('clones an object where getOwnPropertyDescriptor returns undefined', () => {
 
         const oldGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
         const obj = { a: 'b' };
@@ -394,7 +394,7 @@ describe('clone()', () => {
 
 describe('merge()', () => {
 
-    it('deep copies source items', async () => {
+    it('deep copies source items', () => {
 
         const target = {
             b: 3,
@@ -416,7 +416,7 @@ describe('merge()', () => {
         expect(target.d).to.equal(source.d);
     });
 
-    it('merges array over an object', async () => {
+    it('merges array over an object', () => {
 
         const a = {
             x: ['n', 'm']
@@ -434,7 +434,7 @@ describe('merge()', () => {
         expect(a.x.n).to.not.exist();
     });
 
-    it('merges object over an array', async () => {
+    it('merges object over an array', () => {
 
         const a = {
             x: ['n', 'm']
@@ -452,7 +452,7 @@ describe('merge()', () => {
         expect(a.x[0]).to.not.exist();
     });
 
-    it('does not throw if source is null', async () => {
+    it('does not throw if source is null', () => {
 
         const a = {};
         const b = null;
@@ -466,7 +466,7 @@ describe('merge()', () => {
         expect(c).to.equal(a);
     });
 
-    it('does not throw if source is undefined', async () => {
+    it('does not throw if source is undefined', () => {
 
         const a = {};
         const b = undefined;
@@ -480,7 +480,7 @@ describe('merge()', () => {
         expect(c).to.equal(a);
     });
 
-    it('throws if source is not an object', async () => {
+    it('throws if source is not an object', () => {
 
         expect(() => {
 
@@ -491,7 +491,7 @@ describe('merge()', () => {
         }).to.throw('Invalid source value: must be null, undefined, or an object');
     });
 
-    it('throws if target is not an object', async () => {
+    it('throws if target is not an object', () => {
 
         expect(() => {
 
@@ -502,7 +502,7 @@ describe('merge()', () => {
         }).to.throw('Invalid target value: must be an object');
     });
 
-    it('throws if target is not an array and source is', async () => {
+    it('throws if target is not an array and source is', () => {
 
         expect(() => {
 
@@ -513,7 +513,7 @@ describe('merge()', () => {
         }).to.throw('Cannot merge array onto an object');
     });
 
-    it('returns the same object when merging arrays', async () => {
+    it('returns the same object when merging arrays', () => {
 
         const a = [];
         const b = [1, 2];
@@ -521,7 +521,7 @@ describe('merge()', () => {
         expect(Hoek.merge(a, b)).to.equal(a);
     });
 
-    it('combines an empty object with a non-empty object', async () => {
+    it('combines an empty object with a non-empty object', () => {
 
         const a = {};
         const b = nestedObj;
@@ -531,7 +531,7 @@ describe('merge()', () => {
         expect(c).to.equal(b);
     });
 
-    it('overrides values in target', async () => {
+    it('overrides values in target', () => {
 
         const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
         const b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
@@ -545,7 +545,7 @@ describe('merge()', () => {
         expect(c.t).to.equal({ u: 6 });
     });
 
-    it('overrides values in target (flip)', async () => {
+    it('overrides values in target (flip)', () => {
 
         const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
         const b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
@@ -559,7 +559,7 @@ describe('merge()', () => {
         expect(d.t).to.equal('test');
     });
 
-    it('retains Date properties', async () => {
+    it('retains Date properties', () => {
 
         const a = { x: new Date(1378776452757) };
 
@@ -567,7 +567,7 @@ describe('merge()', () => {
         expect(a.x.getTime()).to.equal(b.x.getTime());
     });
 
-    it('retains Date properties when merging keys', async () => {
+    it('retains Date properties when merging keys', () => {
 
         const a = { x: new Date(1378776452757) };
 
@@ -575,7 +575,7 @@ describe('merge()', () => {
         expect(a.x.getTime()).to.equal(b.x.getTime());
     });
 
-    it('overrides Buffer', async () => {
+    it('overrides Buffer', () => {
 
         const a = { x: new Buffer('abc') };
 
@@ -597,7 +597,7 @@ describe('applyToDefaults()', () => {
         g: 'test'
     };
 
-    it('throws when target is null', async () => {
+    it('throws when target is null', () => {
 
         expect(() => {
 
@@ -605,31 +605,31 @@ describe('applyToDefaults()', () => {
         }).to.throw('Invalid defaults value: must be an object');
     });
 
-    it('returns null if options is false', async () => {
+    it('returns null if options is false', () => {
 
         const result = Hoek.applyToDefaults(defaults, false);
         expect(result).to.equal(null);
     });
 
-    it('returns null if options is null', async () => {
+    it('returns null if options is null', () => {
 
         const result = Hoek.applyToDefaults(defaults, null);
         expect(result).to.equal(null);
     });
 
-    it('returns null if options is undefined', async () => {
+    it('returns null if options is undefined', () => {
 
         const result = Hoek.applyToDefaults(defaults, undefined);
         expect(result).to.equal(null);
     });
 
-    it('returns a copy of defaults if options is true', async () => {
+    it('returns a copy of defaults if options is true', () => {
 
         const result = Hoek.applyToDefaults(defaults, true);
         expect(result).to.equal(defaults);
     });
 
-    it('applies object to defaults', async () => {
+    it('applies object to defaults', () => {
 
         const obj = {
             a: null,
@@ -650,7 +650,7 @@ describe('applyToDefaults()', () => {
         expect(result.g).to.equal({ h: 5 });
     });
 
-    it('applies object to defaults with null', async () => {
+    it('applies object to defaults with null', () => {
 
         const obj = {
             a: null,
@@ -674,7 +674,7 @@ describe('applyToDefaults()', () => {
 
 describe('cloneWithShallow()', () => {
 
-    it('deep clones except for listed keys', async () => {
+    it('deep clones except for listed keys', () => {
 
         const source = {
             a: {
@@ -692,22 +692,22 @@ describe('cloneWithShallow()', () => {
         expect(copy.b).to.equal(source.b);
     });
 
-    it('returns immutable value', async () => {
+    it('returns immutable value', () => {
 
         expect(Hoek.cloneWithShallow(5)).to.equal(5);
     });
 
-    it('returns null value', async () => {
+    it('returns null value', () => {
 
         expect(Hoek.cloneWithShallow(null)).to.equal(null);
     });
 
-    it('returns undefined value', async () => {
+    it('returns undefined value', () => {
 
         expect(Hoek.cloneWithShallow(undefined)).to.equal(undefined);
     });
 
-    it('deep clones except for listed keys (including missing keys)', async () => {
+    it('deep clones except for listed keys (including missing keys)', () => {
 
         const source = {
             a: {
@@ -728,7 +728,7 @@ describe('cloneWithShallow()', () => {
 
 describe('applyToDefaultsWithShallow()', () => {
 
-    it('shallow copies the listed keys from options without merging', async () => {
+    it('shallow copies the listed keys from options without merging', () => {
 
         const defaults = {
             a: {
@@ -759,7 +759,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged.c).to.not.equal(defaults.c);
     });
 
-    it('shallow copies the nested keys (override)', async () => {
+    it('shallow copies the nested keys (override)', () => {
 
         const defaults = {
             a: {
@@ -788,7 +788,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged.c.g).to.equal(options.c.g);
     });
 
-    it('shallow copies the nested keys (missing)', async () => {
+    it('shallow copies the nested keys (missing)', () => {
 
         const defaults = {
             a: {
@@ -812,7 +812,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged.c.g).to.equal(options.c.g);
     });
 
-    it('shallow copies the nested keys (override)', async () => {
+    it('shallow copies the nested keys (override)', () => {
 
         const defaults = {
             a: {
@@ -841,7 +841,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged.c.g).to.equal(options.c.g);
     });
 
-    it('shallow copies the nested keys (deeper)', async () => {
+    it('shallow copies the nested keys (deeper)', () => {
 
         const defaults = {
             a: {
@@ -867,7 +867,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged.c.g.r).to.equal(options.c.g.r);
     });
 
-    it('shallow copies the nested keys (not present)', async () => {
+    it('shallow copies the nested keys (not present)', () => {
 
         const defaults = {
             a: {
@@ -892,7 +892,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
     });
 
-    it('shallow copies the listed keys in the defaults', async () => {
+    it('shallow copies the listed keys in the defaults', () => {
 
         const defaults = {
             a: {
@@ -904,7 +904,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged.a).to.equal(defaults.a);
     });
 
-    it('shallow copies the listed keys in the defaults (true)', async () => {
+    it('shallow copies the listed keys in the defaults (true)', () => {
 
         const defaults = {
             a: {
@@ -916,7 +916,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged.a).to.equal(defaults.a);
     });
 
-    it('returns null on false', async () => {
+    it('returns null on false', () => {
 
         const defaults = {
             a: {
@@ -928,7 +928,7 @@ describe('applyToDefaultsWithShallow()', () => {
         expect(merged).to.equal(null);
     });
 
-    it('throws on missing defaults', async () => {
+    it('throws on missing defaults', () => {
 
         expect(() => {
 
@@ -936,7 +936,7 @@ describe('applyToDefaultsWithShallow()', () => {
         }).to.throw('Invalid defaults value: must be an object');
     });
 
-    it('throws on invalid defaults', async () => {
+    it('throws on invalid defaults', () => {
 
         expect(() => {
 
@@ -944,7 +944,7 @@ describe('applyToDefaultsWithShallow()', () => {
         }).to.throw('Invalid defaults value: must be an object');
     });
 
-    it('throws on invalid options', async () => {
+    it('throws on invalid options', () => {
 
         expect(() => {
 
@@ -952,7 +952,7 @@ describe('applyToDefaultsWithShallow()', () => {
         }).to.throw('Invalid options value: must be true, falsy or an object');
     });
 
-    it('throws on missing keys', async () => {
+    it('throws on missing keys', () => {
 
         expect(() => {
 
@@ -960,7 +960,7 @@ describe('applyToDefaultsWithShallow()', () => {
         }).to.throw('Invalid keys');
     });
 
-    it('throws on invalid keys', async () => {
+    it('throws on invalid keys', () => {
 
         expect(() => {
 
@@ -971,7 +971,7 @@ describe('applyToDefaultsWithShallow()', () => {
 
 describe('deepEqual()', () => {
 
-    it('compares simple values', async () => {
+    it('compares simple values', () => {
 
         expect(Hoek.deepEqual('x', 'x')).to.be.true();
         expect(Hoek.deepEqual('x', 'y')).to.be.false();
@@ -987,7 +987,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(NaN, NaN)).to.be.true();
     });
 
-    it('compares different types', async () => {
+    it('compares different types', () => {
 
         expect(Hoek.deepEqual([], 5)).to.be.false();
         expect(Hoek.deepEqual(5, [])).to.be.false();
@@ -997,14 +997,14 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual({}, 'abc')).to.be.false();
     });
 
-    it('compares empty structures', async () => {
+    it('compares empty structures', () => {
 
         expect(Hoek.deepEqual([], [])).to.be.true();
         expect(Hoek.deepEqual({}, {})).to.be.true();
         expect(Hoek.deepEqual([], {})).to.be.false();
     });
 
-    it('compares empty arguments object', async () => {
+    it('compares empty arguments object', () => {
 
         const compare = function () {
 
@@ -1014,7 +1014,7 @@ describe('deepEqual()', () => {
         compare();
     });
 
-    it('compares empty arguments objects', async () => {
+    it('compares empty arguments objects', () => {
 
         const compare = function () {
 
@@ -1031,14 +1031,14 @@ describe('deepEqual()', () => {
         compare();
     });
 
-    it('compares dates', async () => {
+    it('compares dates', () => {
 
         expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date(2015, 1, 1))).to.be.true();
         expect(Hoek.deepEqual(new Date(100), new Date(101))).to.be.false();
         expect(Hoek.deepEqual(new Date(), {})).to.be.false();
     });
 
-    it('compares regular expressions', async () => {
+    it('compares regular expressions', () => {
 
         expect(Hoek.deepEqual(/\s/, new RegExp('\\\s'))).to.be.true();
         expect(Hoek.deepEqual(/\s/g, /\s/g)).to.be.true();
@@ -1047,7 +1047,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(/a/g, /b/g)).to.be.false();
     });
 
-    it('compares arrays', async () => {
+    it('compares arrays', () => {
 
         expect(Hoek.deepEqual([[1]], [[1]])).to.be.true();
         expect(Hoek.deepEqual([1, 2, 3], [1, 2, 3])).to.be.true();
@@ -1059,7 +1059,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual([item1, item1], [item1, item2])).to.be.false();
     });
 
-    it('compares buffers', async () => {
+    it('compares buffers', () => {
 
         expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2, 3]))).to.be.true();
         expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 3, 2]))).to.be.false();
@@ -1068,14 +1068,14 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new Buffer([1, 2, 3]), [1, 2, 3])).to.be.false();
     });
 
-    it('compares objects', async () => {
+    it('compares objects', () => {
 
         expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).to.be.true();
         expect(Hoek.deepEqual({ foo: 'bar' }, { foo: 'baz' })).to.be.false();
         expect(Hoek.deepEqual({ foo: { bar: 'foo' } }, { foo: { bar: 'baz' } })).to.be.false();
     });
 
-    it('handles circular dependency', async () => {
+    it('handles circular dependency', () => {
 
         const a = {};
         a.x = a;
@@ -1084,7 +1084,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(a, b)).to.be.true();
     });
 
-    it('compares an object with property getter without executing it', async () => {
+    it('compares an object with property getter without executing it', () => {
 
         const obj = {};
         const value = 1;
@@ -1107,7 +1107,7 @@ describe('deepEqual()', () => {
         expect(execCount).to.equal(1);
     });
 
-    it('compares objects with property getters', async () => {
+    it('compares objects with property getters', () => {
 
         const obj = {};
         Object.defineProperty(obj, 'test', {
@@ -1132,7 +1132,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(obj, ref)).to.be.false();
     });
 
-    it('compares object prototypes', async () => {
+    it('compares object prototypes', () => {
 
         const Obj = function () {
 
@@ -1159,7 +1159,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new Ref(), new Ref())).to.be.true();
     });
 
-    it('compares plain objects', async () => {
+    it('compares plain objects', () => {
 
         const a = Object.create(null);
         const b = Object.create(null);
@@ -1171,7 +1171,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(a, { b: 'c' })).to.be.false();
     });
 
-    it('compares an object with an empty object', async () => {
+    it('compares an object with an empty object', () => {
 
         const a = { a: 1, b: 2 };
 
@@ -1179,7 +1179,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(a, {})).to.be.false();
     });
 
-    it('compares an object ignoring the prototype', async () => {
+    it('compares an object ignoring the prototype', () => {
 
         const a = Object.create(null);
         const b = {};
@@ -1187,7 +1187,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(a, b, { prototype: false })).to.be.true();
     });
 
-    it('compares an object ignoring the prototype recursively', async () => {
+    it('compares an object ignoring the prototype recursively', () => {
 
         const a = [Object.create(null)];
         const b = [{}];
@@ -1215,26 +1215,26 @@ describe('unique()', () => {
         return result;
     };
 
-    it('ensures uniqueness within array of objects based on subkey', async () => {
+    it('ensures uniqueness within array of objects based on subkey', () => {
 
         expect(Hoek.unique(internals.unique.objectsByKey.dups, 'x')).to.equal(internals.unique.objectsByKey.result);
         expect(deprecatedUnique(internals.unique.objectsByKey.dups, 'x')).to.equal(internals.unique.objectsByKey.result);
 
     });
 
-    it('removes duplicated integers without key', async () => {
+    it('removes duplicated integers without key', () => {
 
         expect(Hoek.unique(internals.unique.integers.dups)).to.equal(internals.unique.integers.result);
         expect(deprecatedUnique(internals.unique.integers.dups)).to.equal(internals.unique.integers.result);
     });
 
-    it('removes duplicated strings without key', async () => {
+    it('removes duplicated strings without key', () => {
 
         expect(Hoek.unique(internals.unique.strings.dups)).to.equal(internals.unique.strings.result);
         expect(deprecatedUnique(internals.unique.strings.dups)).to.equal(internals.unique.strings.result);
     });
 
-    it('removes duplicated objects without key', async () => { // this was not supported in earlier versions
+    it('removes duplicated objects without key', () => { // this was not supported in earlier versions
 
         expect(Hoek.unique(internals.unique.objects.dups)).to.equal(internals.unique.objects.result);
         expect(deprecatedUnique(internals.unique.objects.dups)).to.not.equal(internals.unique.objects.result);
@@ -1243,20 +1243,20 @@ describe('unique()', () => {
 
 describe('mapToObject()', () => {
 
-    it('returns null on null array', async () => {
+    it('returns null on null array', () => {
 
         const a = Hoek.mapToObject(null);
         expect(a).to.equal(null);
     });
 
-    it('converts basic array to existential object', async () => {
+    it('converts basic array to existential object', () => {
 
         const keys = [1, 2, 3, 4];
         const a = Hoek.mapToObject(keys);
         expect(Object.keys(a)).to.equal(['1', '2', '3', '4']);
     });
 
-    it('converts array of objects to existential object', async () => {
+    it('converts array of objects to existential object', () => {
 
         const keys = [{ x: 1 }, { x: 2 }, { x: 3 }, { y: 4 }];
         const subkey = 'x';
@@ -1267,7 +1267,7 @@ describe('mapToObject()', () => {
 
 describe('intersect()', () => {
 
-    it('returns the common objects of two arrays', async () => {
+    it('returns the common objects of two arrays', () => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
@@ -1275,7 +1275,7 @@ describe('intersect()', () => {
         expect(common.length).to.equal(2);
     });
 
-    it('returns just the first common object of two arrays', async () => {
+    it('returns just the first common object of two arrays', () => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
@@ -1283,7 +1283,7 @@ describe('intersect()', () => {
         expect(common).to.equal(5);
     });
 
-    it('returns null when no common and returning just the first common object of two arrays', async () => {
+    it('returns null when no common and returning just the first common object of two arrays', () => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [6, 7];
@@ -1291,13 +1291,13 @@ describe('intersect()', () => {
         expect(common).to.equal(null);
     });
 
-    it('returns an empty array if either input is null', async () => {
+    it('returns an empty array if either input is null', () => {
 
         expect(Hoek.intersect([1], null).length).to.equal(0);
         expect(Hoek.intersect(null, [1]).length).to.equal(0);
     });
 
-    it('returns the common objects of object and array', async () => {
+    it('returns the common objects of object and array', () => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
@@ -1308,7 +1308,7 @@ describe('intersect()', () => {
 
 describe('contain()', () => {
 
-    it('tests strings', async () => {
+    it('tests strings', () => {
 
         expect(Hoek.contain('abc', 'ab')).to.be.true();
         expect(Hoek.contain('abc', 'abc', { only: true })).to.be.true();
@@ -1325,7 +1325,7 @@ describe('contain()', () => {
         expect(Hoek.contain('abc', ['ab', 'bc'])).to.be.false();                      // Overlapping values not supported
     });
 
-    it('tests arrays', async () => {
+    it('tests arrays', () => {
 
         expect(Hoek.contain([1, 2, 3], 1)).to.be.true();
         expect(Hoek.contain([{ a: 1 }], { a: 1 }, { deep: true })).to.be.true();
@@ -1348,7 +1348,7 @@ describe('contain()', () => {
         expect(Hoek.contain([0, 2, 3], [1, 4], { part: true })).to.be.false();
     });
 
-    it('tests objects', async () => {
+    it('tests objects', () => {
 
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'a')).to.be.true();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'c'])).to.be.true();
@@ -1449,7 +1449,7 @@ describe('contain()', () => {
 
 describe('flatten()', () => {
 
-    it('returns a flat array', async () => {
+    it('returns a flat array', () => {
 
         const result = Hoek.flatten([1, 2, [3, 4, [5, 6], [7], 8], [9], [10, [11, 12]], 13]);
         expect(result.length).to.equal(13);
@@ -1479,49 +1479,49 @@ describe('reach()', () => {
 
     obj.i.x = 5;
 
-    it('returns object itself', async () => {
+    it('returns object itself', () => {
 
         expect(Hoek.reach(obj, null)).to.equal(obj);
         expect(Hoek.reach(obj, false)).to.equal(obj);
         expect(Hoek.reach(obj)).to.equal(obj);
     });
 
-    it('returns first value of array', async () => {
+    it('returns first value of array', () => {
 
         expect(Hoek.reach(obj, 'k.0')).to.equal(4);
     });
 
-    it('returns last value of array using negative index', async () => {
+    it('returns last value of array using negative index', () => {
 
         expect(Hoek.reach(obj, 'k.-2')).to.equal(9);
     });
 
-    it('returns a valid member', async () => {
+    it('returns a valid member', () => {
 
         expect(Hoek.reach(obj, 'a.b.c.d')).to.equal(1);
     });
 
-    it('returns a valid member with separator override', async () => {
+    it('returns a valid member with separator override', () => {
 
         expect(Hoek.reach(obj, 'a/b/c/d', '/')).to.equal(1);
     });
 
-    it('returns undefined on null object', async () => {
+    it('returns undefined on null object', () => {
 
         expect(Hoek.reach(null, 'a.b.c.d')).to.equal(undefined);
     });
 
-    it('returns undefined on missing object member', async () => {
+    it('returns undefined on missing object member', () => {
 
         expect(Hoek.reach(obj, 'a.b.c.d.x')).to.equal(undefined);
     });
 
-    it('returns undefined on missing function member', async () => {
+    it('returns undefined on missing function member', () => {
 
         expect(Hoek.reach(obj, 'i.y', { functions: true })).to.equal(undefined);
     });
 
-    it('throws on missing member in strict mode', async () => {
+    it('throws on missing member in strict mode', () => {
 
         expect(() => {
 
@@ -1530,27 +1530,27 @@ describe('reach()', () => {
 
     });
 
-    it('returns undefined on invalid member', async () => {
+    it('returns undefined on invalid member', () => {
 
         expect(Hoek.reach(obj, 'a.b.c.d-.x')).to.equal(undefined);
     });
 
-    it('returns function member', async () => {
+    it('returns function member', () => {
 
         expect(typeof Hoek.reach(obj, 'i')).to.equal('function');
     });
 
-    it('returns function property', async () => {
+    it('returns function property', () => {
 
         expect(Hoek.reach(obj, 'i.x')).to.equal(5);
     });
 
-    it('returns null', async () => {
+    it('returns null', () => {
 
         expect(Hoek.reach(obj, 'j')).to.equal(null);
     });
 
-    it('throws on function property when functions not allowed', async () => {
+    it('throws on function property when functions not allowed', () => {
 
         expect(() => {
 
@@ -1558,17 +1558,17 @@ describe('reach()', () => {
         }).to.throw('Invalid segment x in reach path  i.x');
     });
 
-    it('will return a default value if property is not found', async () => {
+    it('will return a default value if property is not found', () => {
 
         expect(Hoek.reach(obj, 'a.b.q', { default: 'defaultValue' })).to.equal('defaultValue');
     });
 
-    it('will return a default value if path is not found', async () => {
+    it('will return a default value if path is not found', () => {
 
         expect(Hoek.reach(obj, 'q', { default: 'defaultValue' })).to.equal('defaultValue');
     });
 
-    it('allows a falsey value to be used as the default value', async () => {
+    it('allows a falsey value to be used as the default value', () => {
 
         expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
     });
@@ -1576,7 +1576,7 @@ describe('reach()', () => {
 
 describe('reachTemplate()', () => {
 
-    it('applies object to template', async () => {
+    it('applies object to template', () => {
 
         const obj = {
             a: {
@@ -1595,7 +1595,7 @@ describe('reachTemplate()', () => {
         expect(Hoek.reachTemplate(obj, template)).to.equal('4:9:1::');
     });
 
-    it('applies object to template (options)', async () => {
+    it('applies object to template (options)', () => {
 
         const obj = {
             a: {
@@ -1617,7 +1617,7 @@ describe('reachTemplate()', () => {
 
 describe('callStack()', () => {
 
-    it('returns the full call stack', async () => {
+    it('returns the full call stack', () => {
 
         const stack = Hoek.callStack();
         expect(stack[0][0]).to.contain('index.js');
@@ -1626,13 +1626,13 @@ describe('callStack()', () => {
 
 describe('displayStack ()', () => {
 
-    it('returns the full call stack for display', async () => {
+    it('returns the full call stack for display', () => {
 
         const stack = Hoek.displayStack();
         expect(stack[0]).to.contain(Path.normalize('/test/index.js') + ':');
     });
 
-    it('includes constructor functions correctly', async () => {
+    it('includes constructor functions correctly', () => {
 
         return new Promise((resolve) => {
 
@@ -1679,7 +1679,7 @@ describe('abort()', () => {
         await abort;
     });
 
-    it('throws when not in test mode and abortThrow is true', async () => {
+    it('throws when not in test mode and abortThrow is true', () => {
 
         const env = process.env.NODE_ENV;
         process.env.NODE_ENV = 'nottatest';
@@ -1693,7 +1693,7 @@ describe('abort()', () => {
         process.env.NODE_ENV = env;
     });
 
-    it('respects hideStack argument', async () => {
+    it('respects hideStack argument', () => {
 
         const env = process.env.NODE_ENV;
         const write = process.stdout.write;
@@ -1716,7 +1716,7 @@ describe('abort()', () => {
         expect(output).to.equal('ABORT: my error message\n\t\n');
     });
 
-    it('throws in test mode', async () => {
+    it('throws in test mode', () => {
 
         const env = process.env.NODE_ENV;
         process.env.NODE_ENV = 'test';
@@ -1729,7 +1729,7 @@ describe('abort()', () => {
         process.env.NODE_ENV = env;
     });
 
-    it('throws in test mode with default message', async () => {
+    it('throws in test mode with default message', () => {
 
         const env = process.env.NODE_ENV;
         process.env.NODE_ENV = 'test';
@@ -1742,7 +1742,7 @@ describe('abort()', () => {
         process.env.NODE_ENV = env;
     });
 
-    it('defaults to showing stack', async () => {
+    it('defaults to showing stack', () => {
 
         const env = process.env.NODE_ENV;
         const write = process.stdout.write;
@@ -1768,7 +1768,7 @@ describe('abort()', () => {
 
 describe('assert()', () => {
 
-    it('throws an Error when using assert in a test', async () => {
+    it('throws an Error when using assert in a test', () => {
 
         expect(() => {
 
@@ -1776,7 +1776,7 @@ describe('assert()', () => {
         }).to.throw('my error message');
     });
 
-    it('throws an Error when using assert in a test with no message', async () => {
+    it('throws an Error when using assert in a test with no message', () => {
 
         expect(() => {
 
@@ -1784,7 +1784,7 @@ describe('assert()', () => {
         }).to.throw('Unknown error');
     });
 
-    it('throws an Error when using assert in a test with multipart message', async () => {
+    it('throws an Error when using assert in a test with multipart message', () => {
 
         expect(() => {
 
@@ -1792,7 +1792,7 @@ describe('assert()', () => {
         }).to.throw('This is my message');
     });
 
-    it('throws an Error when using assert in a test with multipart message (empty)', async () => {
+    it('throws an Error when using assert in a test with multipart message (empty)', () => {
 
         expect(() => {
 
@@ -1800,7 +1800,7 @@ describe('assert()', () => {
         }).to.throw('This is my message');
     });
 
-    it('throws an Error when using assert in a test with object message', async () => {
+    it('throws an Error when using assert in a test with object message', () => {
 
         expect(() => {
 
@@ -1808,7 +1808,7 @@ describe('assert()', () => {
         }).to.throw('This is {"spinal":"tap"}');
     });
 
-    it('throws an Error when using assert in a test with multipart string and error messages', async () => {
+    it('throws an Error when using assert in a test with multipart string and error messages', () => {
 
         expect(() => {
 
@@ -1816,7 +1816,7 @@ describe('assert()', () => {
         }).to.throw('This is spinal tap');
     });
 
-    it('throws an Error when using assert in a test with error object message', async () => {
+    it('throws an Error when using assert in a test with error object message', () => {
 
         expect(() => {
 
@@ -1824,7 +1824,7 @@ describe('assert()', () => {
         }).to.throw('This is spinal tap');
     });
 
-    it('throws the same Error that is passed to it if there is only one error passed', async () => {
+    it('throws the same Error that is passed to it if there is only one error passed', () => {
 
         const error = new Error('ruh roh');
         const error2 = new Error('ruh roh');
@@ -1856,7 +1856,7 @@ describe('Bench', () => {
 
 describe('escapeRegex()', () => {
 
-    it('escapes all special regular expression characters', async () => {
+    it('escapes all special regular expression characters', () => {
 
         const a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');
         expect(a).to.equal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
@@ -1870,7 +1870,7 @@ describe('Base64Url', () => {
 
     describe('base64urlEncode()', () => {
 
-        it('should assert function input is a string or buffer', async () => {
+        it('should assert function input is a string or buffer', () => {
 
             const number = 1024;
             const func = () => {
@@ -1880,23 +1880,23 @@ describe('Base64Url', () => {
             expect(func).throws(Error);
         });
 
-        it('should base64 URL-safe a string', async () => {
+        it('should base64 URL-safe a string', () => {
 
             expect(Hoek.base64urlEncode(str)).to.equal(base64str);
         });
 
-        it('encodes a buffer', async () => {
+        it('encodes a buffer', () => {
 
             expect(Hoek.base64urlEncode(new Buffer(str, 'binary'))).to.equal(base64str);
         });
 
-        it('should base64 URL-safe a hex string', async () => {
+        it('should base64 URL-safe a hex string', () => {
 
             const buffer = new Buffer(str, 'binary');
             expect(Hoek.base64urlEncode(buffer.toString('hex'), 'hex')).to.equal(base64str);
         });
 
-        it('works on larger input strings', async () => {
+        it('works on larger input strings', () => {
 
             const input = Fs.readFileSync(Path.join(__dirname, 'index.js')).toString();
             const encoded = Hoek.base64urlEncode(input);
@@ -1912,50 +1912,50 @@ describe('Base64Url', () => {
     describe('base64urlDecode()', () => {
 
 
-        it('should un-base64 URL-safe a string', async () => {
+        it('should un-base64 URL-safe a string', () => {
 
             expect(Hoek.base64urlDecode(base64str)).to.equal(str);
         });
 
-        it('should un-base64 URL-safe a string into hex', async () => {
+        it('should un-base64 URL-safe a string into hex', () => {
 
             expect(Hoek.base64urlDecode(base64str, 'hex')).to.equal(new Buffer(str, 'binary').toString('hex'));
         });
 
-        it('should un-base64 URL-safe a string and return a buffer', async () => {
+        it('should un-base64 URL-safe a string and return a buffer', () => {
 
             const buf = Hoek.base64urlDecode(base64str, 'buffer');
             expect(buf instanceof Buffer).to.equal(true);
             expect(buf.toString('binary')).to.equal(str);
         });
 
-        it('throws error on invalid input', async () => {
+        it('throws error on invalid input', () => {
 
-            expect(Hoek.base64urlDecode(1024).message).to.throw('');
+            expect(() => Hoek.base64urlDecode(1024)).to.throw('Value not a string');
         });
 
-        it('throws error on invalid input', async () => {
+        it('throws error on invalid input', () => {
 
-            expect(Hoek.base64urlDecode('*').message).to.throw('');
+            expect(() => Hoek.base64urlDecode('*')).to.throw('Invalid character');
         });
     });
 });
 
 describe('escapeHeaderAttribute()', () => {
 
-    it('should not alter ascii values', async () => {
+    it('should not alter ascii values', () => {
 
         const a = Hoek.escapeHeaderAttribute('My Value');
         expect(a).to.equal('My Value');
     });
 
-    it('escapes all special HTTP header attribute characters', async () => {
+    it('escapes all special HTTP header attribute characters', () => {
 
         const a = Hoek.escapeHeaderAttribute('I said go!!!#"' + String.fromCharCode(92));
         expect(a).to.equal('I said go!!!#\\"\\\\');
     });
 
-    it('throws on large unicode characters', async () => {
+    it('throws on large unicode characters', () => {
 
         expect(() => {
 
@@ -1963,7 +1963,7 @@ describe('escapeHeaderAttribute()', () => {
         }).to.throw(Error);
     });
 
-    it('throws on CRLF to prevent response splitting', async () => {
+    it('throws on CRLF to prevent response splitting', () => {
 
         expect(() => {
 
@@ -1974,19 +1974,19 @@ describe('escapeHeaderAttribute()', () => {
 
 describe('escapeHtml()', () => {
 
-    it('escapes all special HTML characters', async () => {
+    it('escapes all special HTML characters', () => {
 
         const a = Hoek.escapeHtml('&<>"\'`');
         expect(a).to.equal('&amp;&lt;&gt;&quot;&#x27;&#x60;');
     });
 
-    it('returns empty string on falsy input', async () => {
+    it('returns empty string on falsy input', () => {
 
         const a = Hoek.escapeHtml('');
         expect(a).to.equal('');
     });
 
-    it('returns unchanged string on no reserved input', async () => {
+    it('returns unchanged string on no reserved input', () => {
 
         const a = Hoek.escapeHtml('abc');
         expect(a).to.equal('abc');
@@ -1995,7 +1995,7 @@ describe('escapeHtml()', () => {
 
 describe('once()', () => {
 
-    it('allows function to only execute once', async () => {
+    it('allows function to only execute once', () => {
 
         let gen = 0;
         let add = function (x) {
@@ -2012,7 +2012,7 @@ describe('once()', () => {
         expect(gen).to.equal(10);
     });
 
-    it('double once wraps one time', async () => {
+    it('double once wraps one time', () => {
 
         let method = function () { };
         method = Hoek.once(method);
@@ -2025,7 +2025,7 @@ describe('once()', () => {
 
 describe('isInteger()', () => {
 
-    it('validates integers', async () => {
+    it('validates integers', () => {
 
         expect(Hoek.isInteger(0)).to.equal(true);
         expect(Hoek.isInteger(1)).to.equal(true);
@@ -2040,7 +2040,7 @@ describe('isInteger()', () => {
 
 describe('ignore()', () => {
 
-    it('exists', async () => {
+    it('exists', () => {
 
         expect(Hoek.ignore).to.exist();
         expect(typeof Hoek.ignore).to.equal('function');
@@ -2049,7 +2049,7 @@ describe('ignore()', () => {
 
 describe('inherits()', () => {
 
-    it('exists', async () => {
+    it('exists', () => {
 
         expect(Hoek.inherits).to.exist();
         expect(typeof Hoek.inherits).to.equal('function');
@@ -2058,13 +2058,13 @@ describe('inherits()', () => {
 
 describe('format()', () => {
 
-    it('exists', async () => {
+    it('exists', () => {
 
         expect(Hoek.format).to.exist();
         expect(typeof Hoek.format).to.equal('function');
     });
 
-    it('is a reference to Util.format', async () => {
+    it('is a reference to Util.format', () => {
 
         expect(Hoek.format('hello %s', 'world')).to.equal('hello world');
     });
@@ -2109,7 +2109,7 @@ describe('transform()', () => {
         state: 'NY'
     }];
 
-    it('transforms an object based on the input object', async () => {
+    it('transforms an object based on the input object', () => {
 
         const result = Hoek.transform(source, {
             'person.address.lineOne': 'address.one',
@@ -2134,7 +2134,7 @@ describe('transform()', () => {
         });
     });
 
-    it('transforms an array of objects based on the input object', async () => {
+    it('transforms an array of objects based on the input object', () => {
 
         const result = Hoek.transform(sourcesArray, {
             'person.address.lineOne': 'address.one',
@@ -2173,7 +2173,7 @@ describe('transform()', () => {
         ]);
     });
 
-    it('uses the reach options passed into it', async () => {
+    it('uses the reach options passed into it', () => {
 
         const schema = {
             'person-address-lineOne': 'address-one',
@@ -2203,7 +2203,7 @@ describe('transform()', () => {
         });
     });
 
-    it('uses a default separator for keys if options does not specify on', async () => {
+    it('uses a default separator for keys if options does not specify on', () => {
 
         const schema = {
             'person.address.lineOne': 'address.one',
@@ -2232,7 +2232,7 @@ describe('transform()', () => {
         });
     });
 
-    it('works to create shallow objects', async () => {
+    it('works to create shallow objects', () => {
 
         const result = Hoek.transform(source, {
             lineOne: 'address.one',
@@ -2251,7 +2251,7 @@ describe('transform()', () => {
         });
     });
 
-    it('only allows strings in the map', async () => {
+    it('only allows strings in the map', () => {
 
         expect(() => {
 
@@ -2261,7 +2261,7 @@ describe('transform()', () => {
         }).to.throw('All mappings must be "." delineated strings');
     });
 
-    it('throws an error on invalid arguments', async () => {
+    it('throws an error on invalid arguments', () => {
 
         expect(() => {
 
@@ -2269,13 +2269,13 @@ describe('transform()', () => {
         }).to.throw('Invalid source object: must be null, undefined, an object, or an array');
     });
 
-    it('is safe to pass null', async () => {
+    it('is safe to pass null', () => {
 
         const result = Hoek.transform(null, {});
         expect(result).to.equal({});
     });
 
-    it('is safe to pass undefined', async () => {
+    it('is safe to pass undefined', () => {
 
         const result = Hoek.transform(undefined, {});
         expect(result).to.equal({});
@@ -2284,7 +2284,7 @@ describe('transform()', () => {
 
 describe('uniqueFilename()', () => {
 
-    it('generates a random file path', async () => {
+    it('generates a random file path', () => {
 
         const result = Hoek.uniqueFilename('./test/modules');
 
@@ -2293,7 +2293,7 @@ describe('uniqueFilename()', () => {
         expect(result).to.contain(`test${Path.sep}modules`);
     });
 
-    it('is random enough to use in fast loops', async () => {
+    it('is random enough to use in fast loops', () => {
 
         const results = [];
 
@@ -2310,7 +2310,7 @@ describe('uniqueFilename()', () => {
         expect(results.length).to.equal(10);
     });
 
-    it('combines the random elements with a supplied character', async () => {
+    it('combines the random elements with a supplied character', () => {
 
         const result = Hoek.uniqueFilename('./test', 'txt');
 
@@ -2318,7 +2318,7 @@ describe('uniqueFilename()', () => {
         expect(result).to.contain('.txt');
     });
 
-    it('accepts extensions with a "." in it', async () => {
+    it('accepts extensions with a "." in it', () => {
 
         const result = Hoek.uniqueFilename('./test', '.mp3');
 
@@ -2329,13 +2329,13 @@ describe('uniqueFilename()', () => {
 
 describe('stringify()', () => {
 
-    it('converts object to string', async () => {
+    it('converts object to string', () => {
 
         const obj = { a: 1 };
         expect(Hoek.stringify(obj)).to.equal('{"a":1}');
     });
 
-    it('returns error in result string', async () => {
+    it('returns error in result string', () => {
 
         const obj = { a: 1 };
         obj.b = obj;
@@ -2345,7 +2345,7 @@ describe('stringify()', () => {
 
 describe('shallow()', () => {
 
-    it('shallow copies an object', async () => {
+    it('shallow copies an object', () => {
 
         const obj = {
             a: 5,
@@ -2363,7 +2363,7 @@ describe('shallow()', () => {
 
 describe('block()', () => {
 
-    it('executes ignore function', { parallel: false }, async () => {
+    it('executes ignore function', async () => {
 
         const orig = Hoek.ignore;
         Hoek.ignore = (resolve) => resolve();
