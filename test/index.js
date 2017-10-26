@@ -1911,7 +1911,6 @@ describe('Base64Url', () => {
 
     describe('base64urlDecode()', () => {
 
-
         it('should un-base64 URL-safe a string', () => {
 
             expect(Hoek.base64urlDecode(base64str)).to.equal(str);

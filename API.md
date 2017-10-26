@@ -365,7 +365,7 @@ Encodes value of string or buffer type in Base64 or URL encoding, function will 
 
 ### base64urlDecode(value)
 
-Decodes string into Base64 or URL encoding, function returns an error on invalid input and returns a string or buffer depending on encoding provided.  Default encoding is binary.
+Decodes string into Base64 or URL encoding, function throws an error on invalid input and returns a string or buffer depending on encoding provided.  Default encoding is binary.
 # Escaping Characters
 
 Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
