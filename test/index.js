@@ -1905,7 +1905,6 @@ describe('Base64Url', () => {
             expect(encoded).to.not.contain('/');
 
             const decoded = Hoek.base64urlDecode(encoded);
-
             expect(decoded).to.equal(input);
         });
     });
@@ -1930,14 +1929,14 @@ describe('Base64Url', () => {
             expect(buf.toString('binary')).to.equal(str);
         });
 
-        it('returns error on invalid input', async () => {
+        it('throws error on invalid input', async () => {
 
-            expect(Hoek.base64urlDecode(1024).message).to.exist();
+            expect(Hoek.base64urlDecode(1024).message).to.throw('');
         });
 
-        it('returns error on invalid input', async () => {
+        it('throws error on invalid input', async () => {
 
-            expect(Hoek.base64urlDecode('*').message).to.exist();
+            expect(Hoek.base64urlDecode('*').message).to.throw('');
         });
     });
 });
