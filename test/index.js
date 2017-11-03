@@ -1031,6 +1031,12 @@ describe('deepEqual()', () => {
         compare();
     });
 
+    it('compares errors', () => {
+
+        expect(Hoek.deepEqual(new Error(), new Error())).to.be.true();
+        expect(Hoek.deepEqual(new Error(), { message: '' })).to.be.false();
+    });
+
     it('compares dates', () => {
 
         expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date(2015, 1, 1))).to.be.true();
