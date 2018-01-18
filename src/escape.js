@@ -2,7 +2,8 @@
 
 // Declare internals
 
-var internals = {};
+const internals = {};
+
 
 exports.escapeJavaScript = function (input) {
 
@@ -10,15 +11,16 @@ exports.escapeJavaScript = function (input) {
         return '';
     }
 
-    var escaped = '';
+    let escaped = '';
 
-    for (var i = 0; i < input.length; ++i) {
+    for (let i = 0; i < input.length; ++i) {
 
-        var charCode = input.charCodeAt(i);
+        const charCode = input.charCodeAt(i);
 
         if (internals.isSafe(charCode)) {
             escaped += input[i];
-        } else {
+        }
+        else {
             escaped += internals.escapeJavaScriptChar(charCode);
         }
     }
@@ -26,21 +28,23 @@ exports.escapeJavaScript = function (input) {
     return escaped;
 };
 
+
 exports.escapeHtml = function (input) {
 
     if (!input) {
         return '';
     }
 
-    var escaped = '';
+    let escaped = '';
 
-    for (var i = 0; i < input.length; ++i) {
+    for (let i = 0; i < input.length; ++i) {
 
-        var charCode = input.charCodeAt(i);
+        const charCode = input.charCodeAt(i);
 
         if (internals.isSafe(charCode)) {
             escaped += input[i];
-        } else {
+        }
+        else {
             escaped += internals.escapeHtmlChar(charCode);
         }
     }
@@ -48,35 +52,40 @@ exports.escapeHtml = function (input) {
     return escaped;
 };
 
+
 exports.escapeJson = function (input) {
 
     if (!input) {
         return '';
     }
 
-    var lessThan = 0x3C;
-    var greaterThan = 0x3E;
-    var andSymbol = 0x26;
-    var lineSeperator = 0x2028;
+    const lessThan = 0x3C;
+    const greaterThan = 0x3E;
+    const andSymbol = 0x26;
+    const lineSeperator = 0x2028;
 
     // replace method
-    var charCode = void 0;
-    return input.replace(/[<>&\u2028\u2029]/g, function (match) {
+    let charCode;
+    return input.replace(/[<>&\u2028\u2029]/g, (match) => {
 
         charCode = match.charCodeAt(0);
 
         if (charCode === lessThan) {
             return '\\u003c';
-        } else if (charCode === greaterThan) {
+        }
+        else if (charCode === greaterThan) {
             return '\\u003e';
-        } else if (charCode === andSymbol) {
+        }
+        else if (charCode === andSymbol) {
             return '\\u0026';
-        } else if (charCode === lineSeperator) {
+        }
+        else if (charCode === lineSeperator) {
             return '\\u2028';
         }
         return '\\u2029';
     });
 };
+
 
 internals.escapeJavaScriptChar = function (charCode) {
 
@@ -84,13 +93,14 @@ internals.escapeJavaScriptChar = function (charCode) {
         return '\\u' + internals.padLeft('' + charCode, 4);
     }
 
-    var hexValue = new Buffer(String.fromCharCode(charCode), 'ascii').toString('hex');
+    const hexValue = new Buffer(String.fromCharCode(charCode), 'ascii').toString('hex');
     return '\\x' + internals.padLeft(hexValue, 2);
 };
 
+
 internals.escapeHtmlChar = function (charCode) {
 
-    var namedEscape = internals.namedHtml[charCode];
+    const namedEscape = internals.namedHtml[charCode];
     if (typeof namedEscape !== 'undefined') {
         return namedEscape;
     }
@@ -99,9 +109,10 @@ internals.escapeHtmlChar = function (charCode) {
         return '&#' + charCode + ';';
     }
 
-    var hexValue = new Buffer(String.fromCharCode(charCode), 'ascii').toString('hex');
+    const hexValue = new Buffer(String.fromCharCode(charCode), 'ascii').toString('hex');
     return '&#x' + internals.padLeft(hexValue, 2) + ';';
 };
+
 
 internals.padLeft = function (str, len) {
 
@@ -112,10 +123,12 @@ internals.padLeft = function (str, len) {
     return str;
 };
 
+
 internals.isSafe = function (charCode) {
 
-    return typeof internals.safeCharCodes[charCode] !== 'undefined';
+    return (typeof internals.safeCharCodes[charCode] !== 'undefined');
 };
+
 
 internals.namedHtml = {
     '38': '&amp;',
@@ -130,26 +143,26 @@ internals.namedHtml = {
     '174': '&reg;'
 };
 
-internals.safeCharCodes = function () {
 
-    var safe = {};
+internals.safeCharCodes = (function () {
 
-    for (var i = 32; i < 123; ++i) {
+    const safe = {};
 
-        if (i >= 97 || // a-z
-        i >= 65 && i <= 90 || // A-Z
-        i >= 48 && i <= 57 || // 0-9
-        i === 32 || // space
-        i === 46 || // .
-        i === 44 || // ,
-        i === 45 || // -
-        i === 58 || // :
-        i === 95) {
-            // _
+    for (let i = 32; i < 123; ++i) {
+
+        if ((i >= 97) ||                    // a-z
+            (i >= 65 && i <= 90) ||         // A-Z
+            (i >= 48 && i <= 57) ||         // 0-9
+            i === 32 ||                     // space
+            i === 46 ||                     // .
+            i === 44 ||                     // ,
+            i === 45 ||                     // -
+            i === 58 ||                     // :
+            i === 95) {                     // _
 
             safe[i] = null;
         }
     }
 
     return safe;
-}();
+}());
