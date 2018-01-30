@@ -219,8 +219,8 @@ describe('clone()', () => {
     it('should copy a buffer', () => {
 
         const tls = {
-            key: new Buffer([1, 2, 3, 4, 5]),
-            cert: new Buffer([1, 2, 3, 4, 5, 6, 10])
+            key: Buffer.from([1, 2, 3, 4, 5]),
+            cert: Buffer.from([1, 2, 3, 4, 5, 6, 10])
         };
 
         const copiedTls = Hoek.clone(tls);
@@ -228,6 +228,9 @@ describe('clone()', () => {
         expect(JSON.stringify(copiedTls.key)).to.equal(JSON.stringify(tls.key));
         expect(Buffer.isBuffer(copiedTls.cert)).to.equal(true);
         expect(JSON.stringify(copiedTls.cert)).to.equal(JSON.stringify(tls.cert));
+
+        tls.key.write('hi');
+        expect(JSON.stringify(copiedTls.key)).to.not.equal(JSON.stringify(tls.key));
     });
 
     it('clones an object with a prototype', () => {
@@ -577,7 +580,7 @@ describe('merge()', () => {
 
     it('overrides Buffer', () => {
 
-        const a = { x: new Buffer('abc') };
+        const a = { x: Buffer.from('abc') };
 
         Hoek.merge({ x: {} }, a);
         expect(a.x.toString()).to.equal('abc');
@@ -1061,11 +1064,11 @@ describe('deepEqual()', () => {
 
     it('compares buffers', () => {
 
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2, 3]))).to.be.true();
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 3, 2]))).to.be.false();
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2]))).to.be.false();
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), {})).to.be.false();
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), [1, 2, 3])).to.be.false();
+        expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 2, 3]))).to.be.true();
+        expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 3, 2]))).to.be.false();
+        expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 2]))).to.be.false();
+        expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), {})).to.be.false();
+        expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), [1, 2, 3])).to.be.false();
     });
 
     it('compares objects', () => {
@@ -1887,12 +1890,12 @@ describe('Base64Url', () => {
 
         it('encodes a buffer', () => {
 
-            expect(Hoek.base64urlEncode(new Buffer(str, 'binary'))).to.equal(base64str);
+            expect(Hoek.base64urlEncode(Buffer.from(str, 'binary'))).to.equal(base64str);
         });
 
         it('should base64 URL-safe a hex string', () => {
 
-            const buffer = new Buffer(str, 'binary');
+            const buffer = Buffer.from(str, 'binary');
             expect(Hoek.base64urlEncode(buffer.toString('hex'), 'hex')).to.equal(base64str);
         });
 
@@ -1918,7 +1921,7 @@ describe('Base64Url', () => {
 
         it('should un-base64 URL-safe a string into hex', () => {
 
-            expect(Hoek.base64urlDecode(base64str, 'hex')).to.equal(new Buffer(str, 'binary').toString('hex'));
+            expect(Hoek.base64urlDecode(base64str, 'hex')).to.equal(Buffer.from(str, 'binary').toString('hex'));
         });
 
         it('should un-base64 URL-safe a string and return a buffer', () => {
