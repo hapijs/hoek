@@ -589,6 +589,17 @@ describe('merge()', function () {
         expect(a.x.toString()).to.equal('abc');
         done();
     });
+
+    it('skips __proto__', (done) => {
+
+        var a = JSON.parse('{ "ok": "value", "__proto__": { "test": "value" } }');
+        var b = Hoek.merge({}, a);
+
+        expect(Object.keys(b).length).to.equal(1);
+        expect(Object.keys(b)[0]).to.equal('ok');
+        expect(b.test).to.equal(undefined);
+        done();
+    });
 });
 
 describe('applyToDefaults()', function () {
