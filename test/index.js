@@ -614,6 +614,16 @@ describe('merge()', () => {
         expect(a.x.toString()).to.equal('abc');
         done();
     });
+
+    it('skips __proto__', (done) => {
+
+        const a = '{ "ok": "value", "__proto__": { "test": "value" } }';
+
+        const b = Hoek.merge({}, JSON.parse(a));
+        expect(b).to.equal({ ok: 'value' });
+        expect(b.test).to.equal(undefined);
+        done();
+    });
 });
 
 describe('applyToDefaults()', () => {
