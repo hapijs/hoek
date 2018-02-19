@@ -2370,6 +2370,25 @@ describe('shallow()', () => {
         expect(shallow).to.equal(obj);
         expect(shallow.b).to.equal(obj.b);
     });
+
+    it('copies properties from a function', () => {
+
+        const fn = function () { };
+        fn.a = 5;
+        fn.b = { c: 6 };
+
+        const shallow = Hoek.shallow(fn);
+        expect(shallow).to.be.an.object();
+        expect(shallow).to.not.shallow.equal(fn);
+        expect(Object.entries(shallow)).to.equal(Object.entries(fn));
+        expect(shallow.b).to.equal(fn.b);
+    });
+
+    it('returns empty object for null and undefined', () => {
+
+        expect(Hoek.shallow(null)).to.equal({});
+        expect(Hoek.shallow(undefined)).to.equal({});
+    });
 });
 
 describe('block()', () => {
