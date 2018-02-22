@@ -1096,6 +1096,14 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(a, b)).to.be.true();
     });
 
+    it('handles reuse of objects', () => {
+
+        const date1 = { year: 2018, month: 1, day: 1 };
+        const date2 = { year: 2000, month: 1, day: 1 };
+
+        expect(Hoek.deepEqual({ start: date1, end: date1 }, { start: date1, end: date2 })).to.be.false();
+    });
+
     it('compares an object with property getter without executing it', () => {
 
         const obj = {};
