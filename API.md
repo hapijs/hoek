@@ -16,7 +16,7 @@
   * [reach](#reachobj-chain-options "reach")
   * [reachTemplate](#reachtemplateobj-template-options "reachTemplate")
   * [transform](#transformobj-transform-options "transform")
-  * [shallow](#shallowobj "shallow")
+  * [shallow](#shallowsource "shallow")
   * [stringify](#stringifyobj "stringify")
 * [Bench](#bench "Bench")
 * [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
@@ -331,10 +331,10 @@ var result = Hoek.transform(source, {
 // }
 ```
 
-### shallow(obj)
+### shallow(source)
 
-Performs a shallow copy by copying the references of all the top level children where:
-- `obj` - the object to be copied.
+Returns a new object with shallow copies of all source properties where:
+- `source` - the source to be copied.
 
 ```javascript
 var shallow = Hoek.shallow({ a: { b: 1 } });
