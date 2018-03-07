@@ -1007,12 +1007,12 @@ describe('deepEqual()', () => {
 
     it('compares different types', () => {
 
-        expect(Hoek.deepEqual([], 5)).to.be.false();
-        expect(Hoek.deepEqual(5, [])).to.be.false();
-        expect(Hoek.deepEqual({}, null)).to.be.false();
-        expect(Hoek.deepEqual(null, {})).to.be.false();
-        expect(Hoek.deepEqual('abc', {})).to.be.false();
-        expect(Hoek.deepEqual({}, 'abc')).to.be.false();
+        expect(Hoek.deepEqual([], 5, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(5, [], { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({}, null, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(null, {}, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual('abc', {}, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({}, 'abc', { prototype: false })).to.be.false();
     });
 
     it('compares empty structures', () => {
@@ -1020,6 +1020,8 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual([], [])).to.be.true();
         expect(Hoek.deepEqual({}, {})).to.be.true();
         expect(Hoek.deepEqual([], {})).to.be.false();
+        expect(Hoek.deepEqual([], {}, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({}, [], { prototype: false })).to.be.false();
     });
 
     it('compares empty arguments object', () => {
@@ -1051,16 +1053,19 @@ describe('deepEqual()', () => {
 
     it('compares dates', () => {
 
-        expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date(2015, 1, 1))).to.be.true();
+        expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date('2015/02/01'))).to.be.true();
         expect(Hoek.deepEqual(new Date(100), new Date(101))).to.be.false();
         expect(Hoek.deepEqual(new Date(), {})).to.be.false();
+        expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date('2015/02/01'), { prototype: false })).to.be.true();
+        expect(Hoek.deepEqual(new Date(), {}, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({}, new Date(), { prototype: false })).to.be.false();
     });
 
     it('compares regular expressions', () => {
 
         expect(Hoek.deepEqual(/\s/, new RegExp('\\\s'))).to.be.true();
         expect(Hoek.deepEqual(/\s/g, /\s/g)).to.be.true();
-        expect(Hoek.deepEqual(/a/, {})).to.be.false();
+        expect(Hoek.deepEqual(/a/, {}, { prototype: false })).to.be.false();
         expect(Hoek.deepEqual(/\s/g, /\s/i)).to.be.false();
         expect(Hoek.deepEqual(/a/g, /b/g)).to.be.false();
     });
@@ -1086,11 +1091,52 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), [1, 2, 3])).to.be.false();
     });
 
+    it('compares string objects', () => {
+
+        /* eslint-disable no-new-wrappers */
+        expect(Hoek.deepEqual(new String('a'), new String('a'))).to.be.true();
+        expect(Hoek.deepEqual(new String('a'), new String('b'))).to.be.false();
+        expect(Hoek.deepEqual(new String(''), {}, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({}, new String(''), { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(new String('a'), 'a', { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual('a', new String('a'), { prototype: false })).to.be.false();
+        /* eslint-enable no-new-wrappers */
+    });
+
+    it('compares number objects', () => {
+
+        /* eslint-disable no-new-wrappers */
+        expect(Hoek.deepEqual(new Number(1), new Number(1))).to.be.true();
+        expect(Hoek.deepEqual(new Number(1), new Number(2))).to.be.false();
+        expect(Hoek.deepEqual(new Number(+0), new Number(-0))).to.be.false();
+        expect(Hoek.deepEqual(new Number(NaN), new Number(NaN))).to.be.true();
+        expect(Hoek.deepEqual(new Number(0), {}, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({}, new Number(0), { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(new Number(1), 1, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(1, new Number(1), { prototype: false })).to.be.false();
+        /* eslint-enable no-new-wrappers */
+    });
+
+    it('compares boolean objects', () => {
+
+        /* eslint-disable no-new-wrappers */
+        expect(Hoek.deepEqual(new Boolean(true), new Boolean(true))).to.be.true();
+        expect(Hoek.deepEqual(new Boolean(true), new Boolean(false))).to.be.false();
+        expect(Hoek.deepEqual(new Boolean(false), {}, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({}, new Boolean(false), { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(new Boolean(true), true, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(true, new Boolean(true), { prototype: false })).to.be.false();
+        /* eslint-enable no-new-wrappers */
+    });
+
     it('compares objects', () => {
 
         expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).to.be.true();
         expect(Hoek.deepEqual({ foo: 'bar' }, { foo: 'baz' })).to.be.false();
         expect(Hoek.deepEqual({ foo: { bar: 'foo' } }, { foo: { bar: 'baz' } })).to.be.false();
+        expect(Hoek.deepEqual({ foo: undefined }, {})).to.be.false();
+        expect(Hoek.deepEqual({}, { foo: undefined })).to.be.false();
+        expect(Hoek.deepEqual({ foo: undefined }, { bar: undefined })).to.be.false();
     });
 
     it('handles circular dependency', () => {
@@ -1100,6 +1146,160 @@ describe('deepEqual()', () => {
 
         const b = Hoek.clone(a);
         expect(Hoek.deepEqual(a, b)).to.be.true();
+    });
+
+    it('handles obj only circular dependency', () => {
+
+        const a = {};
+        a.x = a;
+
+        const b = { x: {} };
+        expect(Hoek.deepEqual(a, b)).to.be.false();
+        expect(Hoek.deepEqual(b, a)).to.be.false();
+    });
+
+    it('handles irregular circular dependency', () => {
+
+        const a = {};
+        a.x = a;
+
+        const b = { x: {} };
+        b.x.x = b;
+
+        const c = { x: { x: {} } };
+        c.x.x.x = c;
+        expect(Hoek.deepEqual(a, b)).to.be.true();
+        expect(Hoek.deepEqual(b, a)).to.be.true();
+        expect(Hoek.deepEqual(a, c)).to.be.true();
+        expect(Hoek.deepEqual(b, c)).to.be.true();
+        expect(Hoek.deepEqual(c, a)).to.be.true();
+        expect(Hoek.deepEqual(c, b)).to.be.true();
+        b.x.y = 1;
+        expect(Hoek.deepEqual(a, b)).to.be.false();
+        expect(Hoek.deepEqual(b, a)).to.be.false();
+    });
+
+    it('handles cross circular dependency', () => {
+
+        const a = {};
+        const b = { x: {}, y: a };
+        b.x.x = b;
+        b.x.y = b.x;
+        a.x = b;
+        a.y = a;
+        expect(Hoek.deepEqual(b, a)).to.be.true();
+        expect(Hoek.deepEqual(a, b)).to.be.true();
+        b.x.y = 1;
+        expect(Hoek.deepEqual(b, a)).to.be.false();
+        expect(Hoek.deepEqual(a, b)).to.be.false();
+    });
+
+    it('handles reuse of objects', () => {
+
+        const date1 = { year: 2018, month: 1, day: 1 };
+        const date2 = { year: 2000, month: 1, day: 1 };
+
+        expect(Hoek.deepEqual({ start: date1, end: date1 }, { start: date1, end: date2 })).to.be.false();
+    });
+
+    it('handles valueOf() that throws', () => {
+
+        const throwing  = class {
+
+            constructor(value) {
+
+                this.value = value;
+            }
+
+            valueOf() {
+
+                throw new Error('failed');
+            }
+        };
+
+        expect(Hoek.deepEqual(new throwing('a'), new throwing('a'))).to.be.true();
+        expect(Hoek.deepEqual(new throwing('a'), new throwing('b'))).to.be.false();
+        expect(Hoek.deepEqual(new throwing('a'), { value: 'a' }, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({ value: 'a' }, new throwing('a'), { prototype: false })).to.be.false();
+    });
+
+    it('handles valueOf() that returns similar value', () => {
+
+        const identity = class {
+
+            constructor(value) {
+
+                this.value = value;
+            }
+
+            valueOf() {
+
+                return { value: this.value };
+            }
+        };
+
+        expect(Hoek.deepEqual(new identity('a'), new identity('a'))).to.be.true();
+        expect(Hoek.deepEqual(new identity('a'), new identity('b'))).to.be.false();
+        expect(Hoek.deepEqual(new identity('a'), { value: 'a' }, { prototype: true })).to.be.false();
+        expect(Hoek.deepEqual(new identity('a'), { value: 'a' }, { prototype: false })).to.be.true();
+        expect(Hoek.deepEqual({ value: 'a' }, new identity('a'), { prototype: true })).to.be.false();
+        expect(Hoek.deepEqual({ value: 'a' }, new identity('a'), { prototype: false })).to.be.true();
+    });
+
+    it('skips enumerable properties on prototype chain', () => {
+
+        const base = function (value, surprice) {
+
+            this.value = value;
+            if (surprice) {
+                this.surprice = surprice;
+            }
+        };
+
+        Object.defineProperty(base.prototype, 'enum', {
+            enumerable: true,
+            configurable: true,
+            value: true
+        });
+
+        expect('enum' in new base('a')).to.be.true();
+        expect(Hoek.deepEqual(new base('a'), new base('a'))).to.be.true();
+        expect(Hoek.deepEqual(new base('a'), new base('b'))).to.be.false();
+        expect(Hoek.deepEqual(new base('a'), { value: 'a' }, { prototype: false })).to.be.true();
+        expect(Hoek.deepEqual({ value: 'a' }, new base('a'), { prototype: false })).to.be.true();
+        expect(Hoek.deepEqual(new base('a', 1), { value: 'a', enum: true }, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({ value: 'a', enum: true }, new base('a', 1), { prototype: false })).to.be.false();
+    });
+
+    it('skips non-enumerable properties', () => {
+
+        const base = function Base(value, surprice) {
+
+            this.value = value;
+            if (surprice) {
+                this.surprice = surprice;
+            }
+        };
+
+        const createObj = (...args) => {
+
+            const obj = new base(...args);
+
+            Object.defineProperty(obj, 'hidden', {
+                enumerable: false,
+                configurable: true,
+                value: true
+            });
+
+            return obj;
+        };
+
+        expect(Hoek.deepEqual(createObj('a'), createObj('a'))).to.be.true();
+        expect(Hoek.deepEqual(createObj('a'), createObj('b'))).to.be.false();
+        expect(Hoek.deepEqual(createObj('a'), { value: 'a' }, { prototype: false })).to.be.true();
+        expect(Hoek.deepEqual({ value: 'a' }, createObj('a'), { prototype: false })).to.be.true();
+        expect(Hoek.deepEqual(createObj('a', 1), { value: 'a', hidden: true }, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({ value: 'a', hidden: true }, createObj('a', 1), { prototype: false })).to.be.false();
     });
 
     it('compares an object with property getter without executing it', () => {
@@ -1405,21 +1605,29 @@ describe('contain()', () => {
                 this.bar = bar;
             };
 
-            Object.defineProperty(Foo.prototype, 'baz', {
-                enumerable: true,
-                get: function () {
+            const getBar = function () {
 
-                    return this.bar;
-                }
-            });
+                return this.bar;
+            };
 
-            expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true })).to.be.true();
-            expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true, part: true })).to.be.true();
-            expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true })).to.be.true();
-            expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, only: true })).to.be.false();
-            expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).to.be.false();
-            expect(Hoek.contain({ a: new Foo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).to.be.true();
-            expect(Hoek.contain({ a: new Foo('b') }, { a: new Foo('b') }, { deep: true })).to.be.true();
+            const createFoo = (value) => {
+
+                const foo = new Foo(value);
+                Object.defineProperty(foo, 'baz', {
+                    enumerable: true,
+                    get: getBar
+                });
+
+                return foo;
+            };
+
+            expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true })).to.be.true();
+            expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true, part: true })).to.be.true();
+            expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true })).to.be.true();
+            expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, only: true })).to.be.false();
+            expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).to.be.false();
+            expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).to.be.true();
+            expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true })).to.be.true();
         }
 
         // Properties on prototype not visible
