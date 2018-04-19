@@ -1586,6 +1586,123 @@ describe('reach()', () => {
     });
 });
 
+describe('reachTransform()', () => {
+
+    const obj = {
+        a: {
+            b: {
+                c: {
+                    d: 1,
+                    e: 2
+                },
+                f: 'hello'
+            },
+            g: {
+                h: 3
+            }
+        },
+        i: function () { },
+        j: null,
+        k: [4, 8, 9, 1]
+    };
+
+    obj.i.x = 5;
+
+    it('returns object itself', () => {
+
+        expect(Hoek.reachTransform(obj, null, (old) => old)).to.equal(obj);
+        expect(Hoek.reachTransform(obj, false, (old) => old)).to.equal(obj);
+        expect(Hoek.reachTransform(obj, undefined, (old) => old)).to.equal(obj);
+    });
+
+    it('returns first value of array', () => {
+
+        expect(Hoek.reachTransform(obj, 'k.0', (old) => old + 1)).to.equal(5);
+    });
+
+    it('returns last value of array using negative index', () => {
+
+        expect(Hoek.reachTransform(obj, 'k.-2', (old) => old + 1)).to.equal(10);
+    });
+
+    it('returns a valid member', () => {
+
+        expect(Hoek.reachTransform(obj, 'a.b.c.d', (old) => old + 1)).to.equal(2);
+    });
+
+    it('returns a valid member with separator override', () => {
+
+        expect(Hoek.reachTransform(obj, 'a/b/c/d', (old) => old + 1, '/')).to.equal(3);
+    });
+
+    it('returns undefined on null object', () => {
+
+        expect(Hoek.reachTransform(null, 'a.b.c.d', (old) => old + 1)).to.equal(undefined);
+    });
+
+    it('returns undefined on missing object member', () => {
+
+        expect(Hoek.reachTransform(obj, 'a.b.c.d.x', (old) => old + 1)).to.equal(undefined);
+    });
+
+    it('returns undefined on missing function member', () => {
+
+        expect(Hoek.reachTransform(obj, 'i.y', (old) => old + 1, { functions: true })).to.equal(undefined);
+    });
+
+    it('throws on missing member in strict mode', () => {
+
+        expect(() => {
+
+            Hoek.reachTransform(obj, 'a.b.c.o.x', (old) => old + 1, { strict: true });
+        }).to.throw('Missing segment o in reach path  a.b.c.o.x');
+
+    });
+
+    it('returns undefined on invalid member', () => {
+
+        expect(Hoek.reachTransform(obj, 'a.b.c.d-.x', (old) => old + 1)).to.equal(undefined);
+    });
+
+    it('returns function member', () => {
+
+        expect(typeof Hoek.reachTransform(obj, 'i', (old) => old)).to.equal('function');
+    });
+
+    it('returns function property', () => {
+
+        expect(Hoek.reachTransform(obj, 'i.x', (old) => old + 1)).to.equal(6);
+    });
+
+    it('returns null', () => {
+
+        expect(Hoek.reachTransform(obj, 'j', (old) => old)).to.equal(null);
+    });
+
+    it('throws on function property when functions not allowed', () => {
+
+        expect(() => {
+
+            Hoek.reachTransform(obj, 'i.x', (old) => old, { functions: false });
+        }).to.throw('Invalid segment x in reach path  i.x');
+    });
+
+    it('will return a default value if property is not found', () => {
+
+        expect(Hoek.reachTransform(obj, 'a.b.q', (old) => old, { default: 'defaultValue' })).to.equal('defaultValue');
+    });
+
+    it('will return a default value if path is not found', () => {
+
+        expect(Hoek.reachTransform(obj, 'q', (old) => old, { default: 'defaultValue' })).to.equal('defaultValue');
+    });
+
+    it('allows a falsey value to be used as the default value', () => {
+
+        expect(Hoek.reachTransform(obj, 'q', (old) => old, { default: '' })).to.equal('');
+    });
+});
+
 describe('reachTemplate()', () => {
 
     it('applies object to template', () => {
