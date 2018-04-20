@@ -1584,6 +1584,16 @@ describe('reach()', () => {
 
         expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
     });
+
+    it('transform and returns first value of array', () => {
+
+        expect(Hoek.reach(obj, 'k.0', { operate: (old) => old + 1 })).to.equal(5);
+    });
+
+    it('returns last value of array using negative index', () => {
+
+        expect(Hoek.reach(obj, 'k.-2', { operate: 8 })).to.equal(8);
+    });
 });
 
 describe('reachTemplate()', () => {
