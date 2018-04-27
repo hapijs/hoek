@@ -391,6 +391,25 @@ describe('clone()', () => {
         const copy = Hoek.clone(obj);
         expect(copy).to.equal(obj);
     });
+
+    it('clones sets', () => {
+
+        const a = new Set([1, 2, 3]);
+
+        const b = Hoek.clone(a);
+
+        expect(a).to.equal(b);
+    });
+
+    it('clones sets containing objects (no pass by reference)', () => {
+
+        const a = new Set([1, 2, 3]);
+        a.add(nestedObj);
+
+        const b = Hoek.clone(a);
+
+        expect(b.has(nestedObj)).to.equal(false);
+    });
 });
 
 describe('merge()', () => {
