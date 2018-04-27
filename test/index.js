@@ -450,6 +450,18 @@ describe('clone()', () => {
 
         expect(b.has(nestedObj)).to.equal(false);
     });
+
+    it('clones Promises', () => {
+
+        const a = new Promise((resolve, reject) => {
+
+            setTimeout(resolve, 0);
+        });
+
+        const b = Hoek.clone(a);
+
+        expect(a).to.equal(b);
+    });
 });
 
 describe('merge()', () => {
