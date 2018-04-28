@@ -422,6 +422,48 @@ describe('clone()', () => {
 
         expect(a).to.equal(b);
     });
+
+    it('cloned Promises should resolve like original promise', () => {
+
+        const a = new Promise((resolve, reject) => {
+
+            setTimeout(() => {
+
+                resolve({ 'a':1, 'b':2 });
+            }, 0);
+        });
+
+        const b = Hoek.clone(a);
+        a.then((successOne) => {
+
+            b.then((successTwo) => {
+
+                expect(successOne).to.equal(successTwo);
+                expect(successOne === successTwo).to.equal(true);
+            });
+        });
+    });
+
+    it('cloned Promises should reject like original promise', () => {
+
+        const a = new Promise((resolve, reject) => {
+
+            setTimeout(() => {
+
+                reject({ 'a':1, 'b':2 });
+            }, 0);
+        });
+
+        const b = Hoek.clone(a);
+        a.catch((errOne) => {
+
+            b.catch((errTwo) => {
+
+                expect(errOne).to.equal(errTwo);
+                expect(errOne === errTwo).to.equal(true);
+            });
+        });
+    });
 });
 
 describe('merge()', () => {
