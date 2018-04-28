@@ -464,7 +464,45 @@ describe('clone()', () => {
             });
         });
     });
+
+    it('clones Maps', () => {
+
+        const a = new Map();
+        a.set('a', 1);
+        a.set('b', 2);
+        a.set('c', 3);
+
+        const b = Hoek.clone(a);
+
+        expect(a).to.equal(b);
+    });
+
+    it('clones Maps containing objects as values (no pass by reference)', () => {
+
+        const a = new Map();
+        a.set('a', 1);
+        a.set('b', 2);
+        a.set('c', nestedObj);
+
+        const b = Hoek.clone(a);
+        const result = a.get('c') === b.get('c');
+        expect(result).to.equal(false);
+    });
+
+    it('clones Maps containing objects as keys (are passed by reference)', () => {
+
+        const a = new Map();
+        a.set('a', 1);
+        a.set('b', 2);
+        a.set(nestedObj, 3);
+
+        const b = Hoek.clone(a);
+        const result = a.get(nestedObj) === b.get(nestedObj);
+        expect(result).to.equal(true);
+    });
 });
+
+
 
 describe('merge()', () => {
 
