@@ -262,6 +262,7 @@ Converts an object key chain string to reference
     - `default` - value to return if the path or value is not present, default is `undefined`
     - `strict` - if `true`, will throw an error on missing member, default is `false`
     - `functions` - if `true` allow traversing functions for properties. `false` will throw an error if a function is part of the chain.
+    - `operate` - if operate is a function with argument (ref, key), it will return the function result. Else if operate is a value, it will set this value to ref[key], and return the old value.
 
 A chain including negative numbers will work like negative indices on an
 array.
@@ -279,6 +280,17 @@ var chain = 'a.b.-1';
 var obj = {a : {b : [2,3,6]}};
 
 Hoek.reach(obj, chain); // returns 6
+
+var chain = 'a.b.-1';
+var obj = {a : {b : [2,3,6]}};
+
+Hoek.reach(obj, chain, { operate: (ref, key) => ref[key] + 1 }); // returns 7
+
+var chain = 'a.b.-1';
+var obj = {a : {b : [2,3,6]}};
+
+Hoek.reach(obj, chain, { operate: 8 }); // returns 6
+Hoek.reach(obj, chain); // returns 8, has changed to 8
 ```
 
 ### reachTemplate(obj, template, [options])

@@ -1585,14 +1585,26 @@ describe('reach()', () => {
         expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
     });
 
-    it('transform and returns first value of array', () => {
+    it('transform and returns first value of array after operate', () => {
 
-        expect(Hoek.reach(obj, 'k.0', { operate: (old) => old + 1 })).to.equal(5);
+        expect(Hoek.reach(obj, 'k.0', { operate: (ref, key) => ref[key] + 1 })).to.equal(5);
+        expect(Hoek.reach(obj, 'k.0')).to.equal(4);
+    });
+
+    it('transform and returns first value of array after operate change value', () => {
+
+        expect(Hoek.reach(obj, 'k.0', { operate: (ref, key) => {
+
+            ref[key] += 1;
+            return ref[key];
+        } })).to.equal(5);
+        expect(Hoek.reach(obj, 'k.0')).to.equal(5);
     });
 
     it('returns last value of array using negative index', () => {
 
-        expect(Hoek.reach(obj, 'k.-2', { operate: 8 })).to.equal(8);
+        expect(Hoek.reach(obj, 'k.-2', { operate: 18 })).to.equal(9);
+        expect(Hoek.reach(obj, 'k.-2')).to.equal(18);
     });
 });
 
