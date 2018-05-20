@@ -1085,6 +1085,59 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual([item1, item1], [item1, item2])).to.be.false();
     });
 
+    it('compares sets', () => {
+
+        expect(Hoek.deepEqual(new Set(), new Set())).to.be.true();
+        expect(Hoek.deepEqual(new Set([1]), new Set([1]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([]), new Set([]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([1, 2, 3]), new Set([1, 2, 3]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([1, 2, 3]), new Set([3, 2, 1]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([1, 2, 3]), new Set([1, 2, 4]))).to.be.false();
+        expect(Hoek.deepEqual(new Set([1, 2, 3]), new Set([1, 2]))).to.be.false();
+        expect(Hoek.deepEqual(new Set([1, 2, 1]), new Set([1, 2]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([+0]), new Set([-0]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([NaN]), new Set([NaN]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([1, {}]), new Set([1, {}]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([1, {}]), new Set([{}, 1]))).to.be.false();
+        expect(Hoek.deepEqual(new WeakSet(), new WeakSet())).to.be.true();
+        const obj = {};
+        expect(Hoek.deepEqual(new WeakSet([obj]), new WeakSet())).to.be.true();
+        expect(Hoek.deepEqual(new WeakSet(), new Set()), { prototype: false }).to.be.false();
+
+        const sets = [new Set(), new Set()].map((set) => {
+
+            set.modified = true;
+            return set;
+        });
+        expect(Hoek.deepEqual(sets[0], sets[1])).to.be.true();
+        expect(Hoek.deepEqual(sets[0], new Set())).to.be.false();
+    });
+
+    it('compares maps', () => {
+
+        const item1 = { key: 'value1' };
+        const item2 = { key: 'value2' };
+        expect(Hoek.deepEqual(new Map(), new Map())).to.be.true();
+        expect(Hoek.deepEqual(new Map([[1, {}]]), new Map([[1, {}]]))).to.be.true();
+        expect(Hoek.deepEqual(new Map([[1, item1]]), new Map([[1, item1]]))).to.be.true();
+        expect(Hoek.deepEqual(new Map([[1, item1]]), new Map([[1, item2]]))).to.be.false();
+        expect(Hoek.deepEqual(new Map([[1, undefined]]), new Map([[2, undefined]]))).to.be.false();
+        expect(Hoek.deepEqual(new Map([[1, {}]]), new Map([[1, {}], [2, {}]]))).to.be.false();
+        expect(Hoek.deepEqual(new Map([[item1, 1]]), new Map([[item1, 1]]))).to.be.true();
+        expect(Hoek.deepEqual(new Map([[{}, 1]]), new Map([[{}, 1]]))).to.be.false();
+        expect(Hoek.deepEqual(new WeakMap(), new WeakMap())).to.be.true();
+        expect(Hoek.deepEqual(new WeakMap([[item1, 1]]), new WeakMap())).to.be.true();
+        expect(Hoek.deepEqual(new WeakMap(), new Map()), { prototype: false }).to.be.false();
+
+        const maps = [new Map(), new Map()].map((map) => {
+
+            map.modified = true;
+            return map;
+        });
+        expect(Hoek.deepEqual(maps[0], maps[1])).to.be.true();
+        expect(Hoek.deepEqual(maps[0], new Map())).to.be.false();
+    });
+
     it('compares buffers', () => {
 
         expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 2, 3]))).to.be.true();
