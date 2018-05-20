@@ -1070,6 +1070,15 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(/a/g, /b/g)).to.be.false();
     });
 
+    it('compares errors', () => {
+
+        expect(Hoek.deepEqual(new Error('a'), new Error('a'))).to.be.true();
+        expect(Hoek.deepEqual(new Error('a'), new Error('b'))).to.be.false();
+        expect(Hoek.deepEqual(new Error('a'), new TypeError('a'), { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(new Error(), {}, { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual({}, new Error(), { prototype: false })).to.be.false();
+    });
+
     it('compares arrays', () => {
 
         expect(Hoek.deepEqual([[1]], [[1]])).to.be.true();
