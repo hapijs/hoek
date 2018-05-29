@@ -1305,7 +1305,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual({ value: 'a', hidden: true }, createObj('a', 1), { prototype: false })).to.be.false();
     });
 
-    it('compares an object with property getter without executing it', () => {
+    it('compares an object with property getter while executing it', () => {
 
         const obj = {};
         const value = 1;
@@ -1323,9 +1323,9 @@ describe('deepEqual()', () => {
 
         const copy = Hoek.clone(obj);
         expect(Hoek.deepEqual(obj, copy)).to.be.true();
-        expect(execCount).to.equal(0);
+        expect(execCount).to.equal(2);
         expect(copy.test).to.equal(1);
-        expect(execCount).to.equal(1);
+        expect(execCount).to.equal(3);
     });
 
     it('compares objects with property getters', () => {
