@@ -1098,7 +1098,9 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new Set([+0]), new Set([-0]))).to.be.true();
         expect(Hoek.deepEqual(new Set([NaN]), new Set([NaN]))).to.be.true();
         expect(Hoek.deepEqual(new Set([1, {}]), new Set([1, {}]))).to.be.true();
-        expect(Hoek.deepEqual(new Set([1, {}]), new Set([{}, 1]))).to.be.false();
+        expect(Hoek.deepEqual(new Set([1, {}]), new Set([{}, 1]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([1, {}, {}]), new Set([{}, 1, {}]))).to.be.true();
+        expect(Hoek.deepEqual(new Set([1, { a: 1 }]), new Set([{ a: 0 }, 1]))).to.be.false();
         expect(Hoek.deepEqual(new WeakSet(), new WeakSet())).to.be.true();
         const obj = {};
         expect(Hoek.deepEqual(new WeakSet([obj]), new WeakSet())).to.be.true();
