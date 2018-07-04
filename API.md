@@ -530,7 +530,7 @@ var result = Hoek.isInteger('23')
 ## Promises
 
 ### wait(timeout)
-Resolve the promise after `timeout` milliseconds.
+Resolve the promise after `timeout`. Provide the `timeout` in milliseconds.
 
 ```javascript
 await Hoek.wait(2000); // waits for 2 seconds
