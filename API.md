@@ -1,6 +1,5 @@
 # Table of Contents
 
-* [Introduction](#introduction "Introduction")
 * [Object](#object "Object")
   * [clone](#cloneobj "clone")
   * [cloneWithShallow](#clonewithshallowobj-keys "cloneWithShallow")
