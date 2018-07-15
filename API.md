@@ -37,6 +37,9 @@
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
   * [isInteger](#isintegervalue "isInteger")
+* [Promises](#promises "Promises")
+  * [wait](#waittimeout "wait")
+  * [block](#block "block")
 
 
 
@@ -516,12 +519,21 @@ Returns a randomly generated file name at the specified `path`. The result is a 
 var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
 ```
 
-
 ### isInteger(value)
-
 Check `value` to see if it is an integer.  Returns true/false.
 
 ```javascript
 var result = Hoek.isInteger('23')
 ```
 
+## Promises
+
+### wait(timeout)
+Resolve the promise after `timeout`. Provide the `timeout` in milliseconds.
+
+```javascript
+await Hoek.wait(2000); // waits for 2 seconds
+```
+
+### block()
+A no-op Promise. Does nothing.
