@@ -983,6 +983,12 @@ describe('applyToDefaultsWithShallow()', () => {
 
 describe('deepEqual()', () => {
 
+    it('compares identical references', () => {
+
+        const x = {};
+        expect(Hoek.deepEqual(x, x)).to.be.true();
+    });
+
     it('compares simple values', () => {
 
         expect(Hoek.deepEqual('x', 'x')).to.be.true();
