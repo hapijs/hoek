@@ -2407,3 +2407,59 @@ describe('block()', () => {
         Hoek.ignore = orig;
     });
 });
+
+describe('asyncForEach()', () => {
+
+    it('iterates over array from start to end', async () => {
+
+        const originalArray = [1,2,3,4,5];
+        await Hoek.asyncForEach(originalArray, (num, index, array) => {
+
+            array[index] = num + num;
+        });
+
+        expect(originalArray).to.equal([2,4,6,8,10]);
+    });
+
+    it('iterates over only 1st 3 elements of array of size 5', async () => {
+
+        const originalArray = [1,2,3,4,5];
+        await Hoek.asyncForEach(originalArray, (num, index, array) => {
+
+            array[index] = num + num;
+        }, 3);
+
+        expect(originalArray).to.equal([2,4,6,4,5]);
+    });
+
+    it('break when false is found', async () => {
+
+        const originalArray = [1,2,3,4,5];
+        await Hoek.asyncForEach(originalArray, (num, index, array) => {
+
+            array[index] = num * 10;
+            if (num % 3 === 0) {
+                return false;
+            }
+        });
+
+        expect(originalArray).to.equal([10,20,30,4,5]);
+    });
+
+    it('copies elements in an array to another', async () => {
+
+        const originalArray = [1,2,3,4,5];
+        const newArray = [];
+
+        expect(originalArray).to.equal([1,2,3,4,5]);
+        expect(newArray).to.equal([]);
+
+        await Hoek.asyncForEach(originalArray, (num) => {
+
+            newArray.push(num);
+        });
+
+        expect(originalArray).to.equal([1,2,3,4,5]);
+        expect(newArray).to.equal([1,2,3,4,5]);
+    });
+});
