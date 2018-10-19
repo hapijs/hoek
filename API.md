@@ -286,11 +286,11 @@ Hoek.reach(obj, chain); // returns 6
 ### reachTemplate(obj, template, [options])
 
 Replaces string parameters (`{name}`) with their corresponding object key values by applying the
-(`reach()`)[#reachobj-chain-options] method where:
+[`reach()`](#reachobj-chain-options) method where:
 
 - `obj` - the context object used for key lookup.
 - `template` - a string containing `{}` parameters.
-- `options` - optional (`reach()`)[#reachobj-chain-options] options.
+- `options` - optional [`reach()`](#reachobj-chain-options) options.
 
 ```javascript
 
