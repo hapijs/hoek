@@ -207,6 +207,7 @@ describe('clone()', () => {
 
             return 2;
         };
+
         a.y.u = a.x;
 
         const b = Hoek.clone(a);
@@ -1026,7 +1027,7 @@ describe('deepEqual()', () => {
 
         const compare = function () {
 
-            expect(Hoek.deepEqual([], arguments)).to.be.false();
+            expect(Hoek.deepEqual([], arguments)).to.be.false();            // eslint-disable-line prefer-rest-params
         };
 
         compare();
@@ -1036,11 +1037,12 @@ describe('deepEqual()', () => {
 
         const compare = function () {
 
-            const arg1 = arguments;
+            const arg1 = arguments;                                         // eslint-disable-line prefer-rest-params
 
             const inner = function () {
 
-                expect(Hoek.deepEqual(arg1, arguments)).to.be.true(); // callee is not supported in strict mode, was previously false becuse callee was different
+                // callee is not supported in strict mode, was previously false becuse callee was different
+                expect(Hoek.deepEqual(arg1, arguments)).to.be.true();       // eslint-disable-line prefer-rest-params
             };
 
             inner();
@@ -1895,6 +1897,7 @@ describe('Base64Url', () => {
 
                 return Hoek.base64urlEncode(number);
             };
+
             expect(func).throws(Error);
         });
 

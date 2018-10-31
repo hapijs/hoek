@@ -4,11 +4,7 @@ Utility methods for the hapi ecosystem. This module is not intended to solve eve
 
 [![Build Status](https://secure.travis-ci.org/hapijs/hoek.svg)](http://travis-ci.org/hapijs/hoek)
 
-<a href="https://andyet.com"><img src="https://s3.amazonaws.com/static.andyet.com/images/%26yet-logo.svg" align="right" /></a>
-
-Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
-
-**hoek** is sponsored by [&yet](https://andyet.com)
+Lead Maintainer: [Gil Pedersen](https://github.com/kanongil)
 
 ## Usage
 
