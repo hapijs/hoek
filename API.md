@@ -18,9 +18,6 @@
   * [shallow](#shallowsource "shallow")
   * [stringify](#stringifyobj "stringify")
 * [Bench](#bench "Bench")
-* [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
-  * [base64urlEncode](#base64urlencodevalue "binary64urlEncode")
-  * [base64urlDecode](#base64urldecodevalue "binary64urlDecode")
 * [Escaping Characters](#escaping-characters "Escaping Characters")
   * [escapeHtml](#escapehtmlstring "escapeHtml")
   * [escapeHeaderAttribute](#escapeheaderattributeattribute "escapeHeaderAttribute")
@@ -28,15 +25,11 @@
   * [escapeRegex](#escaperegexstring "escapeRegex")
 * [Errors](#errors "Errors")
   * [assert](#assertcondition-message "assert")
-  * [abort](#abortmessage "abort")
-  * [displayStack](#displaystackslice "displayStack")
-  * [callStack](#callstackslice "callStack")
 * [Function](#function "Function")
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
-  * [isInteger](#isintegervalue "isInteger")
 * [Promises](#promises "Promises")
   * [wait](#waittimeout "wait")
   * [block](#block "block")
@@ -359,15 +352,6 @@ Hoek.stringify(a);		// Returns '[Cannot display object: Converting circular stru
 Same as Timer with the exception that `ts` stores the internal node clock which is not related to `Date.now()` and cannot be used to display
 human-readable timestamps. More accurate for benchmarking or internal timers.
 
-# Binary Encoding/Decoding
-
-### base64urlEncode(value)
-
-Encodes value of string or buffer type in Base64 or URL encoding, function will assert input value is correct.
-
-### base64urlDecode(value)
-
-Decodes string into Base64 or URL encoding, function throws an error on invalid input and returns a string or buffer depending on encoding provided.  Default encoding is binary.
 # Escaping Characters
 
 Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
@@ -440,53 +424,6 @@ var a = 1, b = 2;
 Hoek.assert(a === b, new Error('a should equal b')); // Throws the given error object
 ```
 
-### abort(message)
-
-First checks if `process.env.NODE_ENV === 'test'`, and if so, throws error message. Otherwise,
-displays most recent stack and then exits process.
-
-
-
-### displayStack(slice)
-
-Displays the trace stack
-
-```javascript
-
-var stack = Hoek.displayStack();
-console.log(stack); // returns something like:
-
-[ 'null (/Users/user/Desktop/hoek/test.js:4:18)',
-  'Module._compile (module.js:449:26)',
-  'Module._extensions..js (module.js:467:10)',
-  'Module.load (module.js:356:32)',
-  'Module._load (module.js:312:12)',
-  'Module.runMain (module.js:492:10)',
-  'startup.processNextTick.process._tickCallback (node.js:244:9)' ]
-```
-
-### callStack(slice)
-
-Returns a trace stack array.
-
-```javascript
-
-var stack = Hoek.callStack();
-console.log(stack);  // returns something like:
-
-[ [ '/Users/user/Desktop/hoek/test.js', 4, 18, null, false ],
-  [ 'module.js', 449, 26, 'Module._compile', false ],
-  [ 'module.js', 467, 10, 'Module._extensions..js', false ],
-  [ 'module.js', 356, 32, 'Module.load', false ],
-  [ 'module.js', 312, 12, 'Module._load', false ],
-  [ 'module.js', 492, 10, 'Module.runMain', false ],
-  [ 'node.js',
-    244,
-    9,
-    'startup.processNextTick.process._tickCallback',
-    false ] ]
-```
-
 ## Function
 
 ### once(fn)
@@ -517,13 +454,6 @@ Returns a randomly generated file name at the specified `path`. The result is a 
 
 ```javascript
 var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
-```
-
-### isInteger(value)
-Check `value` to see if it is an integer.  Returns true/false.
-
-```javascript
-var result = Hoek.isInteger('23')
 ```
 
 ## Promises

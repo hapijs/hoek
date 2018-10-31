@@ -18,33 +18,6 @@ const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
 
 
-describe('escapeJavaScript()', () => {
-
-    it('encodes / characters', () => {
-
-        const encoded = Hoek.escapeJavaScript('<script>alert(1)</script>');
-        expect(encoded).to.equal('\\x3cscript\\x3ealert\\x281\\x29\\x3c\\x2fscript\\x3e');
-    });
-
-    it('encodes \' characters', () => {
-
-        const encoded = Hoek.escapeJavaScript('something(\'param\')');
-        expect(encoded).to.equal('something\\x28\\x27param\\x27\\x29');
-    });
-
-    it('encodes large unicode characters with the correct padding', () => {
-
-        const encoded = Hoek.escapeJavaScript(String.fromCharCode(500) + String.fromCharCode(1000));
-        expect(encoded).to.equal('\\u0500\\u1000');
-    });
-
-    it('doesn\'t throw an exception when passed null', () => {
-
-        const encoded = Hoek.escapeJavaScript(null);
-        expect(encoded).to.equal('');
-    });
-});
-
 describe('escapeHtml()', () => {
 
     it('encodes / characters', () => {
