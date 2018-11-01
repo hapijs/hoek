@@ -1,6 +1,5 @@
 # Table of Contents
 
-* [Introduction](#introduction "Introduction")
 * [Object](#object "Object")
   * [clone](#cloneobj "clone")
   * [cloneWithShallow](#clonewithshallowobj-keys "cloneWithShallow")
@@ -8,20 +7,13 @@
   * [applyToDefaults](#applytodefaultsdefaults-options-isnulloverride "applyToDefaults")
   * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
   * [deepEqual](#deepequalb-a-options "deepEqual")
-  * [unique](#uniquearray-key "unique")
-  * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
   * [contain](#containref-values-options "contain")
   * [flatten](#flattenarray-target "flatten")
   * [reach](#reachobj-chain-options "reach")
   * [reachTemplate](#reachtemplateobj-template-options "reachTemplate")
-  * [transform](#transformobj-transform-options "transform")
-  * [shallow](#shallowsource "shallow")
   * [stringify](#stringifyobj "stringify")
 * [Bench](#bench "Bench")
-* [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
-  * [base64urlEncode](#base64urlencodevalue "binary64urlEncode")
-  * [base64urlDecode](#base64urldecodevalue "binary64urlDecode")
 * [Escaping Characters](#escaping-characters "Escaping Characters")
   * [escapeHtml](#escapehtmlstring "escapeHtml")
   * [escapeHeaderAttribute](#escapeheaderattributeattribute "escapeHeaderAttribute")
@@ -29,15 +21,14 @@
   * [escapeRegex](#escaperegexstring "escapeRegex")
 * [Errors](#errors "Errors")
   * [assert](#assertcondition-message "assert")
-  * [abort](#abortmessage "abort")
-  * [displayStack](#displaystackslice "displayStack")
-  * [callStack](#callstackslice "callStack")
 * [Function](#function "Function")
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
   * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
-  * [isInteger](#isintegervalue "isInteger")
+* [Promises](#promises "Promises")
+  * [wait](#waittimeout "wait")
+  * [block](#block "block")
 
 
 
@@ -175,34 +166,6 @@ Hoek.deepEqual(Object.create(null), {}, { prototype: false }); //results in true
 Hoek.deepEqual(Object.create(null), {}); //results in false
 ```
 
-### unique(array, key)
-
-Remove duplicate items from Array
-
-```javascript
-
-var array = [1, 2, 2, 3, 3, 4, 5, 6];
-
-var newArray = Hoek.unique(array);    // results in [1,2,3,4,5,6]
-
-array = [{id: 1}, {id: 1}, {id: 2}];
-
-newArray = Hoek.unique(array, "id");  // results in [{id: 1}, {id: 2}]
-```
-
-### mapToObject(array, key)
-
-Convert an Array into an Object
-
-```javascript
-
-var array = [1,2,3];
-var newObject = Hoek.mapToObject(array);   // results in {"1": true, "2": true, "3": true}
-
-array = [{id: 1}, {id: 2}];
-newObject = Hoek.mapToObject(array, "id"); // results in {"1": true, "2": true}
-```
-
 ### intersect(array1, array2)
 
 Find the common unique items in two arrays
@@ -284,11 +247,11 @@ Hoek.reach(obj, chain); // returns 6
 ### reachTemplate(obj, template, [options])
 
 Replaces string parameters (`{name}`) with their corresponding object key values by applying the
-(`reach()`)[#reachobj-chain-options] method where:
+[`reach()`](#reachobj-chain-options) method where:
 
 - `obj` - the context object used for key lookup.
 - `template` - a string containing `{}` parameters.
-- `options` - optional (`reach()`)[#reachobj-chain-options] options.
+- `options` - optional [`reach()`](#reachobj-chain-options) options.
 
 ```javascript
 
@@ -296,48 +259,6 @@ var chain = 'a.b.c';
 var obj = {a : {b : { c : 1}}};
 
 Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
-```
-
-### transform(obj, transform, [options])
-
-Transforms an existing object into a new one based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options. The first argument can also be an array of objects. In that case the method will return an array of transformed objects. Note that `options.separator` will be respected for the keys in the transform object as well as values.
-
-```javascript
-var source = {
-    address: {
-        one: '123 main street',
-        two: 'PO Box 1234'
-    },
-    title: 'Warehouse',
-    state: 'CA'
-};
-
-var result = Hoek.transform(source, {
-    'person.address.lineOne': 'address.one',
-    'person.address.lineTwo': 'address.two',
-    'title': 'title',
-    'person.address.region': 'state'
-});
-// Results in
-// {
-//     person: {
-//         address: {
-//             lineOne: '123 main street',
-//             lineTwo: 'PO Box 1234',
-//             region: 'CA'
-//         }
-//     },
-//     title: 'Warehouse'
-// }
-```
-
-### shallow(source)
-
-Returns a new object with shallow copies of all source properties where:
-- `source` - the source to be copied.
-
-```javascript
-var shallow = Hoek.shallow({ a: { b: 1 } });
 ```
 
 ### stringify(obj)
@@ -357,15 +278,6 @@ Hoek.stringify(a);		// Returns '[Cannot display object: Converting circular stru
 Same as Timer with the exception that `ts` stores the internal node clock which is not related to `Date.now()` and cannot be used to display
 human-readable timestamps. More accurate for benchmarking or internal timers.
 
-# Binary Encoding/Decoding
-
-### base64urlEncode(value)
-
-Encodes value of string or buffer type in Base64 or URL encoding, function will assert input value is correct.
-
-### base64urlDecode(value)
-
-Decodes string into Base64 or URL encoding, function throws an error on invalid input and returns a string or buffer depending on encoding provided.  Default encoding is binary.
 # Escaping Characters
 
 Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
@@ -438,53 +350,6 @@ var a = 1, b = 2;
 Hoek.assert(a === b, new Error('a should equal b')); // Throws the given error object
 ```
 
-### abort(message)
-
-First checks if `process.env.NODE_ENV === 'test'`, and if so, throws error message. Otherwise,
-displays most recent stack and then exits process.
-
-
-
-### displayStack(slice)
-
-Displays the trace stack
-
-```javascript
-
-var stack = Hoek.displayStack();
-console.log(stack); // returns something like:
-
-[ 'null (/Users/user/Desktop/hoek/test.js:4:18)',
-  'Module._compile (module.js:449:26)',
-  'Module._extensions..js (module.js:467:10)',
-  'Module.load (module.js:356:32)',
-  'Module._load (module.js:312:12)',
-  'Module.runMain (module.js:492:10)',
-  'startup.processNextTick.process._tickCallback (node.js:244:9)' ]
-```
-
-### callStack(slice)
-
-Returns a trace stack array.
-
-```javascript
-
-var stack = Hoek.callStack();
-console.log(stack);  // returns something like:
-
-[ [ '/Users/user/Desktop/hoek/test.js', 4, 18, null, false ],
-  [ 'module.js', 449, 26, 'Module._compile', false ],
-  [ 'module.js', 467, 10, 'Module._extensions..js', false ],
-  [ 'module.js', 356, 32, 'Module.load', false ],
-  [ 'module.js', 312, 12, 'Module._load', false ],
-  [ 'module.js', 492, 10, 'Module.runMain', false ],
-  [ 'node.js',
-    244,
-    9,
-    'startup.processNextTick.process._tickCallback',
-    false ] ]
-```
-
 ## Function
 
 ### once(fn)
@@ -517,12 +382,14 @@ Returns a randomly generated file name at the specified `path`. The result is a 
 var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
 ```
 
+## Promises
 
-### isInteger(value)
-
-Check `value` to see if it is an integer.  Returns true/false.
+### wait(timeout)
+Resolve the promise after `timeout`. Provide the `timeout` in milliseconds.
 
 ```javascript
-var result = Hoek.isInteger('23')
+await Hoek.wait(2000); // waits for 2 seconds
 ```
 
+### block()
+A no-op Promise. Does nothing.

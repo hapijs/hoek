@@ -2,7 +2,6 @@
 
 // Load modules
 
-const Fs = require('fs');
 const Path = require('path');
 const Util = require('util');
 
@@ -35,38 +34,6 @@ const nestedObj = {
     y: 'y',
     z: new Date(1378775452757)
 };
-
-internals.unique = {
-    item: {
-        objects: [nestedObj, { z: 'z' }]
-    }
-};
-
-internals.unique.objectsByKey = {
-    dups: [internals.unique.item.objects[0], internals.unique.item.objects[1], internals.unique.item.objects[0]],
-    result: [internals.unique.item.objects[0], internals.unique.item.objects[1]]
-};
-
-internals.unique.objects = {
-    dups: [internals.unique.item.objects[1], internals.unique.item.objects[0], internals.unique.item.objects[0]],
-    result: [internals.unique.item.objects[1], internals.unique.item.objects[0]]
-};
-
-internals.unique.integers = {
-    dups: [1, 2, 3, 2, 2, 1, 3, 4, 5],
-    result: [1, 2, 3, 4, 5]
-};
-
-internals.unique.strings = {
-    dups: ['a', 'b', 'c', 'd', 'a', 'c', 'e'],
-    result: ['a', 'b', 'c', 'd', 'e']
-};
-
-internals.unique.mixed = {
-    dups: [1, 2, 'a', 'b', internals.unique.item.objects[0], 'a', '2', 3, internals.unique.item.objects[0]],
-    result: [1, 2, 'a', ',b', internals.unique.item.objects[0], 3]
-};
-
 
 describe('clone()', () => {
 
@@ -207,6 +174,7 @@ describe('clone()', () => {
 
             return 2;
         };
+
         a.y.u = a.x;
 
         const b = Hoek.clone(a);
@@ -983,6 +951,12 @@ describe('applyToDefaultsWithShallow()', () => {
 
 describe('deepEqual()', () => {
 
+    it('compares identical references', () => {
+
+        const x = {};
+        expect(Hoek.deepEqual(x, x)).to.be.true();
+    });
+
     it('compares simple values', () => {
 
         expect(Hoek.deepEqual('x', 'x')).to.be.true();
@@ -1022,7 +996,7 @@ describe('deepEqual()', () => {
 
         const compare = function () {
 
-            expect(Hoek.deepEqual([], arguments)).to.be.false();
+            expect(Hoek.deepEqual([], arguments)).to.be.false();            // eslint-disable-line prefer-rest-params
         };
 
         compare();
@@ -1032,11 +1006,12 @@ describe('deepEqual()', () => {
 
         const compare = function () {
 
-            const arg1 = arguments;
+            const arg1 = arguments;                                         // eslint-disable-line prefer-rest-params
 
             const inner = function () {
 
-                expect(Hoek.deepEqual(arg1, arguments)).to.be.true(); // callee is not supported in strict mode, was previously false becuse callee was different
+                // callee is not supported in strict mode, was previously false becuse callee was different
+                expect(Hoek.deepEqual(arg1, arguments)).to.be.true();       // eslint-disable-line prefer-rest-params
             };
 
             inner();
@@ -1472,75 +1447,6 @@ describe('deepEqual()', () => {
     });
 });
 
-describe('unique()', () => {
-
-    const deprecatedUnique = function (array, key) { // previous method of unique from hapi 3.0.4
-
-        const index = {};
-        const result = [];
-
-        for (let i = 0; i < array.length; ++i) {
-            const id = (key ? array[i][key] : array[i]);
-            if (index[id] !== true) {
-
-                result.push(array[i]);
-                index[id] = true;
-            }
-        }
-
-        return result;
-    };
-
-    it('ensures uniqueness within array of objects based on subkey', () => {
-
-        expect(Hoek.unique(internals.unique.objectsByKey.dups, 'x')).to.equal(internals.unique.objectsByKey.result);
-        expect(deprecatedUnique(internals.unique.objectsByKey.dups, 'x')).to.equal(internals.unique.objectsByKey.result);
-
-    });
-
-    it('removes duplicated integers without key', () => {
-
-        expect(Hoek.unique(internals.unique.integers.dups)).to.equal(internals.unique.integers.result);
-        expect(deprecatedUnique(internals.unique.integers.dups)).to.equal(internals.unique.integers.result);
-    });
-
-    it('removes duplicated strings without key', () => {
-
-        expect(Hoek.unique(internals.unique.strings.dups)).to.equal(internals.unique.strings.result);
-        expect(deprecatedUnique(internals.unique.strings.dups)).to.equal(internals.unique.strings.result);
-    });
-
-    it('removes duplicated objects without key', () => { // this was not supported in earlier versions
-
-        expect(Hoek.unique(internals.unique.objects.dups)).to.equal(internals.unique.objects.result);
-        expect(deprecatedUnique(internals.unique.objects.dups)).to.not.equal(internals.unique.objects.result);
-    });
-});
-
-describe('mapToObject()', () => {
-
-    it('returns null on null array', () => {
-
-        const a = Hoek.mapToObject(null);
-        expect(a).to.equal(null);
-    });
-
-    it('converts basic array to existential object', () => {
-
-        const keys = [1, 2, 3, 4];
-        const a = Hoek.mapToObject(keys);
-        expect(Object.keys(a)).to.equal(['1', '2', '3', '4']);
-    });
-
-    it('converts array of objects to existential object', () => {
-
-        const keys = [{ x: 1 }, { x: 2 }, { x: 3 }, { y: 4 }];
-        const subkey = 'x';
-        const a = Hoek.mapToObject(keys, subkey);
-        expect(a).to.equal({ 1: true, 2: true, 3: true });
-    });
-});
-
 describe('intersect()', () => {
 
     it('returns the common objects of two arrays', () => {
@@ -1571,13 +1477,14 @@ describe('intersect()', () => {
 
         expect(Hoek.intersect([1], null).length).to.equal(0);
         expect(Hoek.intersect(null, [1]).length).to.equal(0);
+        expect(Hoek.intersect(null, [1], true)).to.be.null();
     });
 
     it('returns the common objects of object and array', () => {
 
-        const array1 = [1, 2, 3, 4, 4, 5, 5];
+        const array1 = { 1: true, 2: true, 3: true, 4: true, 5: true };
         const array2 = [5, 4, 5, 6, 7];
-        const common = Hoek.intersect(Hoek.mapToObject(array1), array2);
+        const common = Hoek.intersect(array1, array2);
         expect(common.length).to.equal(2);
     });
 });
@@ -1899,157 +1806,6 @@ describe('reachTemplate()', () => {
     });
 });
 
-describe('callStack()', () => {
-
-    it('returns the full call stack', () => {
-
-        const stack = Hoek.callStack();
-        expect(stack[0][0]).to.contain('index.js');
-    });
-});
-
-describe('displayStack ()', () => {
-
-    it('returns the full call stack for display', () => {
-
-        const stack = Hoek.displayStack();
-        expect(stack[0]).to.contain(Path.normalize('/test/index.js') + ':');
-    });
-
-    it('includes constructor functions correctly', () => {
-
-        return new Promise((resolve) => {
-
-            const Something = function (next) {
-
-                next();
-            };
-
-            new Something(() => {
-
-                const stack = Hoek.displayStack();
-                expect(stack[1]).to.contain('new Something');
-                resolve();
-            });
-        });
-    });
-});
-
-describe('abort()', () => {
-
-    it('exits process when not in test mode', async () => {
-
-        const env = process.env.NODE_ENV;
-        const write = process.stdout.write;
-        const exit = process.exit;
-
-        process.env.NODE_ENV = 'nottatest';
-        process.stdout.write = function () { };
-
-        const abort = new Promise((resolve) => {
-
-            process.exit = function (state) {
-
-                process.exit = exit;
-                process.env.NODE_ENV = env;
-                process.stdout.write = write;
-
-                expect(state).to.equal(1);
-                resolve();
-            };
-        });
-
-        Hoek.abort('Boom');
-        await abort;
-    });
-
-    it('throws when not in test mode and abortThrow is true', () => {
-
-        const env = process.env.NODE_ENV;
-        process.env.NODE_ENV = 'nottatest';
-        Hoek.abortThrow = true;
-
-        expect(() => {
-
-            Hoek.abort('my error message');
-        }).to.throw('my error message');
-        Hoek.abortThrow = false;
-        process.env.NODE_ENV = env;
-    });
-
-    it('respects hideStack argument', () => {
-
-        const env = process.env.NODE_ENV;
-        const write = process.stdout.write;
-        const exit = process.exit;
-        let output = '';
-
-        process.exit = function () { };
-        process.env.NODE_ENV = '';
-        process.stdout.write = function (message) {
-
-            output = message;
-        };
-
-        Hoek.abort('my error message', true);
-
-        process.env.NODE_ENV = env;
-        process.stdout.write = write;
-        process.exit = exit;
-
-        expect(output).to.equal('ABORT: my error message\n\t\n');
-    });
-
-    it('throws in test mode', () => {
-
-        const env = process.env.NODE_ENV;
-        process.env.NODE_ENV = 'test';
-
-        expect(() => {
-
-            Hoek.abort('my error message', true);
-        }).to.throw('my error message');
-
-        process.env.NODE_ENV = env;
-    });
-
-    it('throws in test mode with default message', () => {
-
-        const env = process.env.NODE_ENV;
-        process.env.NODE_ENV = 'test';
-
-        expect(() => {
-
-            Hoek.abort('', true);
-        }).to.throw('Unknown error');
-
-        process.env.NODE_ENV = env;
-    });
-
-    it('defaults to showing stack', () => {
-
-        const env = process.env.NODE_ENV;
-        const write = process.stdout.write;
-        const exit = process.exit;
-        let output = '';
-
-        process.exit = function () { };
-        process.env.NODE_ENV = '';
-        process.stdout.write = function (message) {
-
-            output = message;
-        };
-
-        Hoek.abort('my error message');
-
-        process.env.NODE_ENV = env;
-        process.stdout.write = write;
-        process.exit = exit;
-
-        expect(output).to.contain('index.js');
-    });
-});
-
 describe('assert()', () => {
 
     it('throws an Error when using assert in a test', () => {
@@ -2147,83 +1903,6 @@ describe('escapeRegex()', () => {
     });
 });
 
-describe('Base64Url', () => {
-
-    const base64str = 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w';
-    const str = unescape('%00%01%02%03%04%05%06%07%08%09%0A%0B%0C%0D%0E%0F%10%11%12%13%14%15%16%17%18%19%1A%1B%1C%1D%1E%1F%20%21%22%23%24%25%26%27%28%29*+%2C-./0123456789%3A%3B%3C%3D%3E%3F@ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D%7E%7F%80%81%82%83%84%85%86%87%88%89%8A%8B%8C%8D%8E%8F%90%91%92%93%94%95%96%97%98%99%9A%9B%9C%9D%9E%9F%A0%A1%A2%A3%A4%A5%A6%A7%A8%A9%AA%AB%AC%AD%AE%AF%B0%B1%B2%B3%B4%B5%B6%B7%B8%B9%BA%BB%BC%BD%BE%BF%C0%C1%C2%C3%C4%C5%C6%C7%C8%C9%CA%CB%CC%CD%CE%CF%D0%D1%D2%D3%D4%D5%D6%D7%D8%D9%DA%DB%DC%DD%DE%DF%E0%E1%E2%E3%E4%E5%E6%E7%E8%E9%EA%EB%EC%ED%EE%EF%F0%F1%F2%F3%F4%F5%F6%F7%F8%F9%FA%FB%FC%FD%FE%FF');
-
-    describe('base64urlEncode()', () => {
-
-        it('should assert function input is a string or buffer', () => {
-
-            const number = 1024;
-            const func = () => {
-
-                return Hoek.base64urlEncode(number);
-            };
-            expect(func).throws(Error);
-        });
-
-        it('should base64 URL-safe a string', () => {
-
-            expect(Hoek.base64urlEncode(str)).to.equal(base64str);
-        });
-
-        it('encodes a buffer', () => {
-
-            expect(Hoek.base64urlEncode(Buffer.from(str, 'binary'))).to.equal(base64str);
-        });
-
-        it('should base64 URL-safe a hex string', () => {
-
-            const buffer = Buffer.from(str, 'binary');
-            expect(Hoek.base64urlEncode(buffer.toString('hex'), 'hex')).to.equal(base64str);
-        });
-
-        it('works on larger input strings', () => {
-
-            const input = Fs.readFileSync(Path.join(__dirname, 'index.js')).toString();
-            const encoded = Hoek.base64urlEncode(input);
-
-            expect(encoded).to.not.contain('+');
-            expect(encoded).to.not.contain('/');
-
-            const decoded = Hoek.base64urlDecode(encoded);
-            expect(decoded).to.equal(input);
-        });
-    });
-
-    describe('base64urlDecode()', () => {
-
-        it('should un-base64 URL-safe a string', () => {
-
-            expect(Hoek.base64urlDecode(base64str)).to.equal(str);
-        });
-
-        it('should un-base64 URL-safe a string into hex', () => {
-
-            expect(Hoek.base64urlDecode(base64str, 'hex')).to.equal(Buffer.from(str, 'binary').toString('hex'));
-        });
-
-        it('should un-base64 URL-safe a string and return a buffer', () => {
-
-            const buf = Hoek.base64urlDecode(base64str, 'buffer');
-            expect(buf instanceof Buffer).to.equal(true);
-            expect(buf.toString('binary')).to.equal(str);
-        });
-
-        it('throws error on invalid input', () => {
-
-            expect(() => Hoek.base64urlDecode(1024)).to.throw('Value not a string');
-        });
-
-        it('throws error on invalid input', () => {
-
-            expect(() => Hoek.base64urlDecode('*')).to.throw('Invalid character');
-        });
-    });
-});
-
 describe('escapeHeaderAttribute()', () => {
 
     it('should not alter ascii values', () => {
@@ -2305,263 +1984,12 @@ describe('once()', () => {
     });
 });
 
-
-describe('isInteger()', () => {
-
-    it('validates integers', () => {
-
-        expect(Hoek.isInteger(0)).to.equal(true);
-        expect(Hoek.isInteger(1)).to.equal(true);
-        expect(Hoek.isInteger(1394035612500)).to.equal(true);
-        expect(Hoek.isInteger('0')).to.equal(false);
-        expect(Hoek.isInteger(1.0)).to.equal(true);
-        expect(Hoek.isInteger(1.1)).to.equal(false);
-        expect(Hoek.isInteger(90071992547409910.1)).to.equal(false);
-        expect(Hoek.isInteger(NaN)).to.equal(false);
-    });
-});
-
 describe('ignore()', () => {
 
     it('exists', () => {
 
         expect(Hoek.ignore).to.exist();
         expect(typeof Hoek.ignore).to.equal('function');
-    });
-});
-
-describe('inherits()', () => {
-
-    it('exists', () => {
-
-        expect(Hoek.inherits).to.exist();
-        expect(typeof Hoek.inherits).to.equal('function');
-    });
-});
-
-describe('format()', () => {
-
-    it('exists', () => {
-
-        expect(Hoek.format).to.exist();
-        expect(typeof Hoek.format).to.equal('function');
-    });
-
-    it('is a reference to Util.format', () => {
-
-        expect(Hoek.format('hello %s', 'world')).to.equal('hello world');
-    });
-});
-
-describe('transform()', () => {
-
-    const source = {
-        address: {
-            one: '123 main street',
-            two: 'PO Box 1234'
-        },
-        zip: {
-            code: 3321232,
-            province: null
-        },
-        title: 'Warehouse',
-        state: 'CA'
-    };
-
-    const sourcesArray = [{
-        address: {
-            one: '123 main street',
-            two: 'PO Box 1234'
-        },
-        zip: {
-            code: 3321232,
-            province: null
-        },
-        title: 'Warehouse',
-        state: 'CA'
-    }, {
-        address: {
-            one: '456 market street',
-            two: 'PO Box 5678'
-        },
-        zip: {
-            code: 9876,
-            province: null
-        },
-        title: 'Garage',
-        state: 'NY'
-    }];
-
-    it('transforms an object based on the input object', () => {
-
-        const result = Hoek.transform(source, {
-            'person.address.lineOne': 'address.one',
-            'person.address.lineTwo': 'address.two',
-            'title': 'title',
-            'person.address.region': 'state',
-            'person.address.zip': 'zip.code',
-            'person.address.location': 'zip.province'
-        });
-
-        expect(result).to.equal({
-            person: {
-                address: {
-                    lineOne: '123 main street',
-                    lineTwo: 'PO Box 1234',
-                    region: 'CA',
-                    zip: 3321232,
-                    location: null
-                }
-            },
-            title: 'Warehouse'
-        });
-    });
-
-    it('transforms an array of objects based on the input object', () => {
-
-        const result = Hoek.transform(sourcesArray, {
-            'person.address.lineOne': 'address.one',
-            'person.address.lineTwo': 'address.two',
-            'title': 'title',
-            'person.address.region': 'state',
-            'person.address.zip': 'zip.code',
-            'person.address.location': 'zip.province'
-        });
-
-        expect(result).to.equal([
-            {
-                person: {
-                    address: {
-                        lineOne: '123 main street',
-                        lineTwo: 'PO Box 1234',
-                        region: 'CA',
-                        zip: 3321232,
-                        location: null
-                    }
-                },
-                title: 'Warehouse'
-            },
-            {
-                person: {
-                    address: {
-                        lineOne: '456 market street',
-                        lineTwo: 'PO Box 5678',
-                        region: 'NY',
-                        zip: 9876,
-                        location: null
-                    }
-                },
-                title: 'Garage'
-            }
-        ]);
-    });
-
-    it('uses the reach options passed into it', () => {
-
-        const schema = {
-            'person-address-lineOne': 'address-one',
-            'person-address-lineTwo': 'address-two',
-            'title': 'title',
-            'person-address-region': 'state',
-            'person-prefix': 'person-title',
-            'person-zip': 'zip-code'
-        };
-        const options = {
-            separator: '-',
-            default: 'unknown'
-        };
-        const result = Hoek.transform(source, schema, options);
-
-        expect(result).to.equal({
-            person: {
-                address: {
-                    lineOne: '123 main street',
-                    lineTwo: 'PO Box 1234',
-                    region: 'CA'
-                },
-                prefix: 'unknown',
-                zip: 3321232
-            },
-            title: 'Warehouse'
-        });
-    });
-
-    it('uses a default separator for keys if options does not specify on', () => {
-
-        const schema = {
-            'person.address.lineOne': 'address.one',
-            'person.address.lineTwo': 'address.two',
-            'title': 'title',
-            'person.address.region': 'state',
-            'person.prefix': 'person.title',
-            'person.zip': 'zip.code'
-        };
-        const options = {
-            default: 'unknown'
-        };
-        const result = Hoek.transform(source, schema, options);
-
-        expect(result).to.equal({
-            person: {
-                address: {
-                    lineOne: '123 main street',
-                    lineTwo: 'PO Box 1234',
-                    region: 'CA'
-                },
-                prefix: 'unknown',
-                zip: 3321232
-            },
-            title: 'Warehouse'
-        });
-    });
-
-    it('works to create shallow objects', () => {
-
-        const result = Hoek.transform(source, {
-            lineOne: 'address.one',
-            lineTwo: 'address.two',
-            title: 'title',
-            region: 'state',
-            province: 'zip.province'
-        });
-
-        expect(result).to.equal({
-            lineOne: '123 main street',
-            lineTwo: 'PO Box 1234',
-            title: 'Warehouse',
-            region: 'CA',
-            province: null
-        });
-    });
-
-    it('only allows strings in the map', () => {
-
-        expect(() => {
-
-            Hoek.transform(source, {
-                lineOne: {}
-            });
-        }).to.throw('All mappings must be "." delineated strings');
-    });
-
-    it('throws an error on invalid arguments', () => {
-
-        expect(() => {
-
-            Hoek.transform(NaN, {});
-        }).to.throw('Invalid source object: must be null, undefined, an object, or an array');
-    });
-
-    it('is safe to pass null', () => {
-
-        const result = Hoek.transform(null, {});
-        expect(result).to.equal({});
-    });
-
-    it('is safe to pass undefined', () => {
-
-        const result = Hoek.transform(undefined, {});
-        expect(result).to.equal({});
     });
 });
 
@@ -2623,43 +2051,6 @@ describe('stringify()', () => {
         const obj = { a: 1 };
         obj.b = obj;
         expect(Hoek.stringify(obj)).to.equal('[Cannot display object: Converting circular structure to JSON]');
-    });
-});
-
-describe('shallow()', () => {
-
-    it('shallow copies an object', () => {
-
-        const obj = {
-            a: 5,
-            b: {
-                c: 6
-            }
-        };
-
-        const shallow = Hoek.shallow(obj);
-        expect(shallow).to.not.shallow.equal(obj);
-        expect(shallow).to.equal(obj);
-        expect(shallow.b).to.equal(obj.b);
-    });
-
-    it('copies properties from a function', () => {
-
-        const fn = function () { };
-        fn.a = 5;
-        fn.b = { c: 6 };
-
-        const shallow = Hoek.shallow(fn);
-        expect(shallow).to.be.an.object();
-        expect(shallow).to.not.shallow.equal(fn);
-        expect(Object.entries(shallow)).to.equal(Object.entries(fn));
-        expect(shallow.b).to.equal(fn.b);
-    });
-
-    it('returns empty object for null and undefined', () => {
-
-        expect(Hoek.shallow(null)).to.equal({});
-        expect(Hoek.shallow(undefined)).to.equal({});
     });
 });
 
