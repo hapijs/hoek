@@ -7,15 +7,11 @@
   * [applyToDefaults](#applytodefaultsdefaults-options-isnulloverride "applyToDefaults")
   * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
   * [deepEqual](#deepequalb-a-options "deepEqual")
-  * [unique](#uniquearray-key "unique")
-  * [mapToObject](#maptoobjectarray-key "mapToObject")
   * [intersect](#intersectarray1-array2 "intersect")
   * [contain](#containref-values-options "contain")
   * [flatten](#flattenarray-target "flatten")
   * [reach](#reachobj-chain-options "reach")
   * [reachTemplate](#reachtemplateobj-template-options "reachTemplate")
-  * [transform](#transformobj-transform-options "transform")
-  * [shallow](#shallowsource "shallow")
   * [stringify](#stringifyobj "stringify")
 * [Bench](#bench "Bench")
 * [Escaping Characters](#escaping-characters "Escaping Characters")
@@ -170,34 +166,6 @@ Hoek.deepEqual(Object.create(null), {}, { prototype: false }); //results in true
 Hoek.deepEqual(Object.create(null), {}); //results in false
 ```
 
-### unique(array, key)
-
-Remove duplicate items from Array
-
-```javascript
-
-var array = [1, 2, 2, 3, 3, 4, 5, 6];
-
-var newArray = Hoek.unique(array);    // results in [1,2,3,4,5,6]
-
-array = [{id: 1}, {id: 1}, {id: 2}];
-
-newArray = Hoek.unique(array, "id");  // results in [{id: 1}, {id: 2}]
-```
-
-### mapToObject(array, key)
-
-Convert an Array into an Object
-
-```javascript
-
-var array = [1,2,3];
-var newObject = Hoek.mapToObject(array);   // results in {"1": true, "2": true, "3": true}
-
-array = [{id: 1}, {id: 2}];
-newObject = Hoek.mapToObject(array, "id"); // results in {"1": true, "2": true}
-```
-
 ### intersect(array1, array2)
 
 Find the common unique items in two arrays
@@ -291,48 +259,6 @@ var chain = 'a.b.c';
 var obj = {a : {b : { c : 1}}};
 
 Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
-```
-
-### transform(obj, transform, [options])
-
-Transforms an existing object into a new one based on the supplied `obj` and `transform` map. `options` are the same as the `reach` options. The first argument can also be an array of objects. In that case the method will return an array of transformed objects. Note that `options.separator` will be respected for the keys in the transform object as well as values.
-
-```javascript
-var source = {
-    address: {
-        one: '123 main street',
-        two: 'PO Box 1234'
-    },
-    title: 'Warehouse',
-    state: 'CA'
-};
-
-var result = Hoek.transform(source, {
-    'person.address.lineOne': 'address.one',
-    'person.address.lineTwo': 'address.two',
-    'title': 'title',
-    'person.address.region': 'state'
-});
-// Results in
-// {
-//     person: {
-//         address: {
-//             lineOne: '123 main street',
-//             lineTwo: 'PO Box 1234',
-//             region: 'CA'
-//         }
-//     },
-//     title: 'Warehouse'
-// }
-```
-
-### shallow(source)
-
-Returns a new object with shallow copies of all source properties where:
-- `source` - the source to be copied.
-
-```javascript
-var shallow = Hoek.shallow({ a: { b: 1 } });
 ```
 
 ### stringify(obj)
