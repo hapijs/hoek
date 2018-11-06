@@ -1518,6 +1518,9 @@ describe('contain()', () => {
         expect(Hoek.contain([1, 2], [1, 2], { once: true })).to.be.true();
         expect(Hoek.contain([1, 2, 3], [1, 4], { part: true })).to.be.true();
         expect(Hoek.contain([[1], [2]], [[1]], { deep: true })).to.be.true();
+        expect(Hoek.contain([1, 2, 1], [1, 1, 2], { only: true })).to.be.true();
+        expect(Hoek.contain([1, 2, 1], [1, 1, 2], { only: true, once: true })).to.be.true();
+        expect(Hoek.contain([1, 2, 1], [1, 2, 2], { only: true })).to.be.true();
 
         expect(Hoek.contain([1, 2, 3], 4)).to.be.false();
         expect(Hoek.contain([{ a: 1 }], { a: 2 }, { deep: true })).to.be.false();
@@ -1529,6 +1532,8 @@ describe('contain()', () => {
         expect(Hoek.contain([1, 3, 2], [1, 2], { only: true })).to.be.false();
         expect(Hoek.contain([1, 2, 2], [1, 2], { once: true })).to.be.false();
         expect(Hoek.contain([0, 2, 3], [1, 4], { part: true })).to.be.false();
+        expect(Hoek.contain([1, 2, 1], [1, 2, 2], { only: true, once: true })).to.be.false();
+        expect(Hoek.contain([1, 2, 1], [1, 2], { only: true, once: true })).to.be.false();
     });
 
     it('tests objects', () => {
