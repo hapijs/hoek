@@ -438,7 +438,8 @@ describe('clone()', () => {
 
         const b = Hoek.clone(a);
 
-        expect(a).to.equal(b);
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
     });
 
     it('clones sets containing objects (no pass by reference)', () => {
@@ -448,7 +449,8 @@ describe('clone()', () => {
 
         const b = Hoek.clone(a);
 
-        expect(b.has(nestedObj)).to.equal(false);
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
     });
 
     it('clones Promises', () => {
@@ -514,7 +516,7 @@ describe('clone()', () => {
 
         const b = Hoek.clone(a);
 
-        expect(a).to.equal(b);
+        expect(b).to.not.shallow.equal(new Map([['a', 1], ['b', 2], ['c', 3]]));
     });
 
     it('clones Maps containing objects as values (no pass by reference)', () => {
@@ -525,8 +527,9 @@ describe('clone()', () => {
         a.set('c', nestedObj);
 
         const b = Hoek.clone(a);
-        const result = a.get('c') === b.get('c');
-        expect(result).to.equal(false);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
     });
 
     it('clones Maps containing objects as keys (are passed by reference)', () => {
@@ -537,8 +540,9 @@ describe('clone()', () => {
         a.set(nestedObj, 3);
 
         const b = Hoek.clone(a);
-        const result = a.get(nestedObj) === b.get(nestedObj);
-        expect(result).to.equal(true);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
     });
 });
 
