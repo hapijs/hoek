@@ -1518,6 +1518,7 @@ describe('contain()', () => {
         expect(Hoek.contain([1, 2], [1, 2], { once: true })).to.be.true();
         expect(Hoek.contain([1, 2, 3], [1, 4], { part: true })).to.be.true();
         expect(Hoek.contain([[1], [2]], [[1]], { deep: true })).to.be.true();
+        expect(Hoek.contain([[1, 2]], [[1]], { deep: true, part: true })).to.be.true();
         expect(Hoek.contain([1, 2, 1], [1, 1, 2], { only: true })).to.be.true();
         expect(Hoek.contain([1, 2, 1], [1, 1, 2], { only: true, once: true })).to.be.true();
         expect(Hoek.contain([1, 2, 1], [1, 2, 2], { only: true })).to.be.true();
@@ -1528,6 +1529,7 @@ describe('contain()', () => {
         expect(Hoek.contain([1, 2, 3], [4, 5])).to.be.false();
         expect(Hoek.contain([[3], [2]], [[1]])).to.be.false();
         expect(Hoek.contain([[1], [2]], [[1]])).to.be.false();
+        expect(Hoek.contain([[1, 2]], [[1]], { deep: true })).to.be.false();
         expect(Hoek.contain([{ a: 1 }], [{ a: 2 }], { deep: true })).to.be.false();
         expect(Hoek.contain([1, 3, 2], [1, 2], { only: true })).to.be.false();
         expect(Hoek.contain([1, 2, 2], [1, 2], { once: true })).to.be.false();
@@ -1546,11 +1548,12 @@ describe('contain()', () => {
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true })).to.be.true();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }, { only: true })).to.be.true();
         expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] }, { deep: true })).to.be.true();
-        expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true })).to.be.true();
+        expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true })).to.be.false();
         expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, part: true })).to.be.true();
         expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, part: false })).to.be.false();
         expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, only: true })).to.be.false();
         expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, only: false })).to.be.true();
+        expect(Hoek.contain({ a: [1, 2, 3] }, { a: [2, 4, 6] }, { deep: true, part: true })).to.be.true();
 
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'd')).to.be.false();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'd'])).to.be.false();
@@ -1562,11 +1565,12 @@ describe('contain()', () => {
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 }, { only: true })).to.be.false();
         expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] })).to.be.false();
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } })).to.be.false();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true })).to.be.true();
+        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true })).to.be.false();
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: true })).to.be.false();
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: false })).to.be.true();
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: true })).to.be.true();
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: false })).to.be.false();
+        expect(Hoek.contain({ a: [1, 2, 3] }, { a: [4, 5, 6] }, { deep: true, part: true })).to.be.false();
 
         // Getter check
         {
@@ -1593,8 +1597,8 @@ describe('contain()', () => {
 
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true })).to.be.true();
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true, part: true })).to.be.true();
-            expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true })).to.be.true();
-            expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, only: true })).to.be.false();
+            expect(Hoek.contain({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true })).to.be.true();
+            expect(Hoek.contain({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true, only: true })).to.be.false();
             expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).to.be.false();
             expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).to.be.true();
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true })).to.be.true();
