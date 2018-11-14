@@ -10,7 +10,7 @@
   "dependencies": {},
   "devDependencies": {
     "code": "5.x.x",
-    "lab": "17.x.x"
+    "lab": "18.x.x"
   },
   "scripts": {
     "test": "lab -a code -t 100 -L",

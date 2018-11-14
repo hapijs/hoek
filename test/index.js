@@ -554,6 +554,14 @@ describe('merge()', () => {
         expect(a.x.toString()).to.equal('abc');
     });
 
+    it('overrides RegExp', () => {
+
+        const a = { x: /test/ };
+
+        Hoek.merge({ x: {} }, a);
+        expect(a.x).to.equal(/test/);
+    });
+
     it('skips __proto__', () => {
 
         const a = '{ "ok": "value", "__proto__": { "test": "value" } }';
@@ -1098,6 +1106,7 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new Map([[1, {}]]), new Map([[1, {}]]))).to.be.true();
         expect(Hoek.deepEqual(new Map([[1, item1]]), new Map([[1, item1]]))).to.be.true();
         expect(Hoek.deepEqual(new Map([[1, item1]]), new Map([[1, item2]]))).to.be.false();
+        expect(Hoek.deepEqual(new Map([[1, undefined]]), new Map([[1, undefined]]))).to.be.true();
         expect(Hoek.deepEqual(new Map([[1, undefined]]), new Map([[2, undefined]]))).to.be.false();
         expect(Hoek.deepEqual(new Map([[1, {}]]), new Map([[1, {}], [2, {}]]))).to.be.false();
         expect(Hoek.deepEqual(new Map([[item1, 1]]), new Map([[item1, 1]]))).to.be.true();
@@ -1670,7 +1679,8 @@ describe('reach()', () => {
             },
             g: {
                 h: 3
-            }
+            },
+            '-2': true
         },
         i: function () { },
         j: null,
@@ -1694,6 +1704,11 @@ describe('reach()', () => {
     it('returns last value of array using negative index', () => {
 
         expect(Hoek.reach(obj, 'k.-2')).to.equal(9);
+    });
+
+    it('returns object property with negative index for non-array', () => {
+
+        expect(Hoek.reach(obj, 'a.-2')).to.be.equal(true);
     });
 
     it('returns a valid member', () => {
