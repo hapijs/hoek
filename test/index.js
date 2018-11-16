@@ -425,7 +425,7 @@ describe('clone()', () => {
         expect(a).to.equal(b);
     });
 
-    it('cloned Promises should resolve like original promise', () => {
+    it('clone objects resolved by the function (no pass by reference)', () => {
 
         const a = new Promise((resolve, reject) => {
 
@@ -441,12 +441,12 @@ describe('clone()', () => {
             b.then((successTwo) => {
 
                 expect(successOne).to.equal(successTwo);
-                expect(successOne === successTwo).to.equal(true);
+                expect(successOne === successTwo).to.equal(false);
             });
         });
     });
 
-    it('cloned Promises should reject like original promise', () => {
+    it('clone objects rejects by the function (no pass by reference)', () => {
 
         const a = new Promise((resolve, reject) => {
 
@@ -462,7 +462,7 @@ describe('clone()', () => {
             b.catch((errTwo) => {
 
                 expect(errOne).to.equal(errTwo);
-                expect(errOne === errTwo).to.equal(true);
+                expect(errOne === errTwo).to.equal(false);
             });
         });
     });
