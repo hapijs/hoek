@@ -546,8 +546,6 @@ describe('clone()', () => {
     });
 });
 
-
-
 describe('merge()', () => {
 
     it('deep copies source items', () => {
