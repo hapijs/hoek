@@ -1083,6 +1083,27 @@ describe('deepEqual()', () => {
         compare();
     });
 
+    it('compares symbol object properties', () => {
+
+        const sym = Symbol();
+
+        const ne = {};
+        Object.defineProperty(ne, sym, { value: true });
+
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: true } })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: false } })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: true })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: undefined }, { [sym]: undefined })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: undefined }, {})).to.be.false();
+        expect(Hoek.deepEqual({}, { [sym]: undefined })).to.be.false();
+
+        expect(Hoek.deepEqual({}, ne)).to.be.true();
+        expect(Hoek.deepEqual(ne, {})).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: true }, ne)).to.be.false();
+        expect(Hoek.deepEqual(ne, { [sym]: true })).to.be.false();
+        expect(Hoek.deepEqual(ne, { [Symbol()]: undefined })).to.be.false();
+    });
+
     it('compares dates', () => {
 
         expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date('2015/02/01'))).to.be.true();
