@@ -125,6 +125,16 @@ describe('clone()', () => {
         expect(a).to.equal(b);
     });
 
+    it('clones holey arrays', () => {
+
+        const a = new Array(3);
+        a[1] = 'one';
+
+        const b = Hoek.clone(a);
+
+        expect(a).to.equal(b);
+    });
+
     it('performs actual copy for shallow keys (no pass by reference)', () => {
 
         const x = Hoek.clone(nestedObj);
@@ -421,6 +431,31 @@ describe('merge()', () => {
         Hoek.merge(a, b);
         expect(a.x.n).to.equal('1');
         expect(a.x[0]).to.not.exist();
+    });
+
+    it('merges from null prototype objects', () => {
+
+        const a = {};
+        
+        const b = Object.create(null);
+        b.x = true;
+
+        Hoek.merge(a, b);
+        expect(a.x).to.be.true();
+    });
+
+    it('skips non-enumerable properties', () => {
+
+        const a = { x: 0 };
+
+        const b = {};
+        Object.defineProperty(b, 'x', {
+            enumerable: false,
+            value: 1
+        });
+
+        Hoek.merge(a, b);
+        expect(a.x).to.equal(0);
     });
 
     it('does not throw if source is null', () => {
