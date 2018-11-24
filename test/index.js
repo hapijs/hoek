@@ -135,6 +135,21 @@ describe('clone()', () => {
         expect(a).to.equal(b);
     });
 
+    it('clones symbol properties', () => {
+
+        const sym1 = Symbol(1);
+        const sym2 = Symbol(2);
+        const a = { [sym1]: 1 };
+        Object.defineProperty(a, sym2, { value: 2 });
+
+        const b = Hoek.clone(a);
+
+        expect(a).to.equal(b);
+        expect(Hoek.deepEqual(a, b)).to.be.true();
+        expect(b[sym1]).to.be.equal(1);
+        expect(b[sym2]).to.be.equal(2);
+    });
+
     it('performs actual copy for shallow keys (no pass by reference)', () => {
 
         const x = Hoek.clone(nestedObj);
