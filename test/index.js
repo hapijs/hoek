@@ -371,6 +371,26 @@ describe('clone()', () => {
         Object.getOwnPropertyDescriptor = oldGetOwnPropertyDescriptor;
         expect(copy).to.equal(obj);
     });
+
+    it('clones own property when class property is not writable', () => {
+
+        const Cl = class {
+
+            get x() {
+
+                return 'hi';
+            }
+        };
+
+        const obj = new Cl();
+
+        Object.defineProperty(obj, 'x', {
+            value: 0, writable: true
+        });
+
+        const copy = Hoek.clone(obj);
+        expect(copy).to.equal(obj);
+    });
 });
 
 describe('merge()', () => {
@@ -436,7 +456,7 @@ describe('merge()', () => {
     it('merges from null prototype objects', () => {
 
         const a = {};
-        
+
         const b = Object.create(null);
         b.x = true;
 
