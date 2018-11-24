@@ -617,6 +617,15 @@ describe('merge()', () => {
         expect(a.x).to.equal(/test/);
     });
 
+    it('overrides Symbol properties', () => {
+
+        const sym = Symbol();
+        const a = { [sym]: 1 };
+
+        Hoek.merge({ [sym]: {} }, a);
+        expect(a[sym]).to.equal(1);
+    });
+
     it('skips __proto__', () => {
 
         const a = '{ "ok": "value", "__proto__": { "test": "value" } }';
