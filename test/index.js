@@ -1780,6 +1780,7 @@ describe('flatten()', () => {
 
 describe('reach()', () => {
 
+    const sym = Symbol();
     const obj = {
         a: {
             b: {
@@ -1792,7 +1793,10 @@ describe('reach()', () => {
             g: {
                 h: 3
             },
-            '-2': true
+            '-2': true,
+            [sym]: {
+                v: true
+            }
         },
         i: function () { },
         j: null,
@@ -1806,15 +1810,18 @@ describe('reach()', () => {
         expect(Hoek.reach(obj, null)).to.equal(obj);
         expect(Hoek.reach(obj, false)).to.equal(obj);
         expect(Hoek.reach(obj)).to.equal(obj);
+        expect(Hoek.reach(obj, [])).to.equal(obj);
     });
 
-    it('returns first value of array', () => {
+    it('returns values of array', () => {
 
         expect(Hoek.reach(obj, 'k.0')).to.equal(4);
+        expect(Hoek.reach(obj, 'k.1')).to.equal(8);
     });
 
     it('returns last value of array using negative index', () => {
 
+        expect(Hoek.reach(obj, 'k.-1')).to.equal(1);
         expect(Hoek.reach(obj, 'k.-2')).to.equal(9);
     });
 
@@ -1860,6 +1867,9 @@ describe('reach()', () => {
     it('returns undefined on invalid member', () => {
 
         expect(Hoek.reach(obj, 'a.b.c.d-.x')).to.equal(undefined);
+        expect(Hoek.reach(obj, 'k.x')).to.equal(undefined);
+        expect(Hoek.reach(obj, 'k.1000')).to.equal(undefined);
+        expect(Hoek.reach(obj, 'k/0.5', '/')).to.equal(undefined);
     });
 
     it('returns function member', () => {
@@ -1898,6 +1908,21 @@ describe('reach()', () => {
     it('allows a falsey value to be used as the default value', () => {
 
         expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
+    });
+
+    it('allows array-based lookup', () => {
+
+        expect(Hoek.reach(obj, ['a', 'b', 'c', 'd'])).to.equal(1);
+        expect(Hoek.reach(obj, ['k', '1'])).to.equal(8);
+        expect(Hoek.reach(obj, ['k', 1])).to.equal(8);
+        expect(Hoek.reach(obj, ['k', '-2'])).to.equal(9);
+        expect(Hoek.reach(obj, ['k', -2])).to.equal(9);
+    });
+
+    it('allows array-based lookup with symbols', () => {
+
+        expect(Hoek.reach(obj, ['a', sym, 'v'])).to.equal(true);
+        expect(Hoek.reach(obj, ['a', Symbol(), 'v'])).to.equal(undefined);
     });
 });
 
