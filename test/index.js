@@ -1748,6 +1748,7 @@ describe('reach()', () => {
 
         expect(Hoek.reach(obj, null)).to.equal(obj);
         expect(Hoek.reach(obj, false)).to.equal(obj);
+        expect(Hoek.reach(obj, [])).to.equal(obj);
         expect(Hoek.reach(obj)).to.equal(obj);
     });
 
@@ -1774,6 +1775,20 @@ describe('reach()', () => {
     it('returns a valid member with separator override', () => {
 
         expect(Hoek.reach(obj, 'a/b/c/d', '/')).to.equal(1);
+    });
+
+    it('returns a valid member with path array', () => {
+
+        expect(Hoek.reach(obj, ['a', 'b', 'c', 'd'])).to.equal(1);
+    });
+
+    it('throws on path array with seperator override', () => {
+
+        expect(() => {
+
+            Hoek.reach(obj, ['a', 'b', 'c', 'd'], { seperator: '-' });
+        }).to.throw('Invalid arguments: cannot use seperator option with path array');
+
     });
 
     it('returns undefined on null object', () => {
