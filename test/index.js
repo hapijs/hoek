@@ -749,14 +749,16 @@ describe('cloneWithShallow()', () => {
             },
             c: {
                 d: 6
-            }
+            },
+            e() {}
         };
 
-        const copy = Hoek.cloneWithShallow(source, ['c']);
+        const copy = Hoek.cloneWithShallow(source, ['c', 'e']);
         expect(copy).to.equal(source);
         expect(copy).to.not.shallow.equal(source);
         expect(copy.a).to.not.shallow.equal(source.a);
-        expect(copy.b).to.equal(source.b);
+        expect(copy.c).to.shallow.equal(source.c);
+        expect(copy.e).to.shallow.equal(source.e);
     });
 
     it('returns immutable value', () => {
@@ -790,6 +792,25 @@ describe('cloneWithShallow()', () => {
         expect(copy).to.not.shallow.equal(source);
         expect(copy.a).to.not.shallow.equal(source.a);
         expect(copy.b).to.equal(source.b);
+    });
+
+    it('supports symbols', () => {
+
+        const sym = Symbol();
+        const source = {
+            a: {
+                b: 5
+            },
+            [sym]: {
+                d: 6
+            }
+        };
+
+        const copy = Hoek.cloneWithShallow(source, [[sym]]);
+        expect(copy).to.equal(source);
+        expect(copy).to.not.shallow.equal(source);
+        expect(copy.a).to.not.shallow.equal(source.a);
+        expect(copy[sym]).to.equal(source[sym]);
     });
 });
 
