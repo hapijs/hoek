@@ -1754,6 +1754,18 @@ describe('contain()', () => {
             expect(Hoek.contain(foo, { 'a': 1, 'b': 2, 'c': 3 }, { only: true })).to.be.true();
         }
     });
+
+    it('supports symbols', () => {
+
+        const sym = Symbol();
+
+        expect(Hoek.contain([sym], sym)).to.be.true();
+        expect(Hoek.contain({ [sym]: 1 }, sym)).to.be.true();
+        expect(Hoek.contain({ [sym]: 1, a: 2 }, { [sym]: 1 })).to.be.true();
+
+        expect(Hoek.contain([sym], Symbol())).to.be.false();
+        expect(Hoek.contain({ [sym]: 1 }, Symbol())).to.be.false();
+    });
 });
 
 describe('flatten()', () => {
