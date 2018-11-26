@@ -218,10 +218,10 @@ flattenedArray = Hoek.flatten(array, target); // results in [4, [5], 1, 2, 3]
 
 ### reach(obj, chain, [options])
 
-Converts an object key chain string to reference
+Converts an object **key chain string** or **path array** to reference
 
 - `options` - optional settings
-    - `separator` - string to split chain path on, defaults to '.'
+    - `separator` - string to split string chain path on, defaults to '.'. if set with path array, will throw an error.  
     - `default` - value to return if the path or value is not present, default is `undefined`
     - `strict` - if `true`, will throw an error on missing member, default is `false`
     - `functions` - if `true` allow traversing functions for properties. `false` will throw an error if a function is part of the chain.
@@ -237,6 +237,11 @@ var chain = 'a.b.c';
 var obj = {a : {b : { c : 1}}};
 
 Hoek.reach(obj, chain); // returns 1
+
+var chain = ['a', 'b'];
+var obj = {a : {b : [2,3,6]}};
+
+Hoek.reach(obj, chain); // returns [2,3,6]
 
 var chain = 'a.b.-1';
 var obj = {a : {b : [2,3,6]}};
