@@ -135,6 +135,21 @@ describe('clone()', () => {
         expect(a).to.equal(b);
     });
 
+    it('clones symbol properties', () => {
+
+        const sym1 = Symbol(1);
+        const sym2 = Symbol(2);
+        const a = { [sym1]: 1 };
+        Object.defineProperty(a, sym2, { value: 2 });
+
+        const b = Hoek.clone(a);
+
+        expect(a).to.equal(b);
+        expect(Hoek.deepEqual(a, b)).to.be.true();
+        expect(b[sym1]).to.be.equal(1);
+        expect(b[sym2]).to.be.equal(2);
+    });
+
     it('performs actual copy for shallow keys (no pass by reference)', () => {
 
         const x = Hoek.clone(nestedObj);
@@ -617,6 +632,15 @@ describe('merge()', () => {
         expect(a.x).to.equal(/test/);
     });
 
+    it('overrides Symbol properties', () => {
+
+        const sym = Symbol();
+        const a = { [sym]: 1 };
+
+        Hoek.merge({ [sym]: {} }, a);
+        expect(a[sym]).to.equal(1);
+    });
+
     it('skips __proto__', () => {
 
         const a = '{ "ok": "value", "__proto__": { "test": "value" } }';
@@ -725,14 +749,16 @@ describe('cloneWithShallow()', () => {
             },
             c: {
                 d: 6
-            }
+            },
+            e() {}
         };
 
-        const copy = Hoek.cloneWithShallow(source, ['c']);
+        const copy = Hoek.cloneWithShallow(source, ['c', 'e']);
         expect(copy).to.equal(source);
         expect(copy).to.not.shallow.equal(source);
         expect(copy.a).to.not.shallow.equal(source.a);
-        expect(copy.b).to.equal(source.b);
+        expect(copy.c).to.shallow.equal(source.c);
+        expect(copy.e).to.shallow.equal(source.e);
     });
 
     it('returns immutable value', () => {
@@ -766,6 +792,25 @@ describe('cloneWithShallow()', () => {
         expect(copy).to.not.shallow.equal(source);
         expect(copy.a).to.not.shallow.equal(source.a);
         expect(copy.b).to.equal(source.b);
+    });
+
+    it('supports symbols', () => {
+
+        const sym = Symbol();
+        const source = {
+            a: {
+                b: 5
+            },
+            [sym]: {
+                d: 6
+            }
+        };
+
+        const copy = Hoek.cloneWithShallow(source, [[sym]]);
+        expect(copy).to.equal(source);
+        expect(copy).to.not.shallow.equal(source);
+        expect(copy.a).to.not.shallow.equal(source.a);
+        expect(copy[sym]).to.equal(source[sym]);
     });
 });
 
@@ -1081,6 +1126,27 @@ describe('deepEqual()', () => {
         };
 
         compare();
+    });
+
+    it('compares symbol object properties', () => {
+
+        const sym = Symbol();
+
+        const ne = {};
+        Object.defineProperty(ne, sym, { value: true });
+
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: true } })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: false } })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: true })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: undefined }, { [sym]: undefined })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: undefined }, {})).to.be.false();
+        expect(Hoek.deepEqual({}, { [sym]: undefined })).to.be.false();
+
+        expect(Hoek.deepEqual({}, ne)).to.be.true();
+        expect(Hoek.deepEqual(ne, {})).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: true }, ne)).to.be.false();
+        expect(Hoek.deepEqual(ne, { [sym]: true })).to.be.false();
+        expect(Hoek.deepEqual(ne, { [Symbol()]: undefined })).to.be.false();
     });
 
     it('compares dates', () => {
@@ -1709,6 +1775,18 @@ describe('contain()', () => {
             expect(Hoek.contain(foo, { 'a': 1, 'b': 2, 'c': 3 }, { only: true })).to.be.true();
         }
     });
+
+    it('supports symbols', () => {
+
+        const sym = Symbol();
+
+        expect(Hoek.contain([sym], sym)).to.be.true();
+        expect(Hoek.contain({ [sym]: 1 }, sym)).to.be.true();
+        expect(Hoek.contain({ [sym]: 1, a: 2 }, { [sym]: 1 })).to.be.true();
+
+        expect(Hoek.contain([sym], Symbol())).to.be.false();
+        expect(Hoek.contain({ [sym]: 1 }, Symbol())).to.be.false();
+    });
 });
 
 describe('flatten()', () => {
@@ -1723,6 +1801,7 @@ describe('flatten()', () => {
 
 describe('reach()', () => {
 
+    const sym = Symbol();
     const obj = {
         a: {
             b: {
@@ -1735,7 +1814,10 @@ describe('reach()', () => {
             g: {
                 h: 3
             },
-            '-2': true
+            '-2': true,
+            [sym]: {
+                v: true
+            }
         },
         i: function () { },
         j: null,
@@ -1749,15 +1831,18 @@ describe('reach()', () => {
         expect(Hoek.reach(obj, null)).to.equal(obj);
         expect(Hoek.reach(obj, false)).to.equal(obj);
         expect(Hoek.reach(obj)).to.equal(obj);
+        expect(Hoek.reach(obj, [])).to.equal(obj);
     });
 
-    it('returns first value of array', () => {
+    it('returns values of array', () => {
 
         expect(Hoek.reach(obj, 'k.0')).to.equal(4);
+        expect(Hoek.reach(obj, 'k.1')).to.equal(8);
     });
 
     it('returns last value of array using negative index', () => {
 
+        expect(Hoek.reach(obj, 'k.-1')).to.equal(1);
         expect(Hoek.reach(obj, 'k.-2')).to.equal(9);
     });
 
@@ -1803,6 +1888,9 @@ describe('reach()', () => {
     it('returns undefined on invalid member', () => {
 
         expect(Hoek.reach(obj, 'a.b.c.d-.x')).to.equal(undefined);
+        expect(Hoek.reach(obj, 'k.x')).to.equal(undefined);
+        expect(Hoek.reach(obj, 'k.1000')).to.equal(undefined);
+        expect(Hoek.reach(obj, 'k/0.5', '/')).to.equal(undefined);
     });
 
     it('returns function member', () => {
@@ -1841,6 +1929,21 @@ describe('reach()', () => {
     it('allows a falsey value to be used as the default value', () => {
 
         expect(Hoek.reach(obj, 'q', { default: '' })).to.equal('');
+    });
+
+    it('allows array-based lookup', () => {
+
+        expect(Hoek.reach(obj, ['a', 'b', 'c', 'd'])).to.equal(1);
+        expect(Hoek.reach(obj, ['k', '1'])).to.equal(8);
+        expect(Hoek.reach(obj, ['k', 1])).to.equal(8);
+        expect(Hoek.reach(obj, ['k', '-2'])).to.equal(9);
+        expect(Hoek.reach(obj, ['k', -2])).to.equal(9);
+    });
+
+    it('allows array-based lookup with symbols', () => {
+
+        expect(Hoek.reach(obj, ['a', sym, 'v'])).to.equal(true);
+        expect(Hoek.reach(obj, ['a', Symbol(), 'v'])).to.equal(undefined);
     });
 });
 

@@ -137,28 +137,32 @@ var config = Hoek.applyToDefaults(defaults, options, true); // results in { host
 ```
 
 ### applyToDefaultsWithShallow(defaults, options, keys)
-keys is an array of key names to shallow copy
+keys is an array of dot-separated, or array-based, key paths to shallow copy
 
 Apply options to a copy of the defaults. Keys specified in the last parameter are shallow copied from options instead of merged.
 
 ```javascript
 
 var defaults = {
+    db: {
         server: {
             host: "localhost",
             port: 8000
         },
         name: 'example'
-    };
+    }
+};
 
 var options = { server: { port: 8080 } };
 
-var config = Hoek.applyToDefaultsWithShallow(defaults, options, ['server']); // results in { server: { port: 8080 }, name: 'example' }
+var config = Hoek.applyToDefaultsWithShallow(defaults, options, ['db.server']); // results in { db: { server: { port: 8080 }, name: 'example' } }
+var config = Hoek.applyToDefaultsWithShallow(defaults, options, [['db', 'server']]); // results in { db: { server: { port: 8080 }, name: 'example' } }
 ```
 
 ### deepEqual(b, a, [options])
 
-Performs a deep comparison of the two values including support for circular dependencies, prototype, and properties. To skip prototype comparisons, use `options.prototype = false`
+Performs a deep comparison of the two values including support for circular dependencies, prototype, and enumerable properties.
+To skip prototype comparisons, use `options.prototype = false`
 
 ```javascript
 Hoek.deepEqual({ a: [1, 2], b: 'string', c: { d: true } }, { a: [1, 2], b: 'string', c: { d: true } }); //results in true
@@ -218,7 +222,7 @@ flattenedArray = Hoek.flatten(array, target); // results in [4, [5], 1, 2, 3]
 
 ### reach(obj, chain, [options])
 
-Converts an object key chain string to reference
+Converts an object key chain string or array to reference
 
 - `options` - optional settings
     - `separator` - string to split chain path on, defaults to '.'
@@ -226,8 +230,10 @@ Converts an object key chain string to reference
     - `strict` - if `true`, will throw an error on missing member, default is `false`
     - `functions` - if `true` allow traversing functions for properties. `false` will throw an error if a function is part of the chain.
 
-A chain including negative numbers will work like negative indices on an
-array.
+A chain can be a string that will be split into key names using `separator`,
+or an array containing each individual key name.
+
+A chain including negative numbers will work like negative indices on an array.
 
 If chain is `null`, `undefined` or `false`, the object itself will be returned.
 
@@ -238,7 +244,7 @@ var obj = {a : {b : { c : 1}}};
 
 Hoek.reach(obj, chain); // returns 1
 
-var chain = 'a.b.-1';
+var chain = ['a', 'b', -1];
 var obj = {a : {b : [2,3,6]}};
 
 Hoek.reach(obj, chain); // returns 6
