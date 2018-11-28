@@ -162,7 +162,7 @@ var config = Hoek.applyToDefaultsWithShallow(defaults, options, [['db', 'server'
 ### deepEqual(b, a, [options])
 
 Performs a deep comparison of the two values including support for circular dependencies, prototype, and enumerable properties.
-To skip prototype comparisons, use `options.prototype = false`
+To skip prototype comparisons, use `options.prototype = false` and to include symbols, used `options.symbols = true`.
 
 ```javascript
 Hoek.deepEqual({ a: [1, 2], b: 'string', c: { d: true } }, { a: [1, 2], b: 'string', c: { d: true } }); //results in true

@@ -750,7 +750,7 @@ describe('cloneWithShallow()', () => {
             c: {
                 d: 6
             },
-            e() {}
+            e() { }
         };
 
         const copy = Hoek.cloneWithShallow(source, ['c', 'e']);
@@ -1135,18 +1135,22 @@ describe('deepEqual()', () => {
         const ne = {};
         Object.defineProperty(ne, sym, { value: true });
 
-        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: true } })).to.be.true();
-        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: false } })).to.be.false();
-        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: true })).to.be.false();
-        expect(Hoek.deepEqual({ [sym]: undefined }, { [sym]: undefined })).to.be.true();
-        expect(Hoek.deepEqual({ [sym]: undefined }, {})).to.be.false();
-        expect(Hoek.deepEqual({}, { [sym]: undefined })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: true } }, { symbols: true })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: false } }, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: true }, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: undefined }, { [sym]: undefined }, { symbols: true })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: undefined }, {}, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual({}, { [sym]: undefined }, { symbols: true })).to.be.false();
 
-        expect(Hoek.deepEqual({}, ne)).to.be.true();
-        expect(Hoek.deepEqual(ne, {})).to.be.true();
-        expect(Hoek.deepEqual({ [sym]: true }, ne)).to.be.false();
-        expect(Hoek.deepEqual(ne, { [sym]: true })).to.be.false();
-        expect(Hoek.deepEqual(ne, { [Symbol()]: undefined })).to.be.false();
+        expect(Hoek.deepEqual({}, ne, { symbols: true })).to.be.true();
+        expect(Hoek.deepEqual(ne, {}, { symbols: true })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: true }, ne, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual(ne, { [sym]: true }, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual(ne, { [Symbol()]: undefined }, { symbols: true })).to.be.false();
+
+        expect(Hoek.deepEqual({ [sym]: true }, { [sym]: true }, { symbols: true })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: true }, {}, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: true }, {}, { symbols: false })).to.be.true();
     });
 
     it('compares dates', () => {
@@ -1367,7 +1371,7 @@ describe('deepEqual()', () => {
 
     it('handles valueOf() that throws', () => {
 
-        const throwing  = class {
+        const throwing = class {
 
             constructor(value) {
 
