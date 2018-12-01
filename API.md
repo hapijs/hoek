@@ -1,8 +1,8 @@
 # Table of Contents
 
 * [Object](#object "Object")
-  * [clone](#cloneobj "clone")
-  * [cloneWithShallow](#clonewithshallowobj-keys "cloneWithShallow")
+  * [clone](#cloneobj-options "clone")
+  * [cloneWithShallow](#clonewithshallowobj-keys-options "cloneWithShallow")
   * [merge](#mergetarget-source-isnulloverride-ismergearrays "merge")
   * [applyToDefaults](#applytodefaultsdefaults-options-isnulloverride "applyToDefaults")
   * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
@@ -36,9 +36,13 @@
 
 Hoek provides several helpful methods for objects and arrays.
 
-### clone(obj)
+### clone(obj, [options])
 
-This method is used to clone an object or an array. A *deep copy* is made (duplicates everything, including values that are objects, as well as non-enumerable properties).
+Clones an object or an array. A *deep copy* is made (duplicates everything, including values that are
+objects, as well as non-enumerable properties) where:
+- `obj` - the object to be cloned.
+- `options` - optional settings:
+    - `symbols` - clone symbol properties. Defaults to `false`.
 
 ```javascript
 
@@ -62,10 +66,13 @@ console.log(nestedObj.x.b); // results in 123456
 console.log(copy.x.b);      // results in 100
 ```
 
-### cloneWithShallow(obj, keys)
-keys is an array of key names to shallow copy
+### cloneWithShallow(obj, keys, [options])
 
-This method is also used to clone an object or array, however any keys listed in the `keys` array are shallow copied while those not listed are deep copied.
+Clones an object or array excluding some keys which are shallow copied where:
+- `obj` - the object to be cloned.
+- `keys` - an array of key names to shallow copy.
+- `options` - optional settings:
+    - `symbols` - clone symbol properties. Defaults to `false`.
 
 ```javascript
 

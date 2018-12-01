@@ -142,12 +142,13 @@ describe('clone()', () => {
         const a = { [sym1]: 1 };
         Object.defineProperty(a, sym2, { value: 2 });
 
-        const b = Hoek.clone(a);
+        const b = Hoek.clone(a, { symbols: true });
 
         expect(a).to.equal(b);
-        expect(Hoek.deepEqual(a, b)).to.be.true();
         expect(b[sym1]).to.be.equal(1);
         expect(b[sym2]).to.be.equal(2);
+
+        expect(Hoek.deepEqual(a, b, { symbols: true })).to.be.true();
     });
 
     it('performs actual copy for shallow keys (no pass by reference)', () => {
@@ -806,7 +807,7 @@ describe('cloneWithShallow()', () => {
             }
         };
 
-        const copy = Hoek.cloneWithShallow(source, [[sym]]);
+        const copy = Hoek.cloneWithShallow(source, [[sym]], { symbols: true });
         expect(copy).to.equal(source);
         expect(copy).to.not.shallow.equal(source);
         expect(copy.a).to.not.shallow.equal(source.a);
@@ -1785,11 +1786,11 @@ describe('contain()', () => {
         const sym = Symbol();
 
         expect(Hoek.contain([sym], sym)).to.be.true();
-        expect(Hoek.contain({ [sym]: 1 }, sym)).to.be.true();
-        expect(Hoek.contain({ [sym]: 1, a: 2 }, { [sym]: 1 })).to.be.true();
+        expect(Hoek.contain({ [sym]: 1 }, sym, { symbols: true })).to.be.true();
+        expect(Hoek.contain({ [sym]: 1, a: 2 }, { [sym]: 1 }, { symbols: true })).to.be.true();
 
         expect(Hoek.contain([sym], Symbol())).to.be.false();
-        expect(Hoek.contain({ [sym]: 1 }, Symbol())).to.be.false();
+        expect(Hoek.contain({ [sym]: 1 }, Symbol(), { symbols: true })).to.be.false();
     });
 });
 
