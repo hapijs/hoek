@@ -1,5 +1,7 @@
 # Table of Contents
 
+## Hoek
+
 * [Object](#object "Object")
   * [clone](#cloneobj-options "clone")
   * [cloneWithShallow](#clonewithshallowobj-keys-options "cloneWithShallow")
@@ -32,11 +34,11 @@
 
 
 
-## Object
+### Object
 
 Hoek provides several helpful methods for objects and arrays.
 
-### clone(obj, [options])
+#### clone(obj, [options])
 
 Clones an object or an array. A *deep copy* is made (duplicates everything, including values that are
 objects, as well as non-enumerable properties) where:
@@ -66,7 +68,7 @@ console.log(nestedObj.x.b); // results in 123456
 console.log(copy.x.b);      // results in 100
 ```
 
-### cloneWithShallow(obj, keys, [options])
+#### cloneWithShallow(obj, keys, [options])
 
 Clones an object or array excluding some keys which are shallow copied where:
 - `obj` - the object to be cloned.
@@ -96,7 +98,7 @@ console.log(nestedObj.x.b); // results in 100
 console.log(copy.x.b);      // results in 100
 ```
 
-### merge(target, source, isNullOverride, isMergeArrays)
+#### merge(target, source, isNullOverride, isMergeArrays)
 isNullOverride, isMergeArrays default to true
 
 Merge all the properties of source into target, source wins in conflict, and by default null and undefined from source are applied.
@@ -120,7 +122,7 @@ Hoek.merge(targetArray, sourceArray);              // results in [1, 2, 3, 4, 5]
 Hoek.merge(targetArray, sourceArray, true, false); // results in [4, 5]
 ```
 
-### applyToDefaults(defaults, options, isNullOverride)
+#### applyToDefaults(defaults, options, isNullOverride)
 isNullOverride defaults to false
 
 Apply options to a copy of the defaults
@@ -143,7 +145,7 @@ var options = { host: null, port: 8080 };
 var config = Hoek.applyToDefaults(defaults, options, true); // results in { host: null, port: 8080 }
 ```
 
-### applyToDefaultsWithShallow(defaults, options, keys)
+#### applyToDefaultsWithShallow(defaults, options, keys)
 keys is an array of dot-separated, or array-based, key paths to shallow copy
 
 Apply options to a copy of the defaults. Keys specified in the last parameter are shallow copied from options instead of merged.
@@ -166,7 +168,7 @@ var config = Hoek.applyToDefaultsWithShallow(defaults, options, ['db.server']); 
 var config = Hoek.applyToDefaultsWithShallow(defaults, options, [['db', 'server']]); // results in { db: { server: { port: 8080 }, name: 'example' } }
 ```
 
-### deepEqual(b, a, [options])
+#### deepEqual(b, a, [options])
 
 Performs a deep comparison of the two values including support for circular dependencies, prototype, and enumerable properties.
 To skip prototype comparisons, use `options.prototype = false` and to include symbols, used `options.symbols = true`.
@@ -177,7 +179,7 @@ Hoek.deepEqual(Object.create(null), {}, { prototype: false }); //results in true
 Hoek.deepEqual(Object.create(null), {}); //results in false
 ```
 
-### intersect(array1, array2)
+#### intersect(array1, array2)
 
 Find the common unique items in two arrays
 
@@ -189,7 +191,7 @@ var array2 = [1, 4, 5];
 var newArray = Hoek.intersect(array1, array2); // results in [1]
 ```
 
-### contain(ref, values, [options])
+#### contain(ref, values, [options])
 
 Tests if the reference value contains the provided values where:
 - `ref` - the reference string, array, or object.
@@ -211,7 +213,7 @@ Hoek.contain([1, 2, 2], [1, 2], { once: true });					// false
 Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true }); // true
 ```
 
-### flatten(array, [target])
+#### flatten(array, [target])
 
 Flatten an array
 
@@ -227,7 +229,7 @@ target = [4, [5]];
 flattenedArray = Hoek.flatten(array, target); // results in [4, [5], 1, 2, 3]
 ```
 
-### reach(obj, chain, [options])
+#### reach(obj, chain, [options])
 
 Converts an object key chain string or array to reference
 
@@ -257,7 +259,7 @@ var obj = {a : {b : [2,3,6]}};
 Hoek.reach(obj, chain); // returns 6
 ```
 
-### reachTemplate(obj, template, [options])
+#### reachTemplate(obj, template, [options])
 
 Replaces string parameters (`{name}`) with their corresponding object key values by applying the
 [`reach()`](#reachobj-chain-options) method where:
@@ -274,7 +276,7 @@ var obj = {a : {b : { c : 1}}};
 Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
 ```
 
-### stringify(obj)
+#### stringify(obj)
 
 Converts an object to string using the built-in `JSON.stringify()` method with the difference that any errors are caught
 and reported back in the form of the returned string. Used as a shortcut for displaying information to the console (e.g. in
@@ -286,12 +288,12 @@ a.b = a;
 Hoek.stringify(a);		// Returns '[Cannot display object: Converting circular structure to JSON]'
 ```
 
-# Bench
+### Bench
 
 Same as Timer with the exception that `ts` stores the internal node clock which is not related to `Date.now()` and cannot be used to display
 human-readable timestamps. More accurate for benchmarking or internal timers.
 
-# Escaping Characters
+### Escaping Characters
 
 Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
 
@@ -307,7 +309,7 @@ internals.htmlEscaped = {
 };
 ```
 
-### escapeHtml(string)
+#### escapeHtml(string)
 
 ```javascript
 
@@ -315,7 +317,7 @@ var string = '<html> hey </html>';
 var escapedString = Hoek.escapeHtml(string); // returns &lt;html&gt; hey &lt;/html&gt;
 ```
 
-### escapeHeaderAttribute(attribute)
+#### escapeHeaderAttribute(attribute)
 
 Escape attribute value for use in HTTP header
 
@@ -324,7 +326,7 @@ Escape attribute value for use in HTTP header
 var a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  //returns I said \"go w\\o me\"
 ```
 
-### escapeJson(string)
+#### escapeJson(string)
 
 Unicode escapes the characters `<`, `>`, and `&` to prevent mime-sniffing older browsers mistaking JSON as HTML, and escapes line and paragraph separators for JSONP and script contexts.
 
@@ -334,7 +336,7 @@ var lineSeparator = String.fromCharCode(0x2028);
 var a = Hoek.escapeJson('I said <script>confirm(&).' + lineSeparator);  //returns I said \\u003cscript\\u003econfirm(\\u0026).\\u2028
 ```
 
-### escapeRegex(string)
+#### escapeRegex(string)
 
 Escape string for Regex construction
 
@@ -343,9 +345,9 @@ Escape string for Regex construction
 var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4\^f\$s\.4\*5\+\-_\?%\=#\!\:@\|~\\\/`"\(>\)\[<\]d\{\}s\,
 ```
 
-# Errors
+### Errors
 
-### assert(condition, message)
+#### assert(condition, message)
 
 ```javascript
 
@@ -363,9 +365,9 @@ var a = 1, b = 2;
 Hoek.assert(a === b, new Error('a should equal b')); // Throws the given error object
 ```
 
-## Function
+### Function
 
-### once(fn)
+#### once(fn)
 
 Returns a new function that can be run multiple times, but makes sure `fn` is only run once.
 
@@ -380,13 +382,13 @@ onceFn(); // results in "Ran myFn"
 onceFn(); // results in undefined
 ```
 
-### ignore
+#### ignore
 
 A simple no-op function. It does nothing at all.
 
-## Miscellaneous
+### Miscellaneous
 
-### uniqueFilename(path, extension)
+#### uniqueFilename(path, extension)
 `path` to prepend with the randomly generated file name. `extension` is the optional file extension, defaults to `''`.
 
 Returns a randomly generated file name at the specified `path`. The result is a fully resolved path to a file.
@@ -395,14 +397,14 @@ Returns a randomly generated file name at the specified `path`. The result is a 
 var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
 ```
 
-## Promises
+### Promises
 
-### wait(timeout)
+#### wait(timeout)
 Resolve the promise after `timeout`. Provide the `timeout` in milliseconds.
 
 ```javascript
 await Hoek.wait(2000); // waits for 2 seconds
 ```
 
-### block()
+#### block()
 A no-op Promise. Does nothing.
