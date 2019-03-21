@@ -1,18 +1,12 @@
 'use strict';
 
-// Load modules
-
 const Code = require('code');
 const Hoek = require('../lib');
 const Lab = require('lab');
 
 
-// Declare internals
-
 const internals = {};
 
-
-// Test shortcuts
 
 const lab = exports.lab = Lab.script();
 const describe = lab.experiment;
@@ -176,5 +170,4 @@ describe('escapeJson()', () => {
         expect(encoded).to.equal('\\u003cscript\\u003ealert(1)\\u003c/script\\u003e');
         done();
     });
-
 });
