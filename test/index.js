@@ -247,6 +247,30 @@ describe('clone()', () => {
         expect(a).to.equal(b);
     });
 
+    it('clones an object without a prototype', () => {
+
+        const Obj = function () {
+
+            this.a = 5;
+        };
+
+        Obj.prototype.b = function () {
+
+            return 'c';
+        };
+
+        const a = new Obj();
+        a.x = 123;
+
+        const b = Hoek.clone(a, { prototype: false });
+
+        expect(a).to.equal(b);
+        expect(a).to.not.equal(b, { prototype: true });
+        expect(b.a).to.equal(5);
+        expect(b.b).to.not.exist();
+        expect(b.x).to.equal(123);
+    });
+
     it('reuses cloned Date object', () => {
 
         const obj = {

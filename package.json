@@ -1,5 +1,5 @@
 {
-  "name": "hoek",
+  "name": "@hapi/hoek",
   "description": "General purpose node utilities",
   "version": "6.1.2",
   "repository": "git://github.com/hapijs/hoek",
