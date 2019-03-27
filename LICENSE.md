@@ -1,7 +1,5 @@
-Copyright (c) 2011-2019, Sideway Inc, and project contributors
-
-Copyright (c) 2011-2014, Walmart
-
+Copyright (c) 2011-2019, Sideway Inc, and project contributors  
+Copyright (c) 2011-2014, Walmart  
 Copyright (c) 2011, Yahoo Inc.
 
 All rights reserved.
