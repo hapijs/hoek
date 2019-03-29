@@ -4,9 +4,7 @@
   "version": "6.2.1",
   "repository": "git://github.com/hapijs/hoek",
   "main": "lib/index.js",
-  "keywords": [
-    "utilities"
-  ],
+  "keywords": ["utilities"],
   "dependencies": {},
   "devDependencies": {
     "@hapi/code": "5.x.x",
