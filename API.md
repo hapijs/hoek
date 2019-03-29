@@ -1,6 +1,6 @@
 # Table of Contents
 
-## Hoek
+## hoek
 
 * [Object](#object "Object")
   * [clone](#cloneobj-options "clone")
@@ -36,7 +36,7 @@
 
 ### Object
 
-Hoek provides several helpful methods for objects and arrays.
+**hoek** provides several helpful methods for objects and arrays.
 
 #### clone(obj, [options])
 
@@ -295,7 +295,7 @@ human-readable timestamps. More accurate for benchmarking or internal timers.
 
 ### Escaping Characters
 
-Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
+**hoek** provides convenient methods for escaping html characters. The escaped characters are as followed:
 
 ```javascript
 

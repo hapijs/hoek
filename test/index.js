@@ -5,9 +5,9 @@
 const Path = require('path');
 const Util = require('util');
 
-const Code = require('code');
-const Hoek = require('../lib');
-const Lab = require('lab');
+const Code = require('@hapi/code');
+const Hoek = require('..');
+const Lab = require('@hapi/lab');
 
 
 // Declare internals

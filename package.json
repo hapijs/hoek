@@ -9,12 +9,12 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "code": "5.x.x",
-    "lab": "18.x.x"
+    "@hapi/code": "5.x.x",
+    "@hapi/lab": "18.x.x"
   },
   "scripts": {
-    "test": "lab -a code -t 100 -L",
-    "test-cov-html": "lab -a code -t 100 -L -r html -o coverage.html"
+    "test": "lab -a @hapi/code -t 100 -L",
+    "test-cov-html": "lab -a @hapi/code -t 100 -L -r html -o coverage.html"
   },
   "license": "BSD-3-Clause"
 }
