@@ -276,7 +276,7 @@ var obj = {a : {b : { c : 1}}};
 Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
 ```
 
-#### stringify(obj)
+#### stringify(...args)
 
 Converts an object to string using the built-in `JSON.stringify()` method with the difference that any errors are caught
 and reported back in the form of the returned string. Used as a shortcut for displaying information to the console (e.g. in
