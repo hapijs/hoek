@@ -1274,6 +1274,14 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(maps[0], new Map())).to.be.false();
     });
 
+    it('compares promises', () => {
+
+        const a = new Promise(() => {});
+
+        expect(Hoek.deepEqual(a, a)).to.be.true();
+        expect(Hoek.deepEqual(a, new Promise(() => { }))).to.be.false();
+    });
+
     it('compares buffers', () => {
 
         expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 2, 3]))).to.be.true();
