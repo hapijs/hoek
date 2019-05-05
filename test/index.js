@@ -432,17 +432,36 @@ describe('clone()', () => {
         expect(copy).to.equal(obj);
     });
 
-    it('clones sets', () => {
+    it('clones a Set', () => {
 
         const a = new Set([1, 2, 3]);
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.equal(new Set([2, 3, 4]));
+        expect(b).to.not.shallow.equal(a);
+
+        // Verify ordering
+
+        const aIter = a.values();
+        for (const value of b.values()) {
+            expect(value).to.equal(aIter.next().value);
+        }
+    });
+
+    it('clones properties set on a Set', () => {
+
+        const a = new Set([1]);
+        a.val = { b: 2 };
 
         const b = Hoek.clone(a);
 
         expect(b).to.equal(a);
-        expect(b).to.not.shallow.equal(a);
+        expect(b.val).to.equal(a.val);
+        expect(b.val).to.not.shallow.equal(a.val);
     });
 
-    it('clones sets containing objects (no pass by reference)', () => {
+    it('clones Set containing objects (no pass by reference)', () => {
 
         const a = new Set([1, 2, 3]);
         a.add(nestedObj);
@@ -451,75 +470,95 @@ describe('clone()', () => {
 
         expect(b).to.equal(a);
         expect(b).to.not.shallow.equal(a);
+        expect(b.has(nestedObj)).to.be.false(a);
     });
 
-    it('clones Promises', () => {
+    it('clones a Promise', () => {
 
-        const a = new Promise((resolve, reject) => {
+        const a = Promise.resolve();
+        const b = Hoek.clone(a);
 
-            setTimeout(resolve, 0);
-        });
+        expect(b).to.equal(a);
+        expect(b).to.not.equal(Promise.resolve());
+        expect(b).to.not.shallow.equal(a);
+    });
+
+    it('clones an implicit Promise from async', () => {
+
+        const a = (async () => true)();
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.equal((async () => true)());
+        expect(b).to.not.shallow.equal(a);
+    });
+
+    it('clones properties set on a Promise', () => {
+
+        const a = Promise.resolve();
+        a.val = { b: 2 };
 
         const b = Hoek.clone(a);
 
-        expect(a).to.equal(b);
+        expect(b).to.equal(a);
+        expect(b.val).to.equal(a.val);
+        expect(b.val).to.not.shallow.equal(a.val);
     });
 
-    it('clone objects resolved by the function (no pass by reference)', () => {
+    it('clone objects resolved by a Promise (no pass by reference)', async () => {
 
-        const a = new Promise((resolve, reject) => {
-
-            setTimeout(() => {
-
-                resolve({ 'a':1, 'b':2 });
-            }, 0);
-        });
-
-        const b = Hoek.clone(a);
-        a.then((successOne) => {
-
-            b.then((successTwo) => {
-
-                expect(successOne).to.equal(successTwo);
-                expect(successOne === successTwo).to.equal(false);
-            });
-        });
-    });
-
-    it('clone objects rejects by the function (no pass by reference)', () => {
-
-        const a = new Promise((resolve, reject) => {
-
-            setTimeout(() => {
-
-                reject({ 'a':1, 'b':2 });
-            }, 0);
-        });
-
-        const b = Hoek.clone(a);
-        a.catch((errOne) => {
-
-            b.catch((errTwo) => {
-
-                expect(errOne).to.equal(errTwo);
-                expect(errOne === errTwo).to.equal(false);
-            });
-        });
-    });
-
-    it('clones Maps', () => {
-
-        const a = new Map();
-        a.set('a', 1);
-        a.set('b', 2);
-        a.set('c', 3);
-
+        const a = Promise.resolve({ a: 1, b: 2 });
         const b = Hoek.clone(a);
 
-        expect(b).to.not.shallow.equal(new Map([['a', 1], ['b', 2], ['c', 3]]));
+        const res1 = await a;
+        const res2 = await b;
+
+        expect(res2).to.equal(res1);
+        expect(res2).to.not.shallow.equal(res1);
     });
 
-    it('clones Maps containing objects as values (no pass by reference)', () => {
+    it('clone objects rejects by a Promise (no pass by reference)', async () => {
+
+        const a = Promise.reject({ a: 1, b: 2 });
+        const b = Hoek.clone(a);
+
+        const err1 = await expect(a).to.reject();
+        const err2 = await expect(b).to.reject();
+
+        expect(err2).to.equal(err1);
+        expect(err2).to.not.shallow.equal(err1);
+    });
+
+    it('clones a Map', () => {
+
+        const a = new Map([['a', 1], ['b', 2], ['c', 3]]);
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.equal(new Map());
+        expect(b).to.not.shallow.equal(a);
+
+        // Verify key ordering
+
+        const aIter = a.keys();
+        for (const key of b.keys()) {
+            expect(key).to.equal(aIter.next().value);
+        }
+    });
+
+    it('clones properties set on Map', () => {
+
+        const a = new Map([['a', 1]]);
+        a.val = { b: 2 };
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b.val).to.equal(a.val);
+        expect(b.val).to.not.shallow.equal(a.val);
+    });
+
+    it('clones Map containing objects as values (no pass by reference)', () => {
 
         const a = new Map();
         a.set('a', 1);
@@ -530,9 +569,11 @@ describe('clone()', () => {
 
         expect(b).to.equal(a);
         expect(b).to.not.shallow.equal(a);
+        expect(b.get('c')).to.equal(a.get('c'));
+        expect(b.get('c')).to.not.shallow.equal(a.get('c'));
     });
 
-    it('clones Maps containing objects as keys (are passed by reference)', () => {
+    it('clones Map containing objects as keys (passed by reference)', () => {
 
         const a = new Map();
         a.set('a', 1);
@@ -543,6 +584,7 @@ describe('clone()', () => {
 
         expect(b).to.equal(a);
         expect(b).to.not.shallow.equal(a);
+        expect(b.get(nestedObj)).to.equal(a.get(nestedObj));
     });
 });
 
