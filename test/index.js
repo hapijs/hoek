@@ -431,6 +431,105 @@ describe('clone()', () => {
         const copy = Hoek.clone(obj);
         expect(copy).to.equal(obj);
     });
+
+    it('clones a Set', () => {
+
+        const a = new Set([1, 2, 3]);
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.equal(new Set([2, 3, 4]));
+        expect(b).to.not.shallow.equal(a);
+
+        // Verify ordering
+
+        const aIter = a.values();
+        for (const value of b.values()) {
+            expect(value).to.equal(aIter.next().value);
+        }
+    });
+
+    it('clones properties set on a Set', () => {
+
+        const a = new Set([1]);
+        a.val = { b: 2 };
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b.val).to.equal(a.val);
+        expect(b.val).to.not.shallow.equal(a.val);
+    });
+
+    it('clones Set containing objects (no pass by reference)', () => {
+
+        const a = new Set([1, 2, 3]);
+        a.add(nestedObj);
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
+        expect(b.has(nestedObj)).to.be.false(a);
+    });
+
+    it('clones a Map', () => {
+
+        const a = new Map([['a', 1], ['b', 2], ['c', 3]]);
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.equal(new Map());
+        expect(b).to.not.shallow.equal(a);
+
+        // Verify key ordering
+
+        const aIter = a.keys();
+        for (const key of b.keys()) {
+            expect(key).to.equal(aIter.next().value);
+        }
+    });
+
+    it('clones properties set on Map', () => {
+
+        const a = new Map([['a', 1]]);
+        a.val = { b: 2 };
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b.val).to.equal(a.val);
+        expect(b.val).to.not.shallow.equal(a.val);
+    });
+
+    it('clones Map containing objects as values (no pass by reference)', () => {
+
+        const a = new Map();
+        a.set('a', 1);
+        a.set('b', 2);
+        a.set('c', nestedObj);
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
+        expect(b.get('c')).to.equal(a.get('c'));
+        expect(b.get('c')).to.not.shallow.equal(a.get('c'));
+    });
+
+    it('clones Map containing objects as keys (passed by reference)', () => {
+
+        const a = new Map();
+        a.set('a', 1);
+        a.set('b', 2);
+        a.set(nestedObj, 3);
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
+        expect(b.get(nestedObj)).to.equal(a.get(nestedObj));
+    });
 });
 
 describe('merge()', () => {
