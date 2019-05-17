@@ -2,7 +2,7 @@
 Performs a deep comparison of the two values including support for circular dependencies, prototype, and enumerable properties.
 
 @param obj - The value being compared.
-@param ref - The reference va;ue used for comparison.
+@param ref - The reference value used for comparison.
 
 @return true when the two values are equal, otherwise false.
  */
@@ -14,21 +14,21 @@ declare namespace deepEqual {
 
         /**
         Allow partial match.
-    
+
         @default false
         */
         readonly part?: boolean;
 
         /**
         Compare the objects' prototypes.
-    
+
         @default true
         */
         readonly prototype?: boolean;
 
         /**
         Compare symbol properties.
-    
+
         @default false
         */
         readonly symbols?: boolean;
@@ -52,14 +52,14 @@ declare namespace clone {
 
         /**
         Clone the object's prototype.
-    
+
         @default true
         */
         readonly prototype?: boolean;
 
         /**
         Include symbol properties.
-    
+
         @default false
         */
         readonly symbols?: boolean;
@@ -124,12 +124,12 @@ Find the common unique items in two arrays.
 
 @return - An array of the common items. If `justFirst` is true, returns the first common item.
 */
-export function intersect(array1: intersect.Array, array2: intersect.Array, justFirst?: false): any[];
-export function intersect(array1: intersect.Array, array2: intersect.Array, justFirst: true): any;
+export function intersect<T1, T2>(array1: intersect.Array<T1>, array2: intersect.Array<T2>, justFirst?: false): Array<T1 | T2>;
+export function intersect<T1, T2>(array1: intersect.Array<T1>, array2: intersect.Array<T2>, justFirst: true): T1 | T2;
 
 declare namespace intersect {
 
-    type Array = any[] | Set<any> | null;
+    type Array<T> = ArrayLike<T> | Set<T> | null;
 }
 
 
@@ -151,35 +151,35 @@ declare namespace contain {
 
         /**
         Perform a deep comparison.
-    
+
         @default false
         */
         readonly deep?: boolean;
 
         /**
         Allow only one occurrence of each value.
-    
+
         @default false
         */
         readonly once?: boolean;
 
         /**
         Allow only values explicitly listed.
-    
+
         @default false
         */
         readonly only?: boolean;
 
         /**
         Allow partial match.
-    
+
         @default false
         */
         readonly part?: boolean;
 
         /**
         Include symbol properties.
-    
+
         @default false
         */
         readonly symbols?: boolean;
@@ -195,7 +195,7 @@ Flatten an array with sub arrays
 
 @return a flat array of the provided values (appended to `target` is provided).
 */
-export function flatten(array: any[], target?: any[]): any[];
+export function flatten<T>(array: ArrayLike<T | ReadonlyArray<T>>, target?: ArrayLike<T | ReadonlyArray<T>>): T[];
 
 
 /**
@@ -214,28 +214,28 @@ declare namespace reach {
 
         /**
         String to split chain path on. Defaults to '.'.
-    
+
         @default false
         */
         readonly separator?: string;
 
         /**
         Value to return if the path or value is not present. No default value.
-    
+
         @default false
         */
         readonly default?: any;
 
         /**
         If true, will throw an error on missing member in the chain. Default to false.
-    
+
         @default false
         */
         readonly strict?: boolean;
 
         /**
         If true, allows traversing functions for properties. false will throw an error if a function is part of the chain.
-    
+
         @default false
         */
         readonly functions?: boolean;
@@ -344,7 +344,7 @@ Wraps a function to ensure it can only execute once.
 
 @return The wrapped function.
  */
-export function once(method: () => any): () => void;
+export function once<T extends Function>(method: T): T;
 
 
 /**
