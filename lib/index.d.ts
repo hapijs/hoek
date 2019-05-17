@@ -2,7 +2,7 @@
 Performs a deep comparison of the two values including support for circular dependencies, prototype, and enumerable properties.
 
 @param obj - The value being compared.
-@param ref - The reference va;ue used for comparison.
+@param ref - The reference value used for comparison.
 
 @return true when the two values are equal, otherwise false.
  */
