@@ -1621,7 +1621,31 @@ describe('intersect()', () => {
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
         const common = Hoek.intersect(array1, array2);
-        expect(common.length).to.equal(2);
+        expect(common).to.equal([5, 4]);
+    });
+
+    it('returns the common objects of array and set', () => {
+
+        const array1 = new Set([1, 2, 3, 4, 4, 5, 5]);
+        const array2 = [5, 4, 5, 6, 7];
+        const common = Hoek.intersect(array1, array2);
+        expect(common).to.equal([5, 4]);
+    });
+
+    it('returns the common objects of set and array', () => {
+
+        const array1 = [1, 2, 3, 4, 4, 5, 5];
+        const array2 = new Set([5, 4, 5, 6, 7]);
+        const common = Hoek.intersect(array1, array2);
+        expect(common).to.equal([5, 4]);
+    });
+
+    it('returns the common objects of two sets', () => {
+
+        const array1 = new Set([1, 2, 3, 4, 4, 5, 5]);
+        const array2 = new Set([5, 4, 5, 6, 7]);
+        const common = Hoek.intersect(array1, array2);
+        expect(common).to.equal([5, 4]);
     });
 
     it('returns just the first common object of two arrays', () => {
@@ -1982,6 +2006,12 @@ describe('reach()', () => {
         expect(Hoek.reach(obj, ['a', sym, 'v'])).to.equal(true);
         expect(Hoek.reach(obj, ['a', Symbol(), 'v'])).to.equal(undefined);
     });
+
+    it('returns character in string', () => {
+
+        expect(Hoek.reach(['abc'], [0])).to.equal('abc');
+        expect(Hoek.reach(['abc'], ['0'])).to.equal('abc');
+    });
 });
 
 describe('reachTemplate()', () => {
@@ -2269,7 +2299,7 @@ describe('stringify()', () => {
 
         const obj = { a: 1 };
         obj.b = obj;
-        expect(Hoek.stringify(obj)).to.equal('[Cannot display object: Converting circular structure to JSON]');
+        expect(Hoek.stringify(obj)).to.contain('Cannot display object');
     });
 });
 

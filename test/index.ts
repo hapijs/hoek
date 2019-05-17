@@ -1,291 +1,345 @@
 import * as Hoek from '..';
+import * as Lab from '@hapi/lab';
 
-/**
- * Import the entire module as above or use named imports:
- *      import { clone, merge, assert } from "hoek";
- * "Tests" taken straight from hoek API reference and adapted to TypeScript.
- */
 
-// clone(obj)
+const { expect } = Lab.types;
 
-let nestedObj = {
-    w: /^something$/ig,
-    x: {
-        a: [1, 2, 3],
-        b: 123456,
-        c: new Date()
-    },
-    y: 'y',
-    z: new Date()
+
+interface Foo {
+    a?: number;
+    b?: string;
 };
 
-let copy = Hoek.clone(nestedObj);
-
-copy.x.b = 100;
-
-console.log(copy.y);        // results in 'y'
-console.log(nestedObj.x.b); // results in 123456
-console.log(copy.x.b);      // results in 100
-
-// cloneWithShallow(obj, keys)
-
-nestedObj = {
-    w: /^something$/ig,
-    x: {
-        a: [1, 2, 3],
-        b: 123456,
-        c: new Date()
-    },
-    y: 'y',
-    z: new Date()
+interface Bar {
+    b?: string;
+    c?: boolean;
 };
 
-copy = Hoek.cloneWithShallow(nestedObj, ['x']);
 
-copy.x.b = 100;
+// deepEqual()
 
-console.log(copy.y);        // results in 'y'
-console.log(nestedObj.x.b); // results in 100
-console.log(copy.x.b);      // results in 100
+Hoek.deepEqual('some', 'some');
+Hoek.deepEqual('some', 3);
+Hoek.deepEqual({}, {});
+Hoek.deepEqual({}, {}, { prototype: false, symbols: true, part: false });
 
-// merge(target, source, isNullOverride, isMergeArrays)
+expect.type<boolean>(Hoek.deepEqual(1, 2));
 
-const target = { a: 1, b: 2 };
-const source = { a: 0, c: 5 };
-const source2 = { a: null, c: 5 };
+expect.error(Hoek.deepEqual());
+expect.error(Hoek.deepEqual(1, 2, {}, 'x'));
+expect.error(Hoek.deepEqual({}, {}, { unknown: true }));
 
-Hoek.merge(target, source);         // results in {a: 0, b: 2, c: 5}
-Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
-Hoek.merge(target, source2, false); // results in {a: 1, b: 2, c: 5}
 
-const targetArray = [1, 2, 3];
-const sourceArray = [4, 5];
+// clone()
 
-Hoek.merge(targetArray, sourceArray);              // results in [1, 2, 3, 4, 5]
-Hoek.merge(targetArray, sourceArray, true, false); // results in [4, 5]
+Hoek.clone('string');
+Hoek.clone(123);
+Hoek.clone({ a: 1 });
+Hoek.clone({ a: 1 }, { prototype: true, symbols: true });
 
-// applyToDefaults(defaults, options, isNullOverride)
+expect.type<string>(Hoek.clone('string'));
+expect.type<object>(Hoek.clone({}));
+expect.type<Bar>(Hoek.clone({} as Bar));
 
-let defaults = { host: "localhost", port: 8000 };
-const options = { port: 8080 };
+expect.error(Hoek.clone({}, { unknown: true }));
 
-let config = Hoek.applyToDefaults(defaults, options); // results in { host: "localhost", port: 8080 }
 
-defaults = { host: "localhost", port: 8000 };
-const options1 = { host: null, port: 8080 };
+// merge()
 
-config = Hoek.applyToDefaults(defaults, options1, true); // results in { host: null, port: 8080 }
+Hoek.merge({ a: 1 } as Foo, { b: 'x' } as Bar);
+Hoek.merge({ a: 1 }, { a: null });
+Hoek.merge({ a: 1 }, { a: null }, true);
 
-// applyToDefaultsWithShallow(defaults, options, keys)
+expect.type<object>(Hoek.merge({}, {}));
+expect.type<Foo & Bar>(Hoek.merge({ a: 1 } as Foo, { b: 'x' } as Bar));
 
-const defaults1 = {
-    server: {
-        host: "localhost",
-        port: 8000
-    },
-    name: 'example'
-};
+expect.error(Hoek.merge(1, 2));
 
-const options2 = { server: { port: 8080 } };
 
-const config1 = Hoek.applyToDefaultsWithShallow(defaults1, options2, ['server']); // results in { server: { port: 8080 }, name: 'example' }
+// applyToDefaults()
 
-// deepEqual(b, a, [options])
+Hoek.applyToDefaults({}, {});
+Hoek.applyToDefaults({}, true);
+Hoek.applyToDefaults({}, false);
+Hoek.applyToDefaults({}, null);
+Hoek.applyToDefaults({ a: 1 } as Foo, { b: 'x' });
+Hoek.applyToDefaults({ a: 1 } as object, { b: 'x' });
 
-Hoek.deepEqual({ a: [1, 2], b: 'string', c: { d: true } }, { a: [1, 2], b: 'string', c: { d: true } }); // results in true
-Hoek.deepEqual(Object.create(null), {}, { prototype: false }); // results in true
-Hoek.deepEqual(Object.create(null), {}); // results in false
+expect.type<object>(Hoek.applyToDefaults({}, {}));
+expect.type<Foo>(Hoek.applyToDefaults({ a: 1 } as Foo, { b: 'x' }));
 
-// unique(array, key)
+expect.error(Hoek.applyToDefaults({} as Foo, 0));
 
-let array = [1, 2, 2, 3, 3, 4, 5, 6];
 
-const newArray = Hoek.unique(array);    // results in [1,2,3,4,5,6]
+// cloneWithShallow()
 
-let array1 = [{ id: 1 }, { id: 1 }, { id: 2 }];
+Hoek.cloneWithShallow({}, []);
+Hoek.cloneWithShallow(1, []);
+Hoek.cloneWithShallow(null, []);
+Hoek.cloneWithShallow({ a: 1, b: { c: [2] } }, ['b']);
+Hoek.cloneWithShallow({ a: 1, b: { c: [2] } }, ['b'], { prototype: true, symbols: true });
 
-const newArray1 = Hoek.unique(array1, "id");  // results in [{id: 1}, {id: 2}]
+expect.type<Foo>(Hoek.cloneWithShallow({ a: 1 } as Foo, ['b']));
 
-// mapToObject(array, key)
+expect.error(Hoek.cloneWithShallow());
+expect.error(Hoek.cloneWithShallow({}));
+expect.error(Hoek.cloneWithShallow({}, [1]));
+expect.error(Hoek.cloneWithShallow({ a: 1, b: { c: [2] } }, ['b'], { unknown: true }));
 
-array = [1, 2, 3];
-let newObject = Hoek.mapToObject(array);   // results in {"1": true, "2": true, "3": true}
 
-array1 = [{ id: 1 }, { id: 2 }];
-newObject = Hoek.mapToObject(array1, "id"); // results in {"1": true, "2": true}
+// applyToDefaultsWithShallow()
 
-// intersect(array1, array2)
+Hoek.applyToDefaultsWithShallow({}, {}, []);
+Hoek.applyToDefaultsWithShallow({}, true, []);
+Hoek.applyToDefaultsWithShallow({}, false, []);
+Hoek.applyToDefaultsWithShallow({}, null, []);
+Hoek.applyToDefaultsWithShallow({ a: 1 } as Foo, { b: 'x' }, ['b']);
+Hoek.applyToDefaultsWithShallow({ a: 1 } as object, { b: 'x' }, ['c']);
 
-array = [1, 2, 3];
-const array2 = [1, 4, 5];
+expect.type<object>(Hoek.applyToDefaultsWithShallow({}, {}, []));
 
-const newArray2 = Hoek.intersect(array, array2); // results in [1]
+expect.error(Hoek.applyToDefaultsWithShallow());
+expect.error(Hoek.applyToDefaultsWithShallow({} as Foo, 0, []));
+expect.error(Hoek.applyToDefaultsWithShallow({} as Foo, {}));
 
-// contain(ref, values, [options])
 
-Hoek.contain('aaa', 'a', { only: true });                           // true
-Hoek.contain([{ a: 1 }], [{ a: 1 }], { deep: true });               // true
-Hoek.contain([1, 2, 2], [1, 2], { once: true });                    // false
-Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true }); // true
+// intersect()
 
-// flatten(array, [target])
+Hoek.intersect([1], [1, 2]);
+Hoek.intersect(['a'], ['b', 'b']);
+Hoek.intersect([1], [1, 2], true);
+Hoek.intersect([1], [1, 2], false);
+Hoek.intersect([1], null);
+Hoek.intersect(null, [1, 2]);
+Hoek.intersect([1], null, true);
+Hoek.intersect(null, [1, 2], true);
+Hoek.intersect(new Set([1]), new Set([1, 2]));
+Hoek.intersect([1], new Set([1, 2]));
+Hoek.intersect(new Set([1]), [1, 2]);
 
-let array3 = [1, [2, 3]];
+expect.type<any[]>(Hoek.intersect([1], [1, 2]));
+expect.type<any[]>(Hoek.intersect([1], [1, 2], false));
+expect.type<any>(Hoek.intersect([1], [1, 2], true));
 
-let flattenedArray = Hoek.flatten(array); // results in [1, 2, 3]
+expect.error(Hoek.intersect());
+expect.error(Hoek.intersect(1, 2));
+expect.error(Hoek.intersect([1], 2));
+expect.error(Hoek.intersect([1], [2], 'x'));
+expect.error(Hoek.intersect(new Map(), [2]));
 
-array3 = [1, [2, 3]];
-const target1 = [4, [5]];
 
-flattenedArray = Hoek.flatten(array3, target1); // results in [4, [5], 1, 2, 3]
+// contain()
 
-// reach(obj, chain, [options])
+Hoek.contain('abc', 'a');
+Hoek.contain('abc', ['a', 'x']);
+Hoek.contain('abc', ['a', 'd'], { once: true, part: true, deep: true, symbols: true, only: true });
+Hoek.contain({ a: 1 }, 'a');
+Hoek.contain({ a: 1 }, { a: 1 });
+Hoek.contain({ a: 1, b: 2 }, ['a', 'x'], { once: true, part: true, deep: true, symbols: true, only: true });
+Hoek.contain([1], 1);
+Hoek.contain([1], [1]);
+Hoek.contain([1], [1], { once: true, part: true, deep: true, symbols: true, only: true });
 
-let chain = 'a.b.c';
-let obj = { a: { b: { c: 1 } } };
+expect.type<boolean>(Hoek.contain('abc', 'a'));
+expect.type<boolean>(Hoek.contain({ a: 1 }, 'a'));
+expect.type<boolean>(Hoek.contain([1], 1));
 
-Hoek.reach(obj, chain); // returns 1
+expect.error(Hoek.contain('abc', 'a', { unknown: true }));
+expect.error(Hoek.contain(['a'], 'a', { unknown: true }));
+expect.error(Hoek.contain({ a: 1 }, 'a', { unknown: true }));
+expect.error(Hoek.contain('abc', 1));
+expect.error(Hoek.contain('abc', [1]));
+expect.error(Hoek.contain('abc', [{}]));
+expect.error(Hoek.contain('abc', {}));
+expect.error(Hoek.contain({}, 1));
 
-chain = 'a.b.-1';
-const obj1 = { a: { b: [2, 3, 6] } };
 
-Hoek.reach(obj1, chain); // returns 6
+// flatten()
 
-// reachTemplate(obj, template, [options])
+Hoek.flatten([1, [2, 3]]);
+Hoek.flatten([1, [2, 3]], [4, 5]);
 
-chain = 'a.b.c';
-obj = { a: { b: { c: 1 } } };
+expect.type<any[]>(Hoek.flatten([1, [2, 3]]));
+expect.type<any[]>(Hoek.flatten([1, [2, 3]], []));
 
-Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
+expect.error(Hoek.flatten());
+expect.error(Hoek.flatten(1));
+expect.error(Hoek.flatten([], 1));
 
-// transform(obj, transform, [options])
 
-const source1 = {
-    address: {
-        one: '123 main street',
-        two: 'PO Box 1234'
-    },
-    title: 'Warehouse',
-    state: 'CA'
-};
+// reach()
 
-let result = Hoek.transform(source1, {
-    'person.address.lineOne': 'address.one',
-    'person.address.lineTwo': 'address.two',
-    title: 'title',
-    'person.address.region': 'state'
-});
-// Results in
-// {
-//     person: {
-//         address: {
-//             lineOne: '123 main street',
-//             lineTwo: 'PO Box 1234',
-//             region: 'CA'
-//         }
-//     },
-//     title: 'Warehouse'
-// }
+Hoek.reach(null, false);
+Hoek.reach(null, '0');
+Hoek.reach(null, ['0']);
+Hoek.reach(['abc'], false);
+Hoek.reach(['abc'], null);
+Hoek.reach(['abc'], undefined);
+Hoek.reach(['abc'], [0]);
+Hoek.reach(['abc'], ['0']);
+Hoek.reach(['abc'], '0');
+Hoek.reach({ a: { b: { c: 3 } } }, 'a.b.c');
+Hoek.reach({ a: { b: { c: 3 } } }, ['a', 'b', 'c']);
+Hoek.reach({ a: { b: { c: 3 } } }, 'a/b/c', { separator: '/', default: 4, strict: true, functions: true });
 
-// shallow(obj)
+expect.type<any>(Hoek.reach(['abc'], [0]));
+expect.type<any>(Hoek.reach({ a: { b: { c: 3 } } }, 'a.b.c'));
 
-const shallow = Hoek.shallow({ a: { b: 1 } });
+expect.error(Hoek.reach());
+expect.error(Hoek.reach([]));
+expect.error(Hoek.reach(1, '0'));
+expect.error(Hoek.reach('abc', '0'));
+expect.error(Hoek.reach([0], 0));
+expect.error(Hoek.reach(['abc'], '0', { unknown: false }));
+expect.error(Hoek.reach(['abc'], '0', { separator: false }));
 
-// stringify(obj)
 
-let a: any = {};
-a.b = a;
-Hoek.stringify(a);      // Returns '[Cannot display object: Converting circular structure to JSON]'
+// reachTemplate()
 
-// Timer
+Hoek.reachTemplate(null, 'a{b}c');
+Hoek.reachTemplate([1, 2], 'a{1}c');
+Hoek.reachTemplate({ b: 2 }, 'a{b}c');
+Hoek.reachTemplate({ a: { b: { c: 3 } } }, '{a/b/c}', { separator: '/', default: 4, strict: true, functions: true });
 
-const timerObj = new Hoek.Timer();
-console.log("Time is now: " + timerObj.ts);
-console.log(`Elapsed time from initialization: ${timerObj.elapsed()}milliseconds`);
+expect.type<string>(Hoek.reachTemplate([1, 2], 'a{1}c'));
+
+expect.error(Hoek.reachTemplate());
+expect.error(Hoek.reachTemplate([]));
+expect.error(Hoek.reachTemplate(1, '0'));
+expect.error(Hoek.reachTemplate('abc', '0'));
+expect.error(Hoek.reachTemplate([0], 0));
+expect.error(Hoek.reachTemplate(['abc'], '{0}', { unknown: false }));
+expect.error(Hoek.reachTemplate(['abc'], '{0}', { separator: false }));
+
+
+// assert()
+
+Hoek.assert(true);
+Hoek.assert(true, 'some', 'message', 10);
+Hoek.assert(1, 'error');
+Hoek.assert(true, new Error('message'));
+
+expect.type<void>(Hoek.assert(true));
+
 
 // Bench
 
-const benchObj = new Hoek.Bench();
-console.log(`Elapsed time from initialization: ${benchObj.elapsed()}milliseconds`);
+const bench = new Hoek.Bench();
+expect.type<number>(bench.ts);
+expect.type<void>(bench.reset());
+expect.type<number>(bench.elapsed());
+expect.type<number>(Hoek.Bench.now());
 
-// base64urlEncode(value)
+expect.error(new Hoek.Bench({}));
+expect.error(bench.reset(true));
+expect.error(bench.elapsed(true));
+expect.error(Hoek.Bench.now(true));
 
-Hoek.base64urlEncode("hoek");
 
-// base64urlDecode(value)
+// escapeRegex()
 
-Hoek.base64urlDecode("aG9law==");
+Hoek.escapeRegex('something?');
 
-// escapeHtml(string)
+expect.type<string>(Hoek.escapeRegex('^?'));
 
-const string = '<html> hey </html>';
-const escapedString = Hoek.escapeHtml(string); // returns &lt;html&gt; hey &lt;/html&gt;
+expect.error(Hoek.escapeRegex());
+expect.error(Hoek.escapeRegex(true));
+expect.error(Hoek.escapeRegex({}));
 
-// escapeHeaderAttribute(attribute)
 
-a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  // returns I said \"go w\\o me\"
+// escapeHeaderAttribute()
 
-// escapeRegex(string)
+Hoek.escapeHeaderAttribute('something?');
 
-a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4\^f\$s\.4\*5\+\-_\?%\=#\!\:@\|~\\\/`"\(>\)\[<\]d\{\}s\,
+expect.type<string>(Hoek.escapeHeaderAttribute('^?'));
 
-// assert(condition, message)
+expect.error(Hoek.escapeHeaderAttribute());
+expect.error(Hoek.escapeHeaderAttribute(true));
+expect.error(Hoek.escapeHeaderAttribute({}));
 
-const x = 1;
-const y = 2 as number;
 
-Hoek.assert(x === y, 'x should equal y');  // Throws 'x should equal y'
+// escapeHtml()
 
-Hoek.assert(x === y, new Error('x should equal y')); // Throws the given error object
+Hoek.escapeHtml('something?');
 
-// abort(message)
+expect.type<string>(Hoek.escapeHtml('^?'));
 
-Hoek.abort("Error message");
+expect.error(Hoek.escapeHtml());
+expect.error(Hoek.escapeHtml(true));
+expect.error(Hoek.escapeHtml({}));
 
-// displayStack(slice)
 
-const stack = Hoek.displayStack();
-console.log(stack);
+// escapeJson()
 
-// callStack(slice)
+Hoek.escapeJson('something?');
 
-const stack2 = Hoek.callStack();
-console.log(stack2);
+expect.type<string>(Hoek.escapeJson('^?'));
 
-// nextTick(fn)
+expect.error(Hoek.escapeJson());
+expect.error(Hoek.escapeJson(true));
+expect.error(Hoek.escapeJson({}));
 
-let myFn = () => {
-    console.log('Do this later');
-};
 
-const nextFn = Hoek.nextTick(myFn);
+// once()
 
-nextFn();
-console.log('Do this first');
+Hoek.once(() => 4);
+Hoek.once(() => undefined);
 
-// Results in:
-//
-// Do this first
-// Do this later
+expect.type<() => void>(Hoek.once(() => 'x'));
 
-// once(fn)
+expect.error(Hoek.once());
+expect.error(Hoek.once('x'));
+expect.error(Hoek.once({}));
 
-myFn = () => {
-    console.log('Ran myFn');
-};
 
-const onceFn = Hoek.once(myFn);
-onceFn(); // results in "Ran myFn"
-onceFn(); // results in undefined
-
-// ignore
+// ignore()
 
 Hoek.ignore();
+Hoek.ignore(1, 2, 'x');
 
-// uniqueFilename(path, extension)
+expect.type<() => void>(Hoek.ignore);
+expect.type<void>(Hoek.ignore());
 
-const result1 = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
 
-// isInteger(value)
+// uniqueFilename()
 
-result = Hoek.isInteger('23');
+Hoek.uniqueFilename('/root');
+Hoek.uniqueFilename('/root', '.txt');
+
+expect.type<string>(Hoek.uniqueFilename('/root'));
+
+expect.error(Hoek.uniqueFilename());
+expect.error(Hoek.uniqueFilename(123));
+expect.error(Hoek.uniqueFilename('x', 123));
+expect.error(Hoek.uniqueFilename('x', 'x', true));
+
+
+// stringify()
+
+Hoek.stringify(123);
+Hoek.stringify({}, null, 4);
+
+expect.type<string>(Hoek.stringify(123));
+
+expect.error(Hoek.stringify());
+
+
+// wait()
+
+Hoek.wait();
+Hoek.wait(123);
+
+expect.type<Promise<void>>(Hoek.wait());
+expect.type<void>(await Hoek.wait(100));
+
+expect.error(Hoek.wait({}));
+
+
+// block()
+
+Hoek.wait();
+
+expect.type<Promise<void>>(Hoek.block());
+expect.type<void>(await Hoek.block());
+
+expect.error(Hoek.block(123));
