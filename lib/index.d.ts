@@ -388,7 +388,5 @@ export function wait(timeout?: number): Promise<void>;
 
 /**
 Returns a Promise that never resolves.
-
-@return A Promise.
 */
 export function block(): Promise<void>;
