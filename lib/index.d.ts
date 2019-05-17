@@ -124,12 +124,12 @@ Find the common unique items in two arrays.
 
 @return - An array of the common items. If `justFirst` is true, returns the first common item.
 */
-export function intersect(array1: intersect.Array, array2: intersect.Array, justFirst?: false): any[];
-export function intersect(array1: intersect.Array, array2: intersect.Array, justFirst: true): any;
+export function intersect<T1, T2>(array1: intersect.Array<T1>, array2: intersect.Array<T2>, justFirst?: false): Array<T1 | T2>;
+export function intersect<T1, T2>(array1: intersect.Array<T1>, array2: intersect.Array<T2>, justFirst: true): T1 | T2;
 
 declare namespace intersect {
 
-    type Array = any[] | Set<any> | null;
+    type Array<T> = ArrayLike<T> | Set<T> | null;
 }
 
 
@@ -195,7 +195,7 @@ Flatten an array with sub arrays
 
 @return a flat array of the provided values (appended to `target` is provided).
 */
-export function flatten(array: any[], target?: any[]): any[];
+export function flatten<T>(array: ArrayLike<T | ReadonlyArray<T>>, target?: ArrayLike<T | ReadonlyArray<T>>): T[];
 
 
 /**
@@ -344,7 +344,7 @@ Wraps a function to ensure it can only execute once.
 
 @return The wrapped function.
  */
-export function once(method: () => any): () => void;
+export function once<T extends Function>(method: T): T;
 
 
 /**
