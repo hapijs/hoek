@@ -1,6 +1,18 @@
 // Adapted from https://github.com/DefinitelyTyped, MIT Licensed
 // Originally by Prashant Tiwari <https://github.com/prashaantt>
 
+export interface CloneOptions {
+    /** Clone symbol properties. */
+    symbols?: boolean;
+}
+
+export interface DeepEqualOptions {
+    /** Compare object prototypes */
+    prototype?: boolean;
+    /** Compare symbol properties. */
+    symbols?: boolean;
+}
+
 export interface ContainOptions {
     /** Perform a deep comparison of the values? */
     deep?: boolean;
@@ -12,9 +24,7 @@ export interface ContainOptions {
     part?: boolean;
 }
 
-export interface ReachOptions {
-    /** String to split chain path on. Defaults to ".". */
-    separator?: string;
+export interface BaseReachOptions {
     /** Value to return if the path or value is not present. Default is undefined. */
     default?: any;
     /** Throw an error on missing member? Default is false. */
@@ -23,57 +33,60 @@ export interface ReachOptions {
     functions?: boolean;
 }
 
+export interface FullReachOptions extends BaseReachOptions {
+    /** String to split chain path on. Defaults to ".". */
+    separator?: string;
+}
+
+// Type aliases
+
+type ObjectProperty = string | number | symbol;
+
 // Object
 
 /**
  * Clone an object or an array.
  */
-export function clone<T>(obj: T): T;
+export function clone<T>(obj: T, options?: CloneOptions): T;
 
 /**
  * Clone an object or array.
  */
-export function cloneWithShallow(obj: any, keys: string[]): any;
+export function cloneWithShallow<T>(obj: T, keys: (string | ObjectProperty[])[], options?: CloneOptions): T;
 
 /**
  * Merge all the properties of source into target.
  */
-export function merge<T1, T2>(target: T1, source: T2, isNullOverride?: boolean, isMergeArrays?: boolean): T1 & T2;
+export function merge<T extends object, S extends object>(target: T, source: S, isNullOverride?: boolean, isMergeArrays?: boolean): T & S;
+export function merge<T extends object, S extends object>(target: T, source: null | undefined, isNullOverride?: boolean, isMergeArrays?: boolean): T;
 
 /**
  * Apply options to a copy of the defaults.
  */
-export function applyToDefaults<T1, T2>(defaults: T1, options: T2, isNullOverride?: boolean): T1 & T2;
+export function applyToDefaults<T1 extends object, T2 extends object>(defaults: T1, options: T2, isNullOverride?: boolean): T1 & T2;
 
 /**
  * Apply options to a copy of the defaults.
  */
-export function applyToDefaultsWithShallow<T1, T2>(defaults: T1, options: T2, keys?: string[]): T1 & T2;
+export function applyToDefaultsWithShallow<T1 extends object, T2 extends object>(defaults: T1, options: T2, keys: (string | ObjectProperty[])[]): T1 & T2;
 
 /**
  * Perform a deep comparison of the two values.
  */
-export function deepEqual<T>(b: T, a: T, options?: any): T;
-
-/**
- * Remove duplicate items from Array.
- */
-export function unique<T>(array: T[], key?: string): T[];
-
-/**
- * Convert an Array into an Object.
- */
-export function mapToObject(array: any[], key?: string): any;
+export function deepEqual<T>(b: T, a: T, options?: DeepEqualOptions): boolean;
 
 /**
  * Find the common unique items in two arrays.
  */
-export function intersect(array1: any[], array2: any[]): any;
+export function intersect<T>(array1: Iterable<T>, array2: Iterable<T>): T[];
 
 /**
  * Test if the reference value contains the provided values.
  */
-export function contain(ref: any, values: any, options?: ContainOptions): boolean;
+export function contain(ref: string, values: string | string[], options?: ContainOptions): boolean;
+export function contain<T>(ref: T[], values: T | T[], options?: ContainOptions): boolean;
+export function contain(ref: object, values: ObjectProperty | ObjectProperty[], options?: ContainOptions): boolean;
+export function contain(ref: object, values: object, options?: ContainOptions): boolean;
 
 /**
  * Flatten an array.
@@ -83,39 +96,18 @@ export function flatten(array: any[], target?: any[]): any[];
 /**
  * Convert an object key chain string to reference.
  */
-export function reach(obj: any, chain: any, options?: ReachOptions): any;
+export function reach(obj: object | Function, chain: string, options?: FullReachOptions): any;
+export function reach(obj: object | Function, chain: ObjectProperty[], options?: BaseReachOptions): any;
 
 /**
  * Replace string parameters ({name}) with their corresponding object key values.
  */
-export function reachTemplate(obj: any, template: string, options?: ReachOptions): any;
-
-/**
- * Transform an existing object into a new one based on the supplied obj and transform map.
- */
-export function transform(obj: any, transform: any, options?: ReachOptions): any;
-
-/**
- * Perform a shallow copy by copying the references of all the top level children.
- */
-export function shallow(obj: any): any;
+export function reachTemplate(obj: object | Function, template: string, options?: FullReachOptions): any;
 
 /**
  * Convert an object to string. Any errors are caught and reported back in the form of the returned string.
  */
 export function stringify(obj: any): string;
-
-// Timer
-
-/**
- * A Timer object.
- */
-export class Timer {
-    /** The number of milliseconds elapsed since the epoch. */
-    ts: number;
-    /** The time (ms) elapsed since the timer was created. */
-    elapsed(): number;
-}
 
 // Bench
 
@@ -127,19 +119,9 @@ export class Bench {
     ts: number;
     /** The time (ms) elapsed since the timer was created. */
     elapsed(): number;
+    /** Reset epoch to now. */
+    reset(): void;
 }
-
-// Binary Encoding/Decoding
-
-/**
- * Encode value of string or buffer type in Base64 or URL encoding.
- */
-export function base64urlEncode(value: string): string;
-
-/**
- * Decode string into Base64 or URL encoding.
- */
-export function base64urlDecode(value: string): string;
 
 // Escaping Characters
 
@@ -163,39 +145,19 @@ export function escapeRegex(regexString: string): string;
 /**
  * Print message or throw error if condition fails.
  */
-export function assert(condition: boolean, message: string | Error): void | Error;
-
-/**
- * Throw if process.env.NODE_ENV === 'test'. Else display most recent stack and exit process.
- */
-export function abort(message: string | Error): void;
-
-/**
- * Display the trace stack.
- */
-export function displayStack(slice?: any): string[];
-
-/**
- * Return a trace stack array.
- */
-export function callStack(slice?: any): any[];
+export function assert(condition: any, message: string | Error): void | never;
 
 // Function
 
 /**
- * Wrap fn in process.nextTick.
- */
-export function nextTick(fn: () => void): () => void;
-
-/**
  * Make sure fn is only run once.
  */
-export function once(fn: () => void): () => void;
+export function once<T extends (...args: any) => any>(fn: T): T | ((...args: Parameters<T>) => void);
 
 /**
  * A simple no-op function.
  */
-export function ignore(): void;
+export function ignore(...args: any): void;
 
 // Miscellaneous
 
@@ -204,7 +166,14 @@ export function ignore(): void;
  */
 export function uniqueFilename(path: string, extension?: string): string;
 
+// Promises
+
 /**
- * Check value to see if it is an integer.
+ * Resolve the promise after `timeout`. Provide the `timeout` in milliseconds.
  */
-export function isInteger(value: any): boolean;
+export function wait(timeout: number): Promise<void>;
+
+/**
+ * A no-op Promise. Does nothing.
+ */
+export function block(): Promise<never>;
