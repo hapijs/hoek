@@ -14,21 +14,21 @@ declare namespace deepEqual {
 
         /**
         Allow partial match.
-    
+
         @default false
         */
         readonly part?: boolean;
 
         /**
         Compare the objects' prototypes.
-    
+
         @default true
         */
         readonly prototype?: boolean;
 
         /**
         Compare symbol properties.
-    
+
         @default false
         */
         readonly symbols?: boolean;
@@ -52,14 +52,14 @@ declare namespace clone {
 
         /**
         Clone the object's prototype.
-    
+
         @default true
         */
         readonly prototype?: boolean;
 
         /**
         Include symbol properties.
-    
+
         @default false
         */
         readonly symbols?: boolean;
@@ -151,35 +151,35 @@ declare namespace contain {
 
         /**
         Perform a deep comparison.
-    
+
         @default false
         */
         readonly deep?: boolean;
 
         /**
         Allow only one occurrence of each value.
-    
+
         @default false
         */
         readonly once?: boolean;
 
         /**
         Allow only values explicitly listed.
-    
+
         @default false
         */
         readonly only?: boolean;
 
         /**
         Allow partial match.
-    
+
         @default false
         */
         readonly part?: boolean;
 
         /**
         Include symbol properties.
-    
+
         @default false
         */
         readonly symbols?: boolean;
@@ -214,28 +214,28 @@ declare namespace reach {
 
         /**
         String to split chain path on. Defaults to '.'.
-    
+
         @default false
         */
         readonly separator?: string;
 
         /**
         Value to return if the path or value is not present. No default value.
-    
+
         @default false
         */
         readonly default?: any;
 
         /**
         If true, will throw an error on missing member in the chain. Default to false.
-    
+
         @default false
         */
         readonly strict?: boolean;
 
         /**
         If true, allows traversing functions for properties. false will throw an error if a function is part of the chain.
-    
+
         @default false
         */
         readonly functions?: boolean;
