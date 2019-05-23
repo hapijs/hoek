@@ -516,6 +516,24 @@ describe('clone()', () => {
         expect(b.val).to.not.shallow.equal(a.val);
     });
 
+    it('clones subclassed Set', () => {
+
+        const MySet = class extends Set { };
+
+        const a = new MySet([1]);
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.be.instanceof(MySet);
+
+        const c = Hoek.clone(a, { prototype: false });
+
+        expect(c).to.not.equal(a, { prototype: true });
+        expect(c).to.equal(a, { prototype: false });
+        expect(c).to.be.instanceof(Set);
+        expect(c).to.not.be.instanceof(MySet);
+    });
+
     it('clones Set containing objects (no pass by reference)', () => {
 
         const a = new Set([1, 2, 3]);
@@ -555,6 +573,24 @@ describe('clone()', () => {
         expect(b).to.equal(a);
         expect(b.val).to.equal(a.val);
         expect(b.val).to.not.shallow.equal(a.val);
+    });
+
+    it('clones subclassed Map', () => {
+
+        const MyMap = class extends Map {};
+
+        const a = new MyMap([['a', 1]]);
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.be.instanceof(MyMap);
+
+        const c = Hoek.clone(a, { prototype: false });
+
+        expect(c).to.not.equal(a, { prototype: true });
+        expect(c).to.equal(a, { prototype: false });
+        expect(c).to.be.instanceof(Map);
+        expect(c).to.not.be.instanceof(MyMap);
     });
 
     it('clones Map containing objects as values (no pass by reference)', () => {
