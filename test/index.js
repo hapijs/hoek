@@ -119,50 +119,56 @@ describe('clone()', () => {
     it('clones deeply nested set with circular references', () => {
 
         const s = new Set();
+        s.add('a');
+        s.add('b');
         s.add(s);
 
-        const b = {
+        const a = {
             x: {
                 y: {
-                    a: [1, 2, 3],
-                    b: 123456,
-                    c: new Date(),
-                    d: /hi/igm,
-                    e: /hello/,
-                    f: s
+                    a: s
                 }
             }
         };
 
-        expect(() => {
+        const b = Hoek.clone(a);
 
-            Hoek.clone(b);
-        }).to.not.throw();
+        expect(b).to.equal(a);
+        expect(b).to.not.equal(new Set(['a', 'b', s]));
+        expect(b).to.not.shallow.equal(a);
+
+        // Verify ordering
+
+        const aIter = a.x.y.a.values();
+        for (const value of b.x.y.a.values()) {
+            expect(value).to.equal(aIter.next().value);
+        }
     });
 
 
     it('clones deeply nested map with circular references', () => {
 
         const m = new Map();
-        m.set('k', m);
+        m.set('a', 'a');
+        m.set('b', 'b');
+        m.set('c', m);
 
-        const b = {
+        const a = {
             x: {
                 y: {
-                    a: [1, 2, 3],
-                    b: 123456,
-                    c: new Date(),
-                    d: /hi/igm,
-                    e: /hello/,
-                    f: m
+                    a: m
                 }
             }
         };
 
-        expect(() => {
+        const b = Hoek.clone(a);
 
-            Hoek.clone(b);
-        }).to.not.throw();
+        // Verify key ordering
+
+        const aIter = a.x.y.a.keys();
+        for (const key of b.x.y.a.keys()) {
+            expect(key).to.equal(aIter.next().value);
+        }
     });
 
     it('clones arrays', () => {
