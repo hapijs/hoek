@@ -116,6 +116,61 @@ describe('clone()', () => {
         expect(a.x.y.c.getTime()).to.equal(b.x.y.c.getTime());
     });
 
+    it('clones deeply nested set with circular references', () => {
+
+        const s = new Set();
+        s.add('a');
+        s.add('b');
+        s.add(s);
+
+        const a = {
+            x: {
+                y: {
+                    a: s
+                }
+            }
+        };
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.equal(new Set(['a', 'b', s]));
+        expect(b).to.not.shallow.equal(a);
+
+        // Verify ordering
+
+        const aIter = a.x.y.a.values();
+        for (const value of b.x.y.a.values()) {
+            expect(value).to.equal(aIter.next().value);
+        }
+    });
+
+
+    it('clones deeply nested map with circular references', () => {
+
+        const m = new Map();
+        m.set('a', 'a');
+        m.set('b', 'b');
+        m.set('c', m);
+
+        const a = {
+            x: {
+                y: {
+                    a: m
+                }
+            }
+        };
+
+        const b = Hoek.clone(a);
+
+        // Verify key ordering
+
+        const aIter = a.x.y.a.keys();
+        for (const key of b.x.y.a.keys()) {
+            expect(key).to.equal(aIter.next().value);
+        }
+    });
+
     it('clones arrays', () => {
 
         const a = [1, 2, 3];
