@@ -116,6 +116,55 @@ describe('clone()', () => {
         expect(a.x.y.c.getTime()).to.equal(b.x.y.c.getTime());
     });
 
+    it('clones deeply nested set with circular references', () => {
+
+        const s = new Set();
+        s.add(s);
+
+        const b = {
+            x: {
+                y: {
+                    a: [1, 2, 3],
+                    b: 123456,
+                    c: new Date(),
+                    d: /hi/igm,
+                    e: /hello/,
+                    f: s
+                }
+            }
+        };
+
+        expect(() => {
+
+            Hoek.clone(b);
+        }).to.not.throw();
+    });
+
+
+    it('clones deeply nested map with circular references', () => {
+
+        const m = new Map();
+        m.set('k', m);
+
+        const b = {
+            x: {
+                y: {
+                    a: [1, 2, 3],
+                    b: 123456,
+                    c: new Date(),
+                    d: /hi/igm,
+                    e: /hello/,
+                    f: m
+                }
+            }
+        };
+
+        expect(() => {
+
+            Hoek.clone(b);
+        }).to.not.throw();
+    });
+
     it('clones arrays', () => {
 
         const a = [1, 2, 3];
