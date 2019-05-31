@@ -57,7 +57,7 @@ expect.error(Hoek.clone({}, { shallow: 1 }));
 
 Hoek.merge({ a: 1 } as Foo, { b: 'x' } as Bar);
 Hoek.merge({ a: 1 }, { a: null });
-Hoek.merge({ a: 1 }, { a: null }, { mergeArrays: true, nullOverride: true });
+Hoek.merge({ a: 1 }, { a: null }, { mergeArrays: true, nullOverride: true, symbols: false });
 
 expect.type<object>(Hoek.merge({}, {}));
 expect.type<Foo & Bar>(Hoek.merge({ a: 1 } as Foo, { b: 'x' } as Bar));

@@ -42,7 +42,7 @@ Clones an object or an array. A *deep copy* is made (duplicates everything, incl
 objects, as well as non-enumerable properties) where:
 - `obj` - the object to be cloned.
 - `options` - optional settings:
-    - `symbols` - clone symbol properties. Defaults to `false`.
+    - `symbols` - clone symbol properties. Defaults to `true`.
     - `shallow` - an array of dot-separated or array-based key paths to shallow copy values in `obj`.
 
 ```javascript
@@ -101,6 +101,7 @@ Merge all the properties of source into target where:
       If `false`, `null` values in the `source` are ignored. Defaults to `true`.
     - `mergeArrays` - if `true`, array values from `source` are appended to existing array values in `target`.
       Defaults to `true`.
+    - `symbols` - clone symbol properties. Defaults to `true`.
 
 Note that source wins in conflict, and by default null and undefined from source are applied.
 Merge is destructive where the target is modified. For non destructive merge, use `applyToDefaults`.
@@ -174,7 +175,7 @@ const config = Hoek.applyToDefaults(defaults, source, { shallow: [['db', 'server
 #### deepEqual(b, a, [options])
 
 Performs a deep comparison of the two values including support for circular dependencies, prototype, and enumerable properties.
-To skip prototype comparisons, use `options.prototype = false` and to include symbols, used `options.symbols = true`.
+To skip prototype comparisons, use `options.prototype = false` and to exclude symbols, used `options.symbols = false`.
 
 ```javascript
 Hoek.deepEqual({ a: [1, 2], b: 'string', c: { d: true } }, { a: [1, 2], b: 'string', c: { d: true } }); //results in true
@@ -209,6 +210,7 @@ Tests if the reference value contains the provided values where:
     - `once` - if `true`, allows only one occurrence of each value.
     - `only` - if `true`, does not allow values not explicitly listed.
     - `part` - if `true`, allows partial match of the values (at least one must always match).
+    - `symbols` - clone symbol properties. Defaults to `true`.
 
 Note: comparing a string to overlapping values will result in failed comparison (e.g. `contain('abc', ['ab', 'bc'])`).
 Also, if an object key's value does not match the provided value, `false` is returned even when `part` is specified.

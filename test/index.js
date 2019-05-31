@@ -197,13 +197,13 @@ describe('clone()', () => {
         const a = { [sym1]: 1 };
         Object.defineProperty(a, sym2, { value: 2 });
 
-        const b = Hoek.clone(a, { symbols: true });
+        const b = Hoek.clone(a);
 
         expect(a).to.equal(b);
         expect(b[sym1]).to.be.equal(1);
         expect(b[sym2]).to.be.equal(2);
 
-        expect(Hoek.deepEqual(a, b, { symbols: true })).to.be.true();
+        expect(Hoek.deepEqual(a, b)).to.be.true();
     });
 
     it('performs actual copy for shallow keys (no pass by reference)', () => {
@@ -622,6 +622,26 @@ describe('clone()', () => {
         expect(b.get(nestedObj)).to.equal(a.get(nestedObj));
     });
 
+    it('ignores symbols', () => {
+
+        const sym = Symbol();
+        const source = {
+            a: {
+                b: 5
+            },
+            [sym]: {
+                d: 6
+            }
+        };
+
+        const copy = Hoek.clone(source, { symbols: false });
+        expect(copy).to.equal(source);                                          // Ignores symbols
+        expect(Hoek.deepEqual(source, copy)).to.be.false();
+        expect(copy).to.not.shallow.equal(source);
+        expect(copy.a).to.not.shallow.equal(source.a);
+        expect(copy[sym]).to.not.exist();
+    });
+
     it('deep clones except for listed keys', () => {
 
         const source = {
@@ -675,7 +695,7 @@ describe('clone()', () => {
         expect(copy.b).to.equal(source.b);
     });
 
-    it('supports symbols', () => {
+    it('supports shallow symbols', () => {
 
         const sym = Symbol();
         const source = {
@@ -699,16 +719,24 @@ describe('merge()', () => {
 
     it('deep copies source items', () => {
 
+        const sym1 = Symbol('1');
+        const sym2 = Symbol('2');
+        const sym3 = Symbol('3');
+
         const target = {
             b: 3,
-            d: []
+            d: [],
+            [sym1]: true,
+            [sym3]: true
         };
 
         const source = {
             c: {
                 d: 1
             },
-            d: [{ e: 1 }]
+            d: [{ e: 1 }],
+            [sym2]: true,
+            [sym3]: false
         };
 
         Hoek.merge(target, source);
@@ -717,6 +745,44 @@ describe('merge()', () => {
         expect(target.d).to.not.shallow.equal(source.d);
         expect(target.d[0]).to.not.shallow.equal(source.d[0]);
         expect(target.d).to.equal(source.d);
+
+        expect(target[sym1]).to.be.true();
+        expect(target[sym2]).to.be.true();
+        expect(target[sym3]).to.be.false();
+    });
+
+    it('deep copies source items without symbols', () => {
+
+        const sym1 = Symbol('1');
+        const sym2 = Symbol('2');
+        const sym3 = Symbol('3');
+
+        const target = {
+            b: 3,
+            d: [],
+            [sym1]: true,
+            [sym3]: true
+        };
+
+        const source = {
+            c: {
+                d: 1
+            },
+            d: [{ e: 1 }],
+            [sym2]: true,
+            [sym3]: false
+        };
+
+        Hoek.merge(target, source, { symbols: false });
+        expect(target.c).to.not.shallow.equal(source.c);
+        expect(target.c).to.equal(source.c);
+        expect(target.d).to.not.shallow.equal(source.d);
+        expect(target.d[0]).to.not.shallow.equal(source.d[0]);
+        expect(target.d).to.equal(source.d);
+
+        expect(target[sym1]).to.be.true();
+        expect(target[sym2]).to.not.exist();
+        expect(target[sym3]).to.be.true();
     });
 
     it('merges array over an object', () => {
@@ -1404,21 +1470,21 @@ describe('deepEqual()', () => {
         const ne = {};
         Object.defineProperty(ne, sym, { value: true });
 
-        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: true } }, { symbols: true })).to.be.true();
-        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: false } }, { symbols: true })).to.be.false();
-        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: true }, { symbols: true })).to.be.false();
-        expect(Hoek.deepEqual({ [sym]: undefined }, { [sym]: undefined }, { symbols: true })).to.be.true();
-        expect(Hoek.deepEqual({ [sym]: undefined }, {}, { symbols: true })).to.be.false();
-        expect(Hoek.deepEqual({}, { [sym]: undefined }, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: true } })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: { c: false } })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: { c: true } }, { [sym]: true })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: undefined }, { [sym]: undefined })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: undefined }, {})).to.be.false();
+        expect(Hoek.deepEqual({}, { [sym]: undefined })).to.be.false();
 
-        expect(Hoek.deepEqual({}, ne, { symbols: true })).to.be.true();
-        expect(Hoek.deepEqual(ne, {}, { symbols: true })).to.be.true();
-        expect(Hoek.deepEqual({ [sym]: true }, ne, { symbols: true })).to.be.false();
-        expect(Hoek.deepEqual(ne, { [sym]: true }, { symbols: true })).to.be.false();
-        expect(Hoek.deepEqual(ne, { [Symbol()]: undefined }, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual({}, ne)).to.be.true();
+        expect(Hoek.deepEqual(ne, {})).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: true }, ne)).to.be.false();
+        expect(Hoek.deepEqual(ne, { [sym]: true })).to.be.false();
+        expect(Hoek.deepEqual(ne, { [Symbol()]: undefined })).to.be.false();
 
-        expect(Hoek.deepEqual({ [sym]: true }, { [sym]: true }, { symbols: true })).to.be.true();
-        expect(Hoek.deepEqual({ [sym]: true }, {}, { symbols: true })).to.be.false();
+        expect(Hoek.deepEqual({ [sym]: true }, { [sym]: true })).to.be.true();
+        expect(Hoek.deepEqual({ [sym]: true }, {})).to.be.false();
         expect(Hoek.deepEqual({ [sym]: true }, {}, { symbols: false })).to.be.true();
     });
 
@@ -2086,11 +2152,11 @@ describe('contain()', () => {
         const sym = Symbol();
 
         expect(Hoek.contain([sym], sym)).to.be.true();
-        expect(Hoek.contain({ [sym]: 1 }, sym, { symbols: true })).to.be.true();
-        expect(Hoek.contain({ [sym]: 1, a: 2 }, { [sym]: 1 }, { symbols: true })).to.be.true();
+        expect(Hoek.contain({ [sym]: 1 }, sym)).to.be.true();
+        expect(Hoek.contain({ [sym]: 1, a: 2 }, { [sym]: 1 })).to.be.true();
 
         expect(Hoek.contain([sym], Symbol())).to.be.false();
-        expect(Hoek.contain({ [sym]: 1 }, Symbol(), { symbols: true })).to.be.false();
+        expect(Hoek.contain({ [sym]: 1 }, Symbol())).to.be.false();
     });
 });
 

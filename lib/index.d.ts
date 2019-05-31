@@ -29,7 +29,7 @@ declare namespace deepEqual {
         /**
         Compare symbol properties.
 
-        @default false
+        @default true
         */
         readonly symbols?: boolean;
     }
@@ -60,7 +60,7 @@ declare namespace clone {
         /**
         Include symbol properties.
 
-        @default false
+        @default true
         */
         readonly symbols?: boolean;
 
@@ -102,6 +102,13 @@ declare namespace merge {
         @default false
         */
         readonly mergeArrays?: boolean;
+
+        /**
+        Compare symbol properties.
+
+        @default true
+        */
+        readonly symbols?: boolean;
     }
 }
 
@@ -213,7 +220,7 @@ declare namespace contain {
         /**
         Include symbol properties.
 
-        @default false
+        @default true
         */
         readonly symbols?: boolean;
     }
