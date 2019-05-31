@@ -36,24 +36,35 @@ Hoek.clone('string');
 Hoek.clone(123);
 Hoek.clone({ a: 1 });
 Hoek.clone({ a: 1 }, { prototype: true, symbols: true });
+Hoek.clone({}, { shallow: [] });
+Hoek.clone(1, { shallow: [] });
+Hoek.clone(null, { shallow: [] });
+Hoek.clone({ a: 1, b: { c: [2] } }, { shallow: ['b'] });
+Hoek.clone({ a: 1, b: { c: [2] } }, { shallow: [['b']] });
+Hoek.clone({ a: 1, b: { c: [2] } }, { shallow: ['b'], prototype: true, symbols: true });
 
 expect.type<string>(Hoek.clone('string'));
 expect.type<object>(Hoek.clone({}));
 expect.type<Bar>(Hoek.clone({} as Bar));
+expect.type<Foo>(Hoek.clone({ a: 1 } as Foo, { shallow: ['b'] }));
 
 expect.error(Hoek.clone({}, { unknown: true }));
+expect.error(Hoek.clone({}, { shallow: [1] }));
+expect.error(Hoek.clone({}, { shallow: 1 }));
 
 
 // merge()
 
 Hoek.merge({ a: 1 } as Foo, { b: 'x' } as Bar);
 Hoek.merge({ a: 1 }, { a: null });
-Hoek.merge({ a: 1 }, { a: null }, true);
+Hoek.merge({ a: 1 }, { a: null }, { mergeArrays: true, nullOverride: true });
 
 expect.type<object>(Hoek.merge({}, {}));
 expect.type<Foo & Bar>(Hoek.merge({ a: 1 } as Foo, { b: 'x' } as Bar));
 
 expect.error(Hoek.merge(1, 2));
+expect.error(Hoek.merge({ a: 1 }, { a: null }, true));
+expect.error(Hoek.merge({ a: 1 }, { a: null }, { unknown: true }));
 
 
 // applyToDefaults()
@@ -64,62 +75,34 @@ Hoek.applyToDefaults({}, false);
 Hoek.applyToDefaults({}, null);
 Hoek.applyToDefaults({ a: 1 } as Foo, { b: 'x' });
 Hoek.applyToDefaults({ a: 1 } as object, { b: 'x' });
+Hoek.applyToDefaults({ a: 1 } as Foo, { b: 'x' }, { shallow: ['b'] });
+Hoek.applyToDefaults({ a: 1 } as object, { b: 'x' }, { shallow: ['c'] });
 
 expect.type<object>(Hoek.applyToDefaults({}, {}));
 expect.type<Foo>(Hoek.applyToDefaults({ a: 1 } as Foo, { b: 'x' }));
+expect.type<object>(Hoek.applyToDefaults({}, {}, { shallow: [] }));
 
 expect.error(Hoek.applyToDefaults({} as Foo, 0));
-
-
-// cloneWithShallow()
-
-Hoek.cloneWithShallow({}, []);
-Hoek.cloneWithShallow(1, []);
-Hoek.cloneWithShallow(null, []);
-Hoek.cloneWithShallow({ a: 1, b: { c: [2] } }, ['b']);
-Hoek.cloneWithShallow({ a: 1, b: { c: [2] } }, ['b'], { prototype: true, symbols: true });
-
-expect.type<Foo>(Hoek.cloneWithShallow({ a: 1 } as Foo, ['b']));
-
-expect.error(Hoek.cloneWithShallow());
-expect.error(Hoek.cloneWithShallow({}));
-expect.error(Hoek.cloneWithShallow({}, [1]));
-expect.error(Hoek.cloneWithShallow({ a: 1, b: { c: [2] } }, ['b'], { unknown: true }));
-
-
-// applyToDefaultsWithShallow()
-
-Hoek.applyToDefaultsWithShallow({}, {}, []);
-Hoek.applyToDefaultsWithShallow({}, true, []);
-Hoek.applyToDefaultsWithShallow({}, false, []);
-Hoek.applyToDefaultsWithShallow({}, null, []);
-Hoek.applyToDefaultsWithShallow({ a: 1 } as Foo, { b: 'x' }, ['b']);
-Hoek.applyToDefaultsWithShallow({ a: 1 } as object, { b: 'x' }, ['c']);
-
-expect.type<object>(Hoek.applyToDefaultsWithShallow({}, {}, []));
-
-expect.error(Hoek.applyToDefaultsWithShallow());
-expect.error(Hoek.applyToDefaultsWithShallow({} as Foo, 0, []));
-expect.error(Hoek.applyToDefaultsWithShallow({} as Foo, {}));
+expect.error(Hoek.applyToDefaults({} as Foo, 0, { shallow: [] }));
 
 
 // intersect()
 
 Hoek.intersect([1], [1, 2]);
 Hoek.intersect(['a'], ['b', 'b']);
-Hoek.intersect([1], [1, 2], true);
-Hoek.intersect([1], [1, 2], false);
+Hoek.intersect([1], [1, 2], { first: true });
+Hoek.intersect([1], [1, 2], { first: false });
 Hoek.intersect([1], null);
 Hoek.intersect(null, [1, 2]);
-Hoek.intersect([1], null, true);
-Hoek.intersect(null, [1, 2], true);
+Hoek.intersect([1], null, { first: true });
+Hoek.intersect(null, [1, 2], { first: true });
 Hoek.intersect(new Set([1]), new Set([1, 2]));
 Hoek.intersect([1], new Set([1, 2]));
 Hoek.intersect(new Set([1]), [1, 2]);
 
 expect.type<any[]>(Hoek.intersect([1], [1, 2]));
-expect.type<any[]>(Hoek.intersect([1], [1, 2], false));
-expect.type<any>(Hoek.intersect([1], [1, 2], true));
+expect.type<any[]>(Hoek.intersect([1], [1, 2], { first: false }));
+expect.type<any>(Hoek.intersect([1], [1, 2], { first: true }));
 
 expect.error(Hoek.intersect());
 expect.error(Hoek.intersect(1, 2));

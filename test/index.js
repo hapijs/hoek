@@ -577,7 +577,7 @@ describe('clone()', () => {
 
     it('clones subclassed Map', () => {
 
-        const MyMap = class extends Map {};
+        const MyMap = class extends Map { };
 
         const a = new MyMap([['a', 1]]);
         const b = Hoek.clone(a);
@@ -620,6 +620,78 @@ describe('clone()', () => {
         expect(b).to.equal(a);
         expect(b).to.not.shallow.equal(a);
         expect(b.get(nestedObj)).to.equal(a.get(nestedObj));
+    });
+
+    it('deep clones except for listed keys', () => {
+
+        const source = {
+            a: {
+                b: 5
+            },
+            c: {
+                d: 6
+            },
+            e() { }
+        };
+
+        const copy = Hoek.clone(source, { shallow: ['c', 'e'] });
+        expect(copy).to.equal(source);
+        expect(copy).to.not.shallow.equal(source);
+        expect(copy.a).to.not.shallow.equal(source.a);
+        expect(copy.c).to.shallow.equal(source.c);
+        expect(copy.e).to.shallow.equal(source.e);
+    });
+
+    it('returns immutable value', () => {
+
+        expect(Hoek.clone(5, { shallow: [] })).to.equal(5);
+    });
+
+    it('returns null value', () => {
+
+        expect(Hoek.clone(null, { shallow: [] })).to.equal(null);
+    });
+
+    it('returns undefined value', () => {
+
+        expect(Hoek.clone(undefined, { shallow: [] })).to.equal(undefined);
+    });
+
+    it('deep clones except for listed keys (including missing keys)', () => {
+
+        const source = {
+            a: {
+                b: 5
+            },
+            c: {
+                d: 6
+            }
+        };
+
+        const copy = Hoek.clone(source, { shallow: ['c', 'v'] });
+        expect(copy).to.equal(source);
+        expect(copy).to.not.shallow.equal(source);
+        expect(copy.a).to.not.shallow.equal(source.a);
+        expect(copy.b).to.equal(source.b);
+    });
+
+    it('supports symbols', () => {
+
+        const sym = Symbol();
+        const source = {
+            a: {
+                b: 5
+            },
+            [sym]: {
+                d: 6
+            }
+        };
+
+        const copy = Hoek.clone(source, { shallow: [[sym]], symbols: true });
+        expect(copy).to.equal(source);
+        expect(copy).to.not.shallow.equal(source);
+        expect(copy.a).to.not.shallow.equal(source.a);
+        expect(copy[sym]).to.equal(source[sym]);
     });
 });
 
@@ -868,17 +940,6 @@ describe('merge()', () => {
 
 describe('applyToDefaults()', () => {
 
-    const defaults = {
-        a: 1,
-        b: 2,
-        c: {
-            d: 3,
-            e: [5, 6]
-        },
-        f: 6,
-        g: 'test'
-    };
-
     it('throws when target is null', () => {
 
         expect(() => {
@@ -887,31 +948,99 @@ describe('applyToDefaults()', () => {
         }).to.throw('Invalid defaults value: must be an object');
     });
 
-    it('returns null if options is false', () => {
+    it('throws when options are invalid', () => {
+
+        expect(() => {
+
+            Hoek.applyToDefaults({}, {}, false);
+        }).to.throw('Invalid options: must be an object');
+
+        expect(() => {
+
+            Hoek.applyToDefaults({}, {}, 123);
+        }).to.throw('Invalid options: must be an object');
+    });
+
+    it('returns null if source is false', () => {
+
+        const defaults = {
+            a: 1,
+            b: 2,
+            c: {
+                d: 3,
+                e: [5, 6]
+            },
+            f: 6,
+            g: 'test'
+        };
 
         const result = Hoek.applyToDefaults(defaults, false);
         expect(result).to.equal(null);
     });
 
-    it('returns null if options is null', () => {
+    it('returns null if source is null', () => {
+
+        const defaults = {
+            a: 1,
+            b: 2,
+            c: {
+                d: 3,
+                e: [5, 6]
+            },
+            f: 6,
+            g: 'test'
+        };
 
         const result = Hoek.applyToDefaults(defaults, null);
         expect(result).to.equal(null);
     });
 
-    it('returns null if options is undefined', () => {
+    it('returns null if source is undefined', () => {
+
+        const defaults = {
+            a: 1,
+            b: 2,
+            c: {
+                d: 3,
+                e: [5, 6]
+            },
+            f: 6,
+            g: 'test'
+        };
 
         const result = Hoek.applyToDefaults(defaults, undefined);
         expect(result).to.equal(null);
     });
 
-    it('returns a copy of defaults if options is true', () => {
+    it('returns a copy of defaults if source is true', () => {
+
+        const defaults = {
+            a: 1,
+            b: 2,
+            c: {
+                d: 3,
+                e: [5, 6]
+            },
+            f: 6,
+            g: 'test'
+        };
 
         const result = Hoek.applyToDefaults(defaults, true);
         expect(result).to.equal(defaults);
     });
 
     it('applies object to defaults', () => {
+
+        const defaults = {
+            a: 1,
+            b: 2,
+            c: {
+                d: 3,
+                e: [5, 6]
+            },
+            f: 6,
+            g: 'test'
+        };
 
         const obj = {
             a: null,
@@ -934,6 +1063,17 @@ describe('applyToDefaults()', () => {
 
     it('applies object to defaults with null', () => {
 
+        const defaults = {
+            a: 1,
+            b: 2,
+            c: {
+                d: 3,
+                e: [5, 6]
+            },
+            f: 6,
+            g: 'test'
+        };
+
         const obj = {
             a: null,
             c: {
@@ -945,93 +1085,15 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const result = Hoek.applyToDefaults(defaults, obj, true);
+        const result = Hoek.applyToDefaults(defaults, obj, { nullOverride: true });
         expect(result.c.e).to.equal([4]);
         expect(result.a).to.equal(null);
         expect(result.b).to.equal(2);
         expect(result.f).to.equal(0);
         expect(result.g).to.equal({ h: 5 });
     });
-});
 
-describe('cloneWithShallow()', () => {
-
-    it('deep clones except for listed keys', () => {
-
-        const source = {
-            a: {
-                b: 5
-            },
-            c: {
-                d: 6
-            },
-            e() { }
-        };
-
-        const copy = Hoek.cloneWithShallow(source, ['c', 'e']);
-        expect(copy).to.equal(source);
-        expect(copy).to.not.shallow.equal(source);
-        expect(copy.a).to.not.shallow.equal(source.a);
-        expect(copy.c).to.shallow.equal(source.c);
-        expect(copy.e).to.shallow.equal(source.e);
-    });
-
-    it('returns immutable value', () => {
-
-        expect(Hoek.cloneWithShallow(5)).to.equal(5);
-    });
-
-    it('returns null value', () => {
-
-        expect(Hoek.cloneWithShallow(null)).to.equal(null);
-    });
-
-    it('returns undefined value', () => {
-
-        expect(Hoek.cloneWithShallow(undefined)).to.equal(undefined);
-    });
-
-    it('deep clones except for listed keys (including missing keys)', () => {
-
-        const source = {
-            a: {
-                b: 5
-            },
-            c: {
-                d: 6
-            }
-        };
-
-        const copy = Hoek.cloneWithShallow(source, ['c', 'v']);
-        expect(copy).to.equal(source);
-        expect(copy).to.not.shallow.equal(source);
-        expect(copy.a).to.not.shallow.equal(source.a);
-        expect(copy.b).to.equal(source.b);
-    });
-
-    it('supports symbols', () => {
-
-        const sym = Symbol();
-        const source = {
-            a: {
-                b: 5
-            },
-            [sym]: {
-                d: 6
-            }
-        };
-
-        const copy = Hoek.cloneWithShallow(source, [[sym]], { symbols: true });
-        expect(copy).to.equal(source);
-        expect(copy).to.not.shallow.equal(source);
-        expect(copy.a).to.not.shallow.equal(source.a);
-        expect(copy[sym]).to.equal(source[sym]);
-    });
-});
-
-describe('applyToDefaultsWithShallow()', () => {
-
-    it('shallow copies the listed keys from options without merging', () => {
+    it('shallow copies the listed keys from source without merging', () => {
 
         const defaults = {
             a: {
@@ -1044,7 +1106,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const options = {
+        const source = {
             a: {
                 b: 4
             },
@@ -1054,11 +1116,11 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['a']);
+        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['a'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { d: 6, g: 1, f: 7 } });
-        expect(merged.a).to.equal(options.a);
+        expect(merged.a).to.equal(source.a);
         expect(merged.a).to.not.equal(defaults.a);
-        expect(merged.c).to.not.equal(options.c);
+        expect(merged.c).to.not.equal(source.c);
         expect(merged.c).to.not.equal(defaults.c);
     });
 
@@ -1074,7 +1136,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const options = {
+        const source = {
             a: {
                 b: 4
             },
@@ -1086,9 +1148,9 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
+        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { d: 6, g: { h: 8 } } });
-        expect(merged.c.g).to.equal(options.c.g);
+        expect(merged.c.g).to.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (missing)', () => {
@@ -1099,7 +1161,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const options = {
+        const source = {
             a: {
                 b: 4
             },
@@ -1110,9 +1172,9 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
+        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
-        expect(merged.c.g).to.equal(options.c.g);
+        expect(merged.c.g).to.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (override)', () => {
@@ -1128,7 +1190,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const options = {
+        const source = {
             a: {
                 b: 4
             },
@@ -1139,9 +1201,9 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g']);
+        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
-        expect(merged.c.g).to.equal(options.c.g);
+        expect(merged.c.g).to.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (deeper)', () => {
@@ -1152,7 +1214,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const options = {
+        const source = {
             a: {
                 b: 4
             },
@@ -1165,9 +1227,9 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['c.g.r']);
+        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g.r'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
-        expect(merged.c.g.r).to.equal(options.c.g.r);
+        expect(merged.c.g.r).to.equal(source.c.g.r);
     });
 
     it('shallow copies the nested keys (not present)', () => {
@@ -1178,7 +1240,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const options = {
+        const source = {
             a: {
                 b: 4
             },
@@ -1191,7 +1253,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, options, ['x.y']);
+        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['x.y'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
     });
 
@@ -1203,7 +1265,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, {}, ['a']);
+        const merged = Hoek.applyToDefaults(defaults, {}, { shallow: ['a'] });
         expect(merged.a).to.equal(defaults.a);
     });
 
@@ -1215,7 +1277,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, true, ['a']);
+        const merged = Hoek.applyToDefaults(defaults, true, { shallow: ['a'] });
         expect(merged.a).to.equal(defaults.a);
     });
 
@@ -1227,7 +1289,7 @@ describe('applyToDefaultsWithShallow()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaultsWithShallow(defaults, false, ['a']);
+        const merged = Hoek.applyToDefaults(defaults, false, { shallow: ['a'] });
         expect(merged).to.equal(null);
     });
 
@@ -1235,7 +1297,7 @@ describe('applyToDefaultsWithShallow()', () => {
 
         expect(() => {
 
-            Hoek.applyToDefaultsWithShallow(null, {}, ['a']);
+            Hoek.applyToDefaults(null, {}, { shallow: ['a'] });
         }).to.throw('Invalid defaults value: must be an object');
     });
 
@@ -1243,31 +1305,23 @@ describe('applyToDefaultsWithShallow()', () => {
 
         expect(() => {
 
-            Hoek.applyToDefaultsWithShallow('abc', {}, ['a']);
+            Hoek.applyToDefaults('abc', {}, { shallow: ['a'] });
         }).to.throw('Invalid defaults value: must be an object');
     });
 
-    it('throws on invalid options', () => {
+    it('throws on invalid source', () => {
 
         expect(() => {
 
-            Hoek.applyToDefaultsWithShallow({}, 'abc', ['a']);
-        }).to.throw('Invalid options value: must be true, falsy or an object');
+            Hoek.applyToDefaults({}, 'abc', { shallow: ['a'] });
+        }).to.throw('Invalid source value: must be true, falsy or an object');
     });
 
     it('throws on missing keys', () => {
 
         expect(() => {
 
-            Hoek.applyToDefaultsWithShallow({}, true);
-        }).to.throw('Invalid keys');
-    });
-
-    it('throws on invalid keys', () => {
-
-        expect(() => {
-
-            Hoek.applyToDefaultsWithShallow({}, true, 'a');
+            Hoek.applyToDefaults({}, true, { shallow: 123 });
         }).to.throw('Invalid keys');
     });
 });
@@ -1466,7 +1520,7 @@ describe('deepEqual()', () => {
 
     it('compares promises', () => {
 
-        const a = new Promise(() => {});
+        const a = new Promise(() => { });
 
         expect(Hoek.deepEqual(a, a)).to.be.true();
         expect(Hoek.deepEqual(a, new Promise(() => { }))).to.be.false();
@@ -1842,7 +1896,7 @@ describe('intersect()', () => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
-        const common = Hoek.intersect(array1, array2, true);
+        const common = Hoek.intersect(array1, array2, { first: true });
         expect(common).to.equal(5);
     });
 
@@ -1850,7 +1904,7 @@ describe('intersect()', () => {
 
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [6, 7];
-        const common = Hoek.intersect(array1, array2, true);
+        const common = Hoek.intersect(array1, array2, { first: true });
         expect(common).to.equal(null);
     });
 
@@ -1858,7 +1912,7 @@ describe('intersect()', () => {
 
         expect(Hoek.intersect([1], null).length).to.equal(0);
         expect(Hoek.intersect(null, [1]).length).to.equal(0);
-        expect(Hoek.intersect(null, [1], true)).to.be.null();
+        expect(Hoek.intersect(null, [1], { first: true })).to.be.null();
     });
 
     it('returns the common objects of object and array', () => {

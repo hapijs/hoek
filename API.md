@@ -4,12 +4,10 @@
 
 * [Object](#object "Object")
   * [clone](#cloneobj-options "clone")
-  * [cloneWithShallow](#clonewithshallowobj-keys-options "cloneWithShallow")
-  * [merge](#mergetarget-source-isnulloverride-ismergearrays "merge")
-  * [applyToDefaults](#applytodefaultsdefaults-options-isnulloverride "applyToDefaults")
-  * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
+  * [merge](#mergetarget-source-options "merge")
+  * [applyToDefaults](#applytodefaultsdefaults--source-options "applyToDefaults")
   * [deepEqual](#deepequalb-a-options "deepEqual")
-  * [intersect](#intersectarray1-array2 "intersect")
+  * [intersect](#intersectarray1-array2-options "intersect")
   * [contain](#containref-values-options "contain")
   * [flatten](#flattenarray-target "flatten")
   * [reach](#reachobj-chain-options "reach")
@@ -45,10 +43,11 @@ objects, as well as non-enumerable properties) where:
 - `obj` - the object to be cloned.
 - `options` - optional settings:
     - `symbols` - clone symbol properties. Defaults to `false`.
+    - `shallow` - an array of dot-separated or array-based key paths to shallow copy values in `obj`.
 
 ```javascript
 
-var nestedObj = {
+const nestedObj = {
         w: /^something$/ig,
         x: {
             a: [1, 2, 3],
@@ -59,7 +58,7 @@ var nestedObj = {
         z: new Date()
     };
 
-var copy = Hoek.clone(nestedObj);
+const copy = Hoek.clone(nestedObj);
 
 copy.x.b = 100;
 
@@ -68,17 +67,11 @@ console.log(nestedObj.x.b); // results in 123456
 console.log(copy.x.b);      // results in 100
 ```
 
-#### cloneWithShallow(obj, keys, [options])
-
-Clones an object or array excluding some keys which are shallow copied where:
-- `obj` - the object to be cloned.
-- `keys` - an array of key names to shallow copy.
-- `options` - optional settings:
-    - `symbols` - clone symbol properties. Defaults to `false`.
+Clones an object or array excluding some keys which are shallow copied:
 
 ```javascript
 
-var nestedObj = {
+const nestedObj = {
         w: /^something$/ig,
         x: {
             a: [1, 2, 3],
@@ -89,7 +82,7 @@ var nestedObj = {
         z: new Date()
     };
 
-var copy = Hoek.cloneWithShallow(nestedObj, ['x']);
+const copy = Hoek.clone(nestedObj, { shallow: ['x'] });
 
 copy.x.b = 100;
 
@@ -98,61 +91,71 @@ console.log(nestedObj.x.b); // results in 100
 console.log(copy.x.b);      // results in 100
 ```
 
-#### merge(target, source, isNullOverride, isMergeArrays)
-isNullOverride, isMergeArrays default to true
+#### merge(target, source, [options])
 
-Merge all the properties of source into target, source wins in conflict, and by default null and undefined from source are applied.
+Merge all the properties of source into target where:
+- `target` - the object onto which the properties of `source` are copied to.
+- `source` - the object copied onto `target`.
+- `options` - optional settings:
+    - `nullOverride` - if `true`, a `null` value in the source overrides any existing value in the `defaults`.
+      If `false`, `null` values in the `source` are ignored. Defaults to `true`.
+    - `mergeArrays` - if `true`, array values from `source` are appended to existing array values in `target`.
+      Defaults to `true`.
+
+Note that source wins in conflict, and by default null and undefined from source are applied.
 Merge is destructive where the target is modified. For non destructive merge, use `applyToDefaults`.
 
 
 ```javascript
 
-var target = {a: 1, b : 2};
-var source = {a: 0, c: 5};
-var source2 = {a: null, c: 5};
+const target = {a: 1, b : 2};
+const source = {a: 0, c: 5};
+const source2 = {a: null, c: 5};
 
 Hoek.merge(target, source);         // results in {a: 0, b: 2, c: 5}
 Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
-Hoek.merge(target, source2, false); // results in {a: 1, b: 2, c: 5}
+Hoek.merge(target, source2, { nullOverride: false} ); // results in {a: 1, b: 2, c: 5}
 
-var targetArray = [1, 2, 3];
-var sourceArray = [4, 5];
+const targetArray = [1, 2, 3];
+const sourceArray = [4, 5];
 
 Hoek.merge(targetArray, sourceArray);              // results in [1, 2, 3, 4, 5]
-Hoek.merge(targetArray, sourceArray, true, false); // results in [4, 5]
+Hoek.merge(targetArray, sourceArray, { mergeArrays: false }); // results in [4, 5]
 ```
 
-#### applyToDefaults(defaults, options, isNullOverride)
-isNullOverride defaults to false
+#### applyToDefaults(defaults, source, [options])
 
-Apply options to a copy of the defaults
+Apply source to a copy of the defaults where:
+- `defaults` - the default object to clone and then apply `source` onto.
+- `source` - the object applied to the `defaults`.
+- `options` - optional settings:
+    - `nullOverride` - if `true`, a `null` value in the source overrides any existing value in the `defaults`.
+      If `false`, `null` values in the `source` are ignored. Defaults to `false`.
+    - `shallow` - an array of dot-separated or array-based key paths to shallow copy values in `source`.
 
 ```javascript
 
-var defaults = { host: "localhost", port: 8000 };
-var options = { port: 8080 };
+const defaults = { host: "localhost", port: 8000 };
+const source = { port: 8080 };
 
-var config = Hoek.applyToDefaults(defaults, options); // results in { host: "localhost", port: 8080 }
+const config = Hoek.applyToDefaults(defaults, source); // results in { host: "localhost", port: 8080 }
 ```
 
-Apply options with a null value to a copy of the defaults
+Apply source with a null value to a copy of the defaults
 
 ```javascript
 
-var defaults = { host: "localhost", port: 8000 };
-var options = { host: null, port: 8080 };
+const defaults = { host: "localhost", port: 8000 };
+const source = { host: null, port: 8080 };
 
-var config = Hoek.applyToDefaults(defaults, options, true); // results in { host: null, port: 8080 }
+const config = Hoek.applyToDefaults(defaults, source, true); // results in { host: null, port: 8080 }
 ```
 
-#### applyToDefaultsWithShallow(defaults, options, keys)
-keys is an array of dot-separated, or array-based, key paths to shallow copy
-
-Apply options to a copy of the defaults. Keys specified in the last parameter are shallow copied from options instead of merged.
+Apply source to a copy of the defaults where the shallow keys specified in the last parameter are shallow copied from source instead of merged
 
 ```javascript
 
-var defaults = {
+const defaults = {
     db: {
         server: {
             host: "localhost",
@@ -162,10 +165,10 @@ var defaults = {
     }
 };
 
-var options = { server: { port: 8080 } };
+const source = { server: { port: 8080 } };
 
-var config = Hoek.applyToDefaultsWithShallow(defaults, options, ['db.server']); // results in { db: { server: { port: 8080 }, name: 'example' } }
-var config = Hoek.applyToDefaultsWithShallow(defaults, options, [['db', 'server']]); // results in { db: { server: { port: 8080 }, name: 'example' } }
+const config = Hoek.applyToDefaults(defaults, source, { shallow: ['db.server'] });        // results in { db: { server: { port: 8080 }, name: 'example' } }
+const config = Hoek.applyToDefaults(defaults, source, { shallow: [['db', 'server']] });   // results in { db: { server: { port: 8080 }, name: 'example' } }
 ```
 
 #### deepEqual(b, a, [options])
@@ -179,16 +182,20 @@ Hoek.deepEqual(Object.create(null), {}, { prototype: false }); //results in true
 Hoek.deepEqual(Object.create(null), {}); //results in false
 ```
 
-#### intersect(array1, array2)
+#### intersect(array1, array2, [options])
 
-Find the common unique items in two arrays
+Find the common unique items betwee two arrays where:
+- `array1` - the first array.
+- `array2` - the second array.
+- `options` - optional settings:
+    - `first` - if `true`, return only the first intersecting item. Defaults to `false`.
 
 ```javascript
 
-var array1 = [1, 2, 3];
-var array2 = [1, 4, 5];
+const array1 = [1, 2, 3];
+const array2 = [1, 4, 5];
 
-var newArray = Hoek.intersect(array1, array2); // results in [1]
+const newArray = Hoek.intersect(array1, array2); // results in [1]
 ```
 
 #### contain(ref, values, [options])
@@ -219,9 +226,9 @@ Flatten an array
 
 ```javascript
 
-var array = [1, [2, 3]];
+const array = [1, [2, 3]];
 
-var flattenedArray = Hoek.flatten(array); // results in [1, 2, 3]
+const flattenedArray = Hoek.flatten(array); // results in [1, 2, 3]
 
 array = [1, [2, 3]];
 target = [4, [5]];
@@ -248,13 +255,13 @@ If chain is `null`, `undefined` or `false`, the object itself will be returned.
 
 ```javascript
 
-var chain = 'a.b.c';
-var obj = {a : {b : { c : 1}}};
+const chain = 'a.b.c';
+const obj = {a : {b : { c : 1}}};
 
 Hoek.reach(obj, chain); // returns 1
 
-var chain = ['a', 'b', -1];
-var obj = {a : {b : [2,3,6]}};
+const chain = ['a', 'b', -1];
+const obj = {a : {b : [2,3,6]}};
 
 Hoek.reach(obj, chain); // returns 6
 ```
@@ -270,8 +277,8 @@ Replaces string parameters (`{name}`) with their corresponding object key values
 
 ```javascript
 
-var chain = 'a.b.c';
-var obj = {a : {b : { c : 1}}};
+const chain = 'a.b.c';
+const obj = {a : {b : { c : 1}}};
 
 Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
 ```
@@ -283,7 +290,7 @@ and reported back in the form of the returned string. Used as a shortcut for dis
 error message) without the need to worry about invalid conversion.
 
 ```javascript
-var a = {};
+const a = {};
 a.b = a;
 Hoek.stringify(a);		// Returns '[Cannot display object: Converting circular structure to JSON]'
 ```
@@ -313,8 +320,8 @@ internals.htmlEscaped = {
 
 ```javascript
 
-var string = '<html> hey </html>';
-var escapedString = Hoek.escapeHtml(string); // returns &lt;html&gt; hey &lt;/html&gt;
+const string = '<html> hey </html>';
+const escapedString = Hoek.escapeHtml(string); // returns &lt;html&gt; hey &lt;/html&gt;
 ```
 
 #### escapeHeaderAttribute(attribute)
@@ -323,7 +330,7 @@ Escape attribute value for use in HTTP header
 
 ```javascript
 
-var a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  //returns I said \"go w\\o me\"
+const a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  //returns I said \"go w\\o me\"
 ```
 
 #### escapeJson(string)
@@ -332,8 +339,8 @@ Unicode escapes the characters `<`, `>`, and `&` to prevent mime-sniffing older 
 
 ```javascript
 
-var lineSeparator = String.fromCharCode(0x2028);
-var a = Hoek.escapeJson('I said <script>confirm(&).' + lineSeparator);  //returns I said \\u003cscript\\u003econfirm(\\u0026).\\u2028
+const lineSeparator = String.fromCharCode(0x2028);
+const a = Hoek.escapeJson('I said <script>confirm(&).' + lineSeparator);  //returns I said \\u003cscript\\u003econfirm(\\u0026).\\u2028
 ```
 
 #### escapeRegex(string)
@@ -342,7 +349,7 @@ Escape string for Regex construction
 
 ```javascript
 
-var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4\^f\$s\.4\*5\+\-_\?%\=#\!\:@\|~\\\/`"\(>\)\[<\]d\{\}s\,
+const a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4\^f\$s\.4\*5\+\-_\?%\=#\!\:@\|~\\\/`"\(>\)\[<\]d\{\}s\,
 ```
 
 ### Errors
@@ -351,7 +358,7 @@ var a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4
 
 ```javascript
 
-var a = 1, b = 2;
+const a = 1, b = 2;
 
 Hoek.assert(a === b, 'a should equal b');  // Throws 'a should equal b'
 ```
@@ -360,7 +367,7 @@ Note that you may also pass an already created Error object as the second parame
 
 ```javascript
 
-var a = 1, b = 2;
+const a = 1, b = 2;
 
 Hoek.assert(a === b, new Error('a should equal b')); // Throws the given error object
 ```
@@ -373,11 +380,11 @@ Returns a new function that can be run multiple times, but makes sure `fn` is on
 
 ```javascript
 
-var myFn = function () {
+const myFn = function () {
     console.log('Ran myFn');
 };
 
-var onceFn = Hoek.once(myFn);
+const onceFn = Hoek.once(myFn);
 onceFn(); // results in "Ran myFn"
 onceFn(); // results in undefined
 ```
@@ -394,7 +401,7 @@ A simple no-op function. It does nothing at all.
 Returns a randomly generated file name at the specified `path`. The result is a fully resolved path to a file.
 
 ```javascript
-var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
+const result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
 ```
 
 ### Promises

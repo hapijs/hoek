@@ -40,7 +40,7 @@ declare namespace deepEqual {
 Clone any value, object, or array.
 
 @param obj - The value being cloned.
-@param options - The second number to add.
+@param options - Optional settings.
 
 @returns A deep clone of `obj`.
 */
@@ -63,6 +63,13 @@ declare namespace clone {
         @default false
         */
         readonly symbols?: boolean;
+
+        /**
+        Shallow clone the specified keys.
+
+        @default undefined
+        */
+        readonly shallow?: string[] | string[][];
     }
 }
 
@@ -72,47 +79,63 @@ Merge all the properties of source into target.
 
 @param target - The object being modified.
 @param source - The object used to copy properties from.
-@param isNullOverride - When true, null value from `source` overrides existing value in `target`. Defaults to true.
-@param isMergeArrays - When true, array value from `source` is merged with the existing value in `target`. Defaults to true.
+@param options - Optional settings.
 
 @returns The `target` object.
 */
-export function merge<T1 extends object, T2 extends object>(target: T1, source: T2, isNullOverride?: boolean, isMergeArrays?: boolean): T1 & T2;
+export function merge<T1 extends object, T2 extends object>(target: T1, source: T2, options?: merge.Options): T1 & T2;
+
+declare namespace merge {
+
+    interface Options {
+
+        /**
+        When true, null value from `source` overrides existing value in `target`.
+
+        @default true
+        */
+        readonly nullOverride?: boolean;
+
+        /**
+        When true, array value from `source` is merged with the existing value in `target`.
+
+        @default false
+        */
+        readonly mergeArrays?: boolean;
+    }
+}
 
 
 /**
-Apply options to a copy of the defaults.
+Apply source to a copy of the defaults.
 
 @param defaults - An object with the default values to use of `options` does not contain the same keys.
-@param options - The options used to override the `defaults`.
-@param isNullOverride - When true, null value from `options` overrides existing value in `defaults`. Defaults to false.
+@param source - The source used to override the `defaults`.
+@param options - Optional settings.
 
-@returns A copy of `defaults` with `options` keys overriding any conflicts.
+@returns A copy of `defaults` with `source` keys overriding any conflicts.
 */
-export function applyToDefaults<T extends object>(defaults: Partial<T>, options: Partial<T> | boolean | null, isNullOverride?: boolean): Partial<T>;
+export function applyToDefaults<T extends object>(defaults: Partial<T>, source: Partial<T> | boolean | null, options?: applyToDefaults.Options): Partial<T>;
 
+declare namespace applyToDefaults {
 
-/**
-Clone an object or array with specific keys shallowly cloned.
+    interface Options {
 
-@param obj - The object being cloned.
-@param keys - An array of string keys indicating which `obj` properties to shallow copy instead of deep clone. Use dot-notation to indicate nested keys (e.g. "a.b").
+        /**
+        When true, null value from `source` overrides existing value in `target`.
 
-@returns A deep clone of `obj` with the requested `keys` shallowly cloned.
-*/
-export function cloneWithShallow<T>(obj: T, keys: string[], options?: clone.Options): T;
+        @default true
+        */
+        readonly nullOverride?: boolean;
 
+        /**
+        Shallow clone the specified keys.
 
-/**
-Apply options to a copy of the defaults with specific keys shallowly cloned.
-
-@param defaults - An object with the default values to use of `options` does not contain the same keys.
-@param options - The options used to override the `defaults`.
-@param keys - An array of string keys indicating which `options` properties to shallow copy instead of deep clone. Use dot-notation to indicate nested keys (e.g. "a.b").
-
-@returns A copy of `defaults` with `options` keys overriding any conflicts.
-*/
-export function applyToDefaultsWithShallow<T extends object>(defaults: Partial<T>, options: Partial<T> | boolean | null, keys: string[]): Partial<T>;
+        @default undefined
+        */
+        readonly shallow?: string[] | string[][];
+    }
+}
 
 
 /**
@@ -120,16 +143,26 @@ Find the common unique items in two arrays.
 
 @param array1 - The first array to compare.
 @param array2 - The second array to compare.
-@param justFirst - If true, return the first overlapping value. Defaults to false.
+@param options - Optional settings.
 
 @return - An array of the common items. If `justFirst` is true, returns the first common item.
 */
-export function intersect<T1, T2>(array1: intersect.Array<T1>, array2: intersect.Array<T2>, justFirst?: false): Array<T1 | T2>;
-export function intersect<T1, T2>(array1: intersect.Array<T1>, array2: intersect.Array<T2>, justFirst: true): T1 | T2;
+export function intersect<T1, T2>(array1: intersect.Array<T1>, array2: intersect.Array<T2>, options?: intersect.Options): Array<T1 | T2>;
+export function intersect<T1, T2>(array1: intersect.Array<T1>, array2: intersect.Array<T2>, options?: intersect.Options): T1 | T2;
 
 declare namespace intersect {
 
     type Array<T> = ArrayLike<T> | Set<T> | null;
+
+    interface Options {
+
+        /**
+        When true, return the first overlapping value.
+
+        @default false
+        */
+        readonly first?: boolean;
+    }
 }
 
 
