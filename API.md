@@ -5,7 +5,7 @@
 * [Object](#object "Object")
   * [clone](#cloneobj-options "clone")
   * [merge](#mergetarget-source-options "merge")
-  * [applyToDefaults](#applytodefaultsdefaults--source-options "applyToDefaults")
+  * [applyToDefaults](#applytodefaultsdefaults-source-options "applyToDefaults")
   * [deepEqual](#deepequalb-a-options "deepEqual")
   * [intersect](#intersectarray1-array2-options "intersect")
   * [contain](#containref-values-options "contain")
