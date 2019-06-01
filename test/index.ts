@@ -39,6 +39,7 @@ Hoek.clone({ a: 1 }, { prototype: true, symbols: true });
 Hoek.clone({}, { shallow: [] });
 Hoek.clone(1, { shallow: [] });
 Hoek.clone(null, { shallow: [] });
+Hoek.clone({ a: 1, b: { c: [2] } }, { shallow: true });
 Hoek.clone({ a: 1, b: { c: [2] } }, { shallow: ['b'] });
 Hoek.clone({ a: 1, b: { c: [2] } }, { shallow: [['b']] });
 Hoek.clone({ a: 1, b: { c: [2] } }, { shallow: ['b'], prototype: true, symbols: true });

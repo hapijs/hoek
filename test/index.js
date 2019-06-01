@@ -145,6 +145,18 @@ describe('clone()', () => {
         }
     });
 
+    it('shallow clones set', () => {
+
+        const set = new Set();
+        set.add('a');
+        set.add('b');
+        set.add(set);
+
+        const clone = Hoek.clone(set, { shallow: true });
+
+        expect(clone).to.equal(set);
+        expect(clone.has(set)).to.be.true();
+    });
 
     it('clones deeply nested map with circular references', () => {
 
@@ -169,6 +181,19 @@ describe('clone()', () => {
         for (const key of b.x.y.a.keys()) {
             expect(key).to.equal(aIter.next().value);
         }
+    });
+
+    it('shallow clones map', () => {
+
+        const map = new Map();
+        map.set('a', { x : 1 });
+        map.set(map, map);
+
+        const clone = Hoek.clone(map, { shallow: true });
+
+        expect(clone).to.equal(map);
+        expect(clone.has(map)).to.be.true();
+        expect(clone.get('a')).to.shallow.equal(map.get('a'));
     });
 
     it('clones arrays', () => {
@@ -712,6 +737,37 @@ describe('clone()', () => {
         expect(copy).to.not.shallow.equal(source);
         expect(copy.a).to.not.shallow.equal(source.a);
         expect(copy[sym]).to.equal(source[sym]);
+    });
+
+    it('shallow clones an entire object', () => {
+
+        const obj = {
+            a: {
+                b: 1
+            }
+        };
+
+        obj.x = obj;
+
+        const value = 1;
+        let execCount = 0;
+
+        Object.defineProperty(obj, 'test', {
+            enumerable: true,
+            configurable: true,
+            get: function () {
+
+                ++execCount;
+                return value;
+            }
+        });
+
+        const copy = Hoek.clone(obj, { shallow: true });
+        expect(execCount).to.equal(0);
+        expect(copy.test).to.equal(1);
+        expect(execCount).to.equal(1);
+        expect(copy.a).to.shallow.equal(obj.a);
+        expect(copy.x).to.shallow.equal(obj);
     });
 });
 

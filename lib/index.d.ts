@@ -69,7 +69,7 @@ declare namespace clone {
 
         @default undefined
         */
-        readonly shallow?: string[] | string[][];
+        readonly shallow?: string[] | string[][] | boolean;
     }
 }
 

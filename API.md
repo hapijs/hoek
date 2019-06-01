@@ -43,7 +43,9 @@ objects, as well as non-enumerable properties) where:
 - `obj` - the object to be cloned.
 - `options` - optional settings:
     - `symbols` - clone symbol properties. Defaults to `true`.
-    - `shallow` - an array of dot-separated or array-based key paths to shallow copy values in `obj`.
+    - `shallow` - one of:
+        - an array of object key strings (dot-separated or array-based key paths) to shallow copy from `obj` instead of deep.
+        - `true` to shallow copy all object properties. Used to shallow copy an object with non-enumerable properties and prototype;
 
 ```javascript
 
