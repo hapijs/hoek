@@ -2378,6 +2378,27 @@ describe('reach()', () => {
         expect(Hoek.reach(['abc'], [0])).to.equal('abc');
         expect(Hoek.reach(['abc'], ['0'])).to.equal('abc');
     });
+
+    it('reaches sets and maps', () => {
+
+        const value = {
+            a: {
+                b: new Set([
+                    { x: 1 },
+                    { x: 2 },
+                    {
+                        y: new Map([
+                            ['v', 4],
+                            ['w', 5]
+                        ])
+                    }
+                ])
+            }
+        };
+
+        expect(Hoek.reach(value, 'a.b.2.y.w')).to.not.exist();
+        expect(Hoek.reach(value, 'a.b.2.y.w', { iterables: true })).to.equal(5);
+    });
 });
 
 describe('reachTemplate()', () => {

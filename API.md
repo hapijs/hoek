@@ -151,7 +151,7 @@ Apply source with a null value to a copy of the defaults
 const defaults = { host: "localhost", port: 8000 };
 const source = { host: null, port: 8080 };
 
-const config = Hoek.applyToDefaults(defaults, source, true); // results in { host: null, port: 8080 }
+const config = Hoek.applyToDefaults(defaults, source, { nullOverride: true }); // results in { host: null, port: 8080 }
 ```
 
 Apply source to a copy of the defaults where the shallow keys specified in the last parameter are shallow copied from source instead of merged
@@ -248,7 +248,12 @@ Converts an object key chain string or array to reference
     - `separator` - string to split chain path on, defaults to '.'
     - `default` - value to return if the path or value is not present, default is `undefined`
     - `strict` - if `true`, will throw an error on missing member, default is `false`
-    - `functions` - if `true` allow traversing functions for properties. `false` will throw an error if a function is part of the chain.
+    - `functions` - if `true`, allow traversing functions for properties. `false` will throw an
+      error if a function is part of the chain. Defaults to `true.
+    - `iterables` - if `true, allows traversing Set and Map objects. `false` will result in
+      `undefined` return value is the chain contains any Set or Map objects. Note that enabling
+      `iterables` can impact performance by up to 10% for all calls regardless of the presence of
+      Set or Map objects. Defaults to `false`.
 
 A chain can be a string that will be split into key names using `separator`,
 or an array containing each individual key name.

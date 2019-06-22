@@ -276,9 +276,16 @@ declare namespace reach {
         /**
         If true, allows traversing functions for properties. false will throw an error if a function is part of the chain.
 
-        @default false
+        @default true
         */
         readonly functions?: boolean;
+
+        /**
+        If true, allows traversing Set and Map objects for properties. false will return undefined regardless of the Set or Map passed.
+
+        @default false
+        */
+        readonly iterables?: boolean;
     }
 }
 

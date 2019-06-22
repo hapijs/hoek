@@ -164,7 +164,7 @@ Hoek.reach(['abc'], ['0']);
 Hoek.reach(['abc'], '0');
 Hoek.reach({ a: { b: { c: 3 } } }, 'a.b.c');
 Hoek.reach({ a: { b: { c: 3 } } }, ['a', 'b', 'c']);
-Hoek.reach({ a: { b: { c: 3 } } }, 'a/b/c', { separator: '/', default: 4, strict: true, functions: true });
+Hoek.reach({ a: { b: { c: 3 } } }, 'a/b/c', { separator: '/', default: 4, strict: true, functions: true, iterables: true });
 
 expect.type<any>(Hoek.reach(['abc'], [0]));
 expect.type<any>(Hoek.reach({ a: { b: { c: 3 } } }, 'a.b.c'));
