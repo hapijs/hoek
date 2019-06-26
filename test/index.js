@@ -1,6 +1,5 @@
 'use strict';
 
-const Path = require('path');
 const Util = require('util');
 
 const Code = require('@hapi/code');
@@ -2620,51 +2619,6 @@ describe('ignore()', () => {
 
         expect(Hoek.ignore).to.exist();
         expect(typeof Hoek.ignore).to.equal('function');
-    });
-});
-
-describe('uniqueFilename()', () => {
-
-    it('generates a random file path', () => {
-
-        const result = Hoek.uniqueFilename('./test/modules');
-
-        expect(result).to.exist();
-        expect(result).to.be.a.string();
-        expect(result).to.contain(`test${Path.sep}modules`);
-    });
-
-    it('is random enough to use in fast loops', () => {
-
-        const results = [];
-
-        for (let i = 0; i < 10; ++i) {
-            results[i] = Hoek.uniqueFilename('./test/modules');
-        }
-
-        const filter = results.filter((item, index, array) => {
-
-            return array.indexOf(item) === index;
-        });
-
-        expect(filter.length).to.equal(10);
-        expect(results.length).to.equal(10);
-    });
-
-    it('combines the random elements with a supplied character', () => {
-
-        const result = Hoek.uniqueFilename('./test', 'txt');
-
-        expect(result).to.contain(`test${Path.sep}`);
-        expect(result).to.contain('.txt');
-    });
-
-    it('accepts extensions with a "." in it', () => {
-
-        const result = Hoek.uniqueFilename('./test', '.mp3');
-
-        expect(result).to.contain(`test${Path.sep}`);
-        expect(result).to.contain('.mp3');
     });
 });
 

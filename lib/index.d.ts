@@ -401,17 +401,6 @@ export function ignore(...ignore: any): void;
 
 
 /**
-Generate a random file name within a given path and optional extension.
-
-@param path - The file path within to generate a temporary file.
-@param extension - File extension.
-
-@return The generarted filename.
-*/
-export function uniqueFilename(path: string, extension?: string): string;
-
-
-/**
 Converts a JavaScript value to a JavaScript Object Notation (JSON) string with protection against thrown errors.
 
 @param value A JavaScript value, usually an object or array, to be converted.

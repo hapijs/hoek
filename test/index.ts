@@ -285,19 +285,6 @@ expect.type<() => void>(Hoek.ignore);
 expect.type<void>(Hoek.ignore());
 
 
-// uniqueFilename()
-
-Hoek.uniqueFilename('/root');
-Hoek.uniqueFilename('/root', '.txt');
-
-expect.type<string>(Hoek.uniqueFilename('/root'));
-
-expect.error(Hoek.uniqueFilename());
-expect.error(Hoek.uniqueFilename(123));
-expect.error(Hoek.uniqueFilename('x', 123));
-expect.error(Hoek.uniqueFilename('x', 'x', true));
-
-
 // stringify()
 
 Hoek.stringify(123);
