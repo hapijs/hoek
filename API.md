@@ -24,8 +24,6 @@
 * [Function](#function "Function")
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
-* [Miscellaneous](#miscellaneous "Miscellaneous")
-  * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
 * [Promises](#promises "Promises")
   * [wait](#waittimeout "wait")
   * [block](#block "block")
@@ -401,17 +399,6 @@ onceFn(); // results in undefined
 #### ignore
 
 A simple no-op function. It does nothing at all.
-
-### Miscellaneous
-
-#### uniqueFilename(path, extension)
-`path` to prepend with the randomly generated file name. `extension` is the optional file extension, defaults to `''`.
-
-Returns a randomly generated file name at the specified `path`. The result is a fully resolved path to a file.
-
-```javascript
-const result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
-```
 
 ### Promises
 
