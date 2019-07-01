@@ -179,7 +179,7 @@ describe('clone()', () => {
     it('shallow clones map', () => {
 
         const map = new Map();
-        map.set('a', { x : 1 });
+        map.set('a', { x: 1 });
         map.set(map, map);
 
         const clone = Hoek.clone(map, { shallow: true });
@@ -2487,10 +2487,9 @@ describe('assert()', () => {
 
     it('throws an Error when using assert in a test with error object message', () => {
 
-        expect(() => {
-
-            Hoek.assert(false, new Error('This is spinal tap'));
-        }).to.throw('This is spinal tap');
+        const err = new Error('This is spinal tap');
+        const got = expect(() => Hoek.assert(false, err)).to.throw('This is spinal tap');
+        expect(got).to.shallow.equal(err);
     });
 
     it('throws the same Error that is passed to it if there is only one error passed', () => {
