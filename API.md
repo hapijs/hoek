@@ -248,7 +248,7 @@ Converts an object key chain string or array to reference
     - `strict` - if `true`, will throw an error on missing member, default is `false`
     - `functions` - if `true`, allow traversing functions for properties. `false` will throw an
       error if a function is part of the chain. Defaults to `true.
-    - `iterables` - if `true, allows traversing Set and Map objects. `false` will result in
+    - `iterables` - if `true`, allows traversing Set and Map objects. `false` will result in
       `undefined` return value is the chain contains any Set or Map objects. Note that enabling
       `iterables` can impact performance by up to 10% for all calls regardless of the presence of
       Set or Map objects. Defaults to `false`.
