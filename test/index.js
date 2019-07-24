@@ -1698,6 +1698,41 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual({ foo: undefined }, { bar: undefined })).to.be.false();
     });
 
+    it('compares functions', () => {
+
+        const f1 = () => 1;
+        const f2 = () => 2;
+        const f2a = () => 2;
+
+        expect(Hoek.deepEqual({ f1 }, { f1 })).to.be.true();
+        expect(Hoek.deepEqual({ f1 }, { f1: f2 })).to.be.false();
+        expect(Hoek.deepEqual({ f2 }, { f2: f2a })).to.be.false();
+        expect(Hoek.deepEqual({ f2 }, { f2: f2a }, { deepFunction: true })).to.be.true();
+        expect(Hoek.deepEqual({ f2 }, { f2: f1 }, { deepFunction: true })).to.be.false();
+
+        const f3 = () => 3;
+        f3.x = 1;
+
+        const f3a = () => 3;
+        f3a.x = 1;
+
+        const f3b = () => 3;
+        f3b.x = 2;
+
+        expect(Hoek.deepEqual({ f3 }, { f3: f3a }, { deepFunction: true })).to.be.true();
+        expect(Hoek.deepEqual({ f3 }, { f3: f3b }, { deepFunction: true })).to.be.false();
+    });
+
+    it('skips keys', () => {
+
+        expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 4 })).to.be.false();
+        expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 4 }, { skip: ['c'] })).to.be.true();
+
+        const sym = Symbol('test');
+        expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3 }, { a: 1, b: 2, [sym]: 4 })).to.be.false();
+        expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3 }, { a: 1, b: 2, [sym]: 4 }, { skip: [sym] })).to.be.true();
+    });
+
     it('handles circular dependency', () => {
 
         const a = {};

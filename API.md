@@ -172,10 +172,23 @@ const config = Hoek.applyToDefaults(defaults, source, { shallow: ['db.server'] }
 const config = Hoek.applyToDefaults(defaults, source, { shallow: [['db', 'server']] });   // results in { db: { server: { port: 8080 }, name: 'example' } }
 ```
 
-#### deepEqual(b, a, [options])
+#### deepEqual(a, b, [options])
 
-Performs a deep comparison of the two values including support for circular dependencies, prototype, and enumerable properties.
-To skip prototype comparisons, use `options.prototype = false` and to exclude symbols, used `options.symbols = false`.
+Performs a deep comparison of the two values including support for circular dependencies,
+prototype, and enumerable properties, where:
+- `a` - the first value.
+- `b` - the second value.
+- `options` - optional settings:
+    - `deepFunction` - when `true`, function values are deep compared using their source code and
+      object properties. Defaults to `false`.
+    - `part` - when `true`, allows a partial match where some of `b` is present in `a`. Defaults to
+      `false`.
+    - `prototype` - when `false, prototype comparisons are skipped. Defaults to `true`.
+    - `skip` - an array of key name strings to skip comparing. The keys can be found in any level
+      of the object. Note that both values must contain the key - only the value comparison is
+      skipped. Only applies to plain objects and deep functions (not to map, sets, etc.). Defaults
+      to no skipping.
+    - `symbols` - when `false`, symbol properties are ignored. Defaults to `true`.
 
 ```javascript
 Hoek.deepEqual({ a: [1, 2], b: 'string', c: { d: true } }, { a: [1, 2], b: 'string', c: { d: true } }); //results in true

@@ -13,6 +13,13 @@ declare namespace deepEqual {
     interface Options {
 
         /**
+        Compare functions with difference references by comparing their internal code and properties.
+
+        @default false
+        */
+        readonly deepFunction?: boolean;
+
+        /**
         Allow partial match.
 
         @default false
@@ -25,6 +32,13 @@ declare namespace deepEqual {
         @default true
         */
         readonly prototype?: boolean;
+
+        /**
+        List of object keys to ignore different values of.
+
+        @default null
+        */
+        readonly skip?: (string | symbol)[];
 
         /**
         Compare symbol properties.

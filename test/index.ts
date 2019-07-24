@@ -21,13 +21,15 @@ interface Bar {
 Hoek.deepEqual('some', 'some');
 Hoek.deepEqual('some', 3);
 Hoek.deepEqual({}, {});
-Hoek.deepEqual({}, {}, { prototype: false, symbols: true, part: false });
+Hoek.deepEqual({}, {}, { prototype: false, symbols: true, part: false, deepFunction: true });
+Hoek.deepEqual({}, {}, { skip: ['a', 'b', Symbol('test')]});
 
 expect.type<boolean>(Hoek.deepEqual(1, 2));
 
 expect.error(Hoek.deepEqual());
 expect.error(Hoek.deepEqual(1, 2, {}, 'x'));
 expect.error(Hoek.deepEqual({}, {}, { unknown: true }));
+expect.error(Hoek.deepEqual({}, {}, { skip: [1] }))
 
 
 // clone()
