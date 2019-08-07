@@ -2671,14 +2671,3 @@ describe('stringify()', () => {
         expect(Hoek.stringify(obj)).to.contain('Cannot display object');
     });
 });
-
-describe('block()', () => {
-
-    it('executes ignore function', async () => {
-
-        const orig = Hoek.ignore;
-        Hoek.ignore = (resolve) => resolve();
-        await Hoek.block();
-        Hoek.ignore = orig;
-    });
-});
