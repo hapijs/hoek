@@ -14,7 +14,7 @@
     "dependencies": {},
     "devDependencies": {
         "@hapi/code": "6.x.x",
-        "@hapi/lab": "19.x.x"
+        "@hapi/lab": "20.x.x"
     },
     "scripts": {
         "test": "lab -a @hapi/code -t 100 -L -Y",
