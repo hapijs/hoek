@@ -653,7 +653,7 @@ describe('clone()', () => {
         };
 
         const copy = Hoek.clone(source, { symbols: false });
-        expect(copy).to.equal(source);                                          // Ignores symbols
+        expect(copy).to.equal(source, { symbols: false });
         expect(Hoek.deepEqual(source, copy)).to.be.false();
         expect(copy).to.not.shallow.equal(source);
         expect(copy.a).to.not.shallow.equal(source.a);
