@@ -2094,6 +2094,8 @@ describe('contain()', () => {
 
         expect(Hoek.contain('', 'a')).to.be.false();
         expect(Hoek.contain('', 'a', { only: true })).to.be.false();
+        
+        expect(Hoek.contain('', '')).to.be.true()
     });
 
     it('tests arrays', () => {
