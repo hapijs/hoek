@@ -2091,6 +2091,9 @@ describe('contain()', () => {
         expect(Hoek.contain('abb', 'b', { once: true })).to.be.false();
         expect(Hoek.contain('abc', ['a', 'd'])).to.be.false();
         expect(Hoek.contain('abc', ['ab', 'bc'])).to.be.false();                      // Overlapping values not supported
+
+        expect(Hoek.contain('', 'a')).to.be.false();
+        expect(Hoek.contain('', 'a', { only: true })).to.be.false();
     });
 
     it('tests arrays', () => {
@@ -2121,6 +2124,9 @@ describe('contain()', () => {
         expect(Hoek.contain([0, 2, 3], [1, 4], { part: true })).to.be.false();
         expect(Hoek.contain([1, 2, 1], [1, 2, 2], { only: true, once: true })).to.be.false();
         expect(Hoek.contain([1, 2, 1], [1, 2], { only: true, once: true })).to.be.false();
+
+        expect(Hoek.contain([], 1)).to.be.false();
+        expect(Hoek.contain([], 1, { only: true })).to.be.false();
     });
 
     it('tests objects', () => {
@@ -2156,6 +2162,9 @@ describe('contain()', () => {
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: true })).to.be.true();
         expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: false })).to.be.false();
         expect(Hoek.contain({ a: [1, 2, 3] }, { a: [4, 5, 6] }, { deep: true, part: true })).to.be.false();
+
+        expect(Hoek.contain({}, 'a')).to.be.false();
+        expect(Hoek.contain({}, 'a', { only: true })).to.be.false();
 
         // Getter check
         {
