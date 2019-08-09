@@ -2094,8 +2094,13 @@ describe('contain()', () => {
 
         expect(Hoek.contain('', 'a')).to.be.false();
         expect(Hoek.contain('', 'a', { only: true })).to.be.false();
-        
-        expect(Hoek.contain('', '')).to.be.true()
+
+        expect(Hoek.contain('', '')).to.be.true();
+        expect(Hoek.contain('', ''), { only: true }).to.be.true();
+        expect(Hoek.contain('', ''), { once: true }).to.be.true();
+        expect(Hoek.contain('', ['', ''])).to.be.true();
+        expect(Hoek.contain('', ['', ''], { only: true })).to.be.true();
+        expect(Hoek.contain('', ['', ''], { once: true })).to.be.false();
     });
 
     it('tests arrays', () => {
