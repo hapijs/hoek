@@ -2081,6 +2081,7 @@ describe('contain()', () => {
         expect(Hoek.contain('abc', 'ab')).to.be.true();
         expect(Hoek.contain('abc', 'abc', { only: true })).to.be.true();
         expect(Hoek.contain('aaa', 'a', { only: true })).to.be.true();
+        expect(Hoek.contain('aaa', 'a', { only: true, once: true })).to.be.false();
         expect(Hoek.contain('abc', 'b', { once: true })).to.be.true();
         expect(Hoek.contain('abc', ['a', 'c'])).to.be.true();
         expect(Hoek.contain('abc', ['a', 'd'], { part: true })).to.be.true();
