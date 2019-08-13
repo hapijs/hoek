@@ -7,7 +7,7 @@ everyone, but rather as a central place to store hapi-specific methods. If you'r
 general purpose utility module, check out [lodash](https://github.com/lodash/lodash) or
 [underscore](https://github.com/jashkenas/underscore).
 
-[![Build Status](https://secure.travis-ci.org/hapijs/hoek.svg)](http://travis-ci.org/hapijs/hoek)
+[![Build Status](https://secure.travis-ci.org/hapijs/hoek.svg?branch=v6-commercial)](http://travis-ci.org/hapijs/hoek)
 
 ## License
 
