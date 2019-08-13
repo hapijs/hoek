@@ -1,5 +1,5 @@
 {
-    "name": "@hapi/hoek",
+    "name": "@commercial/hoek",
     "description": "General purpose node utilities",
     "version": "6.2.4",
     "repository": "git://github.com/hapijs/hoek",
@@ -13,12 +13,12 @@
     ],
     "dependencies": {},
     "devDependencies": {
-        "@hapi/code": "5.x.x",
-        "@hapi/lab": "19.x.x"
+        "@hapi/code": "6.x.x",
+        "@hapi/lab": "20.x.x"
     },
     "scripts": {
         "test": "lab -a @hapi/code -t 100 -L -Y",
         "test-cov-html": "lab -a @hapi/code -t 100 -L -r html -o coverage.html"
     },
-    "license": "BSD-3-Clause"
+    "license": "SEE LICENSE IN LICENSE.md"
 }
