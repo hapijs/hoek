@@ -1728,9 +1728,16 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 4 })).to.be.false();
         expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 4 }, { skip: ['c'] })).to.be.true();
 
+        expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 })).to.be.false();
+        expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 }, { skip: ['c'] })).to.be.true();
+
         const sym = Symbol('test');
         expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3 }, { a: 1, b: 2, [sym]: 4 })).to.be.false();
         expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3 }, { a: 1, b: 2, [sym]: 4 }, { skip: [sym] })).to.be.true();
+
+        expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3 }, { a: 1, b: 2 })).to.be.false();
+        expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3 }, { a: 1, b: 2 }, { skip: [sym] })).to.be.true();
+        expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3, [Symbol('other')]: true }, { a: 1, b: 2 }, { skip: [sym] })).to.be.false();
     });
 
     it('handles circular dependency', () => {
