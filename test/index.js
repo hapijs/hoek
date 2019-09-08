@@ -2102,6 +2102,9 @@ describe('contain()', () => {
         expect(Hoek.contain('abc', 'b', { once: true })).to.be.true();
         expect(Hoek.contain('abc', ['a', 'c'])).to.be.true();
         expect(Hoek.contain('abc', ['a', 'd'], { part: true })).to.be.true();
+        expect(Hoek.contain('aaa', ['a', 'a'], { only: true, once: true })).to.be.false();
+        expect(Hoek.contain('aaa', ['a', 'a'], { only: true })).to.be.true();
+        expect(Hoek.contain('aaa', ['a', 'a', 'a'], { only: true, once: true })).to.be.true();
 
         expect(Hoek.contain('abc', 'ac')).to.be.false();
         expect(Hoek.contain('abcd', 'abc', { only: true })).to.be.false();
@@ -2119,6 +2122,17 @@ describe('contain()', () => {
         expect(Hoek.contain('', ['', ''])).to.be.true();
         expect(Hoek.contain('', ['', ''], { only: true })).to.be.true();
         expect(Hoek.contain('', ['', ''], { once: true })).to.be.false();
+
+        expect(Hoek.contain('a', '')).to.be.true();
+        expect(Hoek.contain('a', '', { only: true })).to.be.false();
+        expect(Hoek.contain('a', '', { once: true })).to.be.false();
+        expect(Hoek.contain('a', ['', ''])).to.be.true();
+        expect(Hoek.contain('a', ['', ''], { only: true })).to.be.false();
+        expect(Hoek.contain('a', ['', ''], { once: true })).to.be.false();
+
+        expect(Hoek.contain('ab', ['a', 'b', 'c'])).to.be.false();
+        expect(Hoek.contain('ab', ['a', 'b', 'c'], { only: true })).to.be.false();
+        expect(Hoek.contain('ab', ['a', 'b', 'c'], { only: true, once: true })).to.be.false();
     });
 
     it('tests arrays', () => {
@@ -2130,14 +2144,23 @@ describe('contain()', () => {
         expect(Hoek.contain([1, 1, 2], [1, 2], { only: true })).to.be.true();
         expect(Hoek.contain([1, 2], [1, 2], { once: true })).to.be.true();
         expect(Hoek.contain([1, 2, 3], [1, 4], { part: true })).to.be.true();
+        expect(Hoek.contain([null, 2, 3], [null, 4], { part: true })).to.be.true();
+        expect(Hoek.contain([null], null, { deep: true })).to.be.true();
         expect(Hoek.contain([[1], [2]], [[1]], { deep: true })).to.be.true();
+        expect(Hoek.contain([[1], [2], 3], [[1]], { deep: true })).to.be.true();
         expect(Hoek.contain([[1, 2]], [[1]], { deep: true, part: true })).to.be.true();
+        expect(Hoek.contain([[1, 2]], [[1], 2], { deep: true, part: true })).to.be.true();
         expect(Hoek.contain([1, 2, 1], [1, 1, 2], { only: true })).to.be.true();
         expect(Hoek.contain([1, 2, 1], [1, 1, 2], { only: true, once: true })).to.be.true();
-        expect(Hoek.contain([1, 2, 1], [1, 2, 2], { only: true })).to.be.true();
+        expect(Hoek.contain([1, 2, 1], [1, 2, 2], { only: true })).to.be.false();
+        expect(Hoek.contain([1, 2, 1], [1, 2, 2], { only: true, part: true })).to.be.true();
+        expect(Hoek.contain([1, 1, 1], [1, 1, 1, 1])).to.be.false();
+        expect(Hoek.contain([1, 1, 1], [1, 1, 1, 1], { part: true })).to.be.true();
 
         expect(Hoek.contain([1, 2, 3], 4)).to.be.false();
         expect(Hoek.contain([{ a: 1 }], { a: 2 }, { deep: true })).to.be.false();
+        expect(Hoek.contain([{ a: 1 }, { a: 1 }], [{ a: 1 }, { a: 1 }], { deep: true, once: true, only: true })).to.be.true();
+        expect(Hoek.contain([{ a: 1 }, { a: 1 }], [{ a: 1 }, { a: 2 }], { deep: true, once: true, only: true })).to.be.false();
         expect(Hoek.contain([{ a: 1 }], { a: 1 })).to.be.false();
         expect(Hoek.contain([1, 2, 3], [4, 5])).to.be.false();
         expect(Hoek.contain([[3], [2]], [[1]])).to.be.false();
@@ -2152,6 +2175,10 @@ describe('contain()', () => {
 
         expect(Hoek.contain([], 1)).to.be.false();
         expect(Hoek.contain([], 1, { only: true })).to.be.false();
+
+        expect(Hoek.contain(['a', 'b'], ['a', 'b', 'c'])).to.be.false();
+        expect(Hoek.contain(['a', 'b'], ['a', 'b', 'c'], { only: true })).to.be.false();
+        expect(Hoek.contain(['a', 'b'], ['a', 'b', 'c'], { only: true, once: true })).to.be.false();
     });
 
     it('tests objects', () => {
@@ -2191,7 +2218,13 @@ describe('contain()', () => {
         expect(Hoek.contain({}, 'a')).to.be.false();
         expect(Hoek.contain({}, 'a', { only: true })).to.be.false();
 
+        expect(Hoek.contain({ a: 'foo', b: 'bar' }, ['a', 'b', 'c'])).to.be.false();
+        expect(Hoek.contain({ a: 'foo', b: 'bar' }, ['a', 'b', 'c'], { only: true })).to.be.false();
+        expect(Hoek.contain({ a: 'foo', b: 'bar' }, { a: 'foo', b: 'bar', c: 'x' })).to.be.false();
+        expect(Hoek.contain({ a: 'foo', b: 'bar' }, { a: 'foo', b: 'bar', c: 'x' }, { only: true })).to.be.false();
+
         // Getter check
+
         {
             const Foo = function (bar) {
 
@@ -2224,6 +2257,7 @@ describe('contain()', () => {
         }
 
         // Properties on prototype not visible
+
         {
             const Foo = function () {
 
@@ -2251,6 +2285,7 @@ describe('contain()', () => {
         }
 
         // Non-Enumerable properties
+
         {
             const foo = { a: 1, b: 2 };
 
