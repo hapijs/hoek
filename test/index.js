@@ -1560,9 +1560,19 @@ describe('deepEqual()', () => {
 
         expect(Hoek.deepEqual(new Error('a'), new Error('a'))).to.be.true();
         expect(Hoek.deepEqual(new Error('a'), new Error('b'))).to.be.false();
+
+        expect(Hoek.deepEqual(new Error('a'), new TypeError('a'))).to.be.false();
         expect(Hoek.deepEqual(new Error('a'), new TypeError('a'), { prototype: false })).to.be.false();
+
+        expect(Hoek.deepEqual(new Error(), {})).to.be.false();
         expect(Hoek.deepEqual(new Error(), {}, { prototype: false })).to.be.false();
+
+        expect(Hoek.deepEqual({}, new Error())).to.be.false();
         expect(Hoek.deepEqual({}, new Error(), { prototype: false })).to.be.false();
+
+        const error = new Error('a');
+        expect(Hoek.deepEqual(Hoek.clone(error), error)).to.be.true();
+        expect(Hoek.deepEqual(Hoek.clone(error), error, { prototype: false })).to.be.true();
     });
 
     it('compares arrays', () => {
