@@ -1,6 +1,6 @@
 <a href="http://hapijs.com"><img src="https://raw.githubusercontent.com/hapijs/assets/master/images/family.png" width="180px" align="right" /></a>
 
-# hoek
+# @hapi/hoek
 
 Utility methods for the hapi ecosystem. This module is not intended to solve every problem for
 everyone, but rather as a central place to store hapi-specific methods. If you're looking for a
