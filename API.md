@@ -1,38 +1,4 @@
 
-## hoek
-
-* [Object](#object "Object")
-  * [clone](#cloneobj-options "clone")
-  * [cloneWithShallow](#clonewithshallowobj-keys-options "cloneWithShallow")
-  * [merge](#mergetarget-source-isnulloverride-ismergearrays "merge")
-  * [applyToDefaults](#applytodefaultsdefaults-options-isnulloverride "applyToDefaults")
-  * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
-  * [deepEqual](#deepequalb-a-options "deepEqual")
-  * [intersect](#intersectarray1-array2 "intersect")
-  * [contain](#containref-values-options "contain")
-  * [flatten](#flattenarray-target "flatten")
-  * [reach](#reachobj-chain-options "reach")
-  * [reachTemplate](#reachtemplateobj-template-options "reachTemplate")
-  * [stringify](#stringifyobj "stringify")
-* [Bench](#bench "Bench")
-* [Escaping Characters](#escaping-characters "Escaping Characters")
-  * [escapeHtml](#escapehtmlstring "escapeHtml")
-  * [escapeHeaderAttribute](#escapeheaderattributeattribute "escapeHeaderAttribute")
-  * [escapeJson](#escapejsonstring "escapeJson")
-  * [escapeRegex](#escaperegexstring "escapeRegex")
-* [Errors](#errors "Errors")
-  * [assert](#assertcondition-message "assert")
-* [Function](#function "Function")
-  * [once](#oncefn "once")
-  * [ignore](#ignore "ignore")
-* [Miscellaneous](#miscellaneous "Miscellaneous")
-  * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
-* [Promises](#promises "Promises")
-  * [wait](#waittimeout "wait")
-  * [block](#block "block")
-
-
-
 ### Object
 
 **hoek** provides several helpful methods for objects and arrays.
