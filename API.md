@@ -1,49 +1,4 @@
 
-## hoek
-
-* [Introduction](#introduction "Introduction")
-* [Object](#object "Object")
-  * [clone](#cloneobj "clone")
-  * [cloneWithShallow](#clonewithshallowobj-keys "cloneWithShallow")
-  * [merge](#mergetarget-source-isnulloverride-ismergearrays "merge")
-  * [applyToDefaults](#applytodefaultsdefaults-options-isnulloverride "applyToDefaults")
-  * [applyToDefaultsWithShallow](#applytodefaultswithshallowdefaults-options-keys "applyToDefaultsWithShallow")
-  * [deepEqual](#deepequalb-a-options "deepEqual")
-  * [unique](#uniquearray-key "unique")
-  * [mapToObject](#maptoobjectarray-key "mapToObject")
-  * [intersect](#intersectarray1-array2 "intersect")
-  * [contain](#containref-values-options "contain")
-  * [flatten](#flattenarray-target "flatten")
-  * [reach](#reachobj-chain-options "reach")
-  * [reachTemplate](#reachtemplateobj-template-options "reachTemplate")
-  * [transform](#transformobj-transform-options "transform")
-  * [shallow](#shallowobj "shallow")
-  * [stringify](#stringifyobj "stringify")
-* [Timer](#timer "Timer")
-* [Bench](#bench "Bench")
-* [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
-  * [base64urlEncode](#base64urlencodevalue "binary64urlEncode")
-  * [base64urlDecode](#base64urldecodevalue "binary64urlDecode")
-* [Escaping Characters](#escaping-characters "Escaping Characters")
-  * [escapeHtml](#escapehtmlstring "escapeHtml")
-  * [escapeHeaderAttribute](#escapeheaderattributeattribute "escapeHeaderAttribute")
-  * [escapeJson](#escapejsonstring "escapeJson")
-  * [escapeRegex](#escaperegexstring "escapeRegex")
-* [Errors](#errors "Errors")
-  * [assert](#assertcondition-message "assert")
-  * [abort](#abortmessage "abort")
-  * [displayStack](#displaystackslice "displayStack")
-  * [callStack](#callstackslice "callStack")
-* [Function](#function "Function")
-  * [nextTick](#nexttickfn "nextTick")
-  * [once](#oncefn "once")
-  * [ignore](#ignore "ignore")
-* [Miscellaneous](#miscellaneous "Miscellaneous")
-  * [uniqueFilename](#uniquefilenamepath-extension "uniqueFilename")
-  * [isInteger](#isintegervalue "isInteger")
-
-
-
 ## Object
 
 Hoek provides several helpful methods for objects and arrays.
