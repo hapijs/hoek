@@ -22,7 +22,7 @@ Hoek.deepEqual('some', 'some');
 Hoek.deepEqual('some', 3);
 Hoek.deepEqual({}, {});
 Hoek.deepEqual({}, {}, { prototype: false, symbols: true, part: false, deepFunction: true });
-Hoek.deepEqual({}, {}, { skip: ['a', 'b', Symbol('test')]});
+Hoek.deepEqual({}, {}, { skip: ['a', 'b', Symbol('test')] });
 
 expect.type<boolean>(Hoek.deepEqual(1, 2));
 
@@ -121,7 +121,7 @@ Hoek.contain('abc', ['a', 'x']);
 Hoek.contain('abc', ['a', 'd'], { once: true, part: true, deep: true, symbols: true, only: true });
 Hoek.contain({ a: 1 }, 'a');
 Hoek.contain({ a: 1 }, { a: 1 });
-Hoek.contain({ a: 1, b: 2 }, ['a', 'x'], { once: true, part: true, deep: true, symbols: true, only: true });
+Hoek.contain({ a: 1, b: 2 }, ['a', 'x'], { part: true, deep: true, symbols: true, only: true });
 Hoek.contain([1], 1);
 Hoek.contain([1], [1]);
 Hoek.contain([1], [1], { once: true, part: true, deep: true, symbols: true, only: true });
@@ -138,7 +138,7 @@ expect.error(Hoek.contain('abc', [1]));
 expect.error(Hoek.contain('abc', [{}]));
 expect.error(Hoek.contain('abc', {}));
 expect.error(Hoek.contain({}, 1));
-
+expect.error(Hoek.contain({ a: 1, b: 2 }, ['a', 'x'], { once: true }));
 
 // flatten()
 
@@ -299,20 +299,24 @@ expect.error(Hoek.stringify());
 
 // wait()
 
-Hoek.wait();
-Hoek.wait(123);
+// $lab:types:off$
+await Hoek.wait();
+await Hoek.wait(123);
 
 expect.type<Promise<void>>(Hoek.wait());
 expect.type<void>(await Hoek.wait(100));
 
 expect.error(Hoek.wait({}));
+// $lab:types:on$
 
 
 // block()
 
+// $lab:types:off$
 Hoek.wait();
 
 expect.type<Promise<void>>(Hoek.block());
 expect.type<void>(await Hoek.block());
 
 expect.error(Hoek.block(123));
+// $lab:types:on$

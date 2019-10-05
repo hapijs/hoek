@@ -197,7 +197,7 @@ export namespace intersect {
  */
 export function contain(ref: string, values: string | string[], options?: contain.Options): boolean;
 export function contain(ref: any[], values: any, options?: contain.Options): boolean;
-export function contain(ref: object, values: string | string[] | object, options?: contain.Options): boolean;
+export function contain(ref: object, values: string | string[] | object, options?: Omit<contain.Options, 'once'>): boolean;
 
 export namespace contain {
 
