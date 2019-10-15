@@ -2136,6 +2136,9 @@ describe('contain()', () => {
         expect(Hoek.contain('ab', ['a', 'b', 'c'])).to.be.false();
         expect(Hoek.contain('ab', ['a', 'b', 'c'], { only: true })).to.be.false();
         expect(Hoek.contain('ab', ['a', 'b', 'c'], { only: true, once: true })).to.be.false();
+
+        expect(Hoek.contain('ab', ['c'], { part: true })).to.be.false();
+        expect(Hoek.contain('ab', ['b'], { part: true })).to.be.true();
     });
 
     it('tests arrays', () => {
@@ -2182,6 +2185,9 @@ describe('contain()', () => {
         expect(Hoek.contain(['a', 'b'], ['a', 'b', 'c'])).to.be.false();
         expect(Hoek.contain(['a', 'b'], ['a', 'b', 'c'], { only: true })).to.be.false();
         expect(Hoek.contain(['a', 'b'], ['a', 'b', 'c'], { only: true, once: true })).to.be.false();
+
+        expect(Hoek.contain(['a', 'b'], ['c'], { part: true })).to.be.false();
+        expect(Hoek.contain(['a', 'b'], ['b'], { part: true })).to.be.true();
     });
 
     it('tests objects', () => {
@@ -2225,6 +2231,9 @@ describe('contain()', () => {
         expect(Hoek.contain({ a: 'foo', b: 'bar' }, ['a', 'b', 'c'], { only: true })).to.be.false();
         expect(Hoek.contain({ a: 'foo', b: 'bar' }, { a: 'foo', b: 'bar', c: 'x' })).to.be.false();
         expect(Hoek.contain({ a: 'foo', b: 'bar' }, { a: 'foo', b: 'bar', c: 'x' }, { only: true })).to.be.false();
+
+        expect(Hoek.contain({ a: 1, b: 2 }, ['c'], { part: true })).to.be.false();
+        expect(Hoek.contain({ a: 1, b: 2 }, ['b'], { part: true })).to.be.true();
 
         // Getter check
 
@@ -2313,6 +2322,21 @@ describe('contain()', () => {
 
         expect(Hoek.contain([sym], Symbol())).to.be.false();
         expect(Hoek.contain({ [sym]: 1 }, Symbol())).to.be.false();
+    });
+
+    it('compares error keys', () => {
+
+        const error = new Error('test');
+        expect(Hoek.contain(error, { x: 1 })).to.be.false();
+        expect(Hoek.contain(error, { x: 1 }, { part: true })).to.be.false();
+
+        error.x = 1;
+
+        expect(Hoek.contain(error, { x: 1 })).to.be.true();
+        expect(Hoek.contain(error, { x: 1 }, { part: true })).to.be.true();
+
+        expect(Hoek.contain(error, { x: 1, y: 2 })).to.be.false();
+        expect(Hoek.contain(error, { x: 1, y: 2 }, { part: true })).to.be.true();
     });
 });
 
