@@ -762,6 +762,19 @@ describe('clone()', () => {
         expect(copy.a).to.shallow.equal(obj.a);
         expect(copy.x).to.shallow.equal(obj);
     });
+
+    it('does not invoke setter when shallow cloning', () => {
+
+        const obj = {};
+
+        Object.defineProperty(obj, 'a', { enumerable: true, value: {} });
+        Object.defineProperty(obj, 'b', { enumerable: true, value: {} });
+
+        const copy = Hoek.clone(obj, { shallow: ['a'] });
+
+        expect(copy).equal({ a: {}, b: {} });
+        expect(copy.a).to.shallow.equal(obj.a);
+    });
 });
 
 describe('merge()', () => {
@@ -1498,6 +1511,24 @@ describe('applyToDefaults()', () => {
         const merged = Hoek.applyToDefaults(defaults, options, { shallow: [['c', sym]] });
         expect(merged).to.equal({ a: { b: 4, e: 3 }, c: { d: 6, [sym]: { g: 1 } } });
         expect(merged.c[sym]).to.shallow.equal(options.c[sym]);
+    });
+
+    it('does not modify shallow entries in source', () => {
+
+        const defaults = {
+            a: {
+                b: 5
+            }
+        };
+
+        const source = {};
+
+        Object.defineProperty(source, 'a', { value: { b: 4 } });
+
+        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['a'] });
+        expect(merged).to.equal({ a: { b: 4 } });
+        expect(merged.a).to.equal(source.a);
+        expect(merged.a).to.not.equal(defaults.a);
     });
 });
 
