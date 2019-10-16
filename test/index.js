@@ -976,8 +976,8 @@ describe('merge()', () => {
 
     it('overrides values in target', () => {
 
-        const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
-        const b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
+        const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', s: 1, m: 'abc' };
+        const b = { x: null, z: 4, v: 0, t: { u: 6 }, s: undefined, m: '123' };
 
         const c = Hoek.merge(a, b);
         expect(c.x).to.equal(null);
@@ -986,12 +986,13 @@ describe('merge()', () => {
         expect(c.v).to.equal(0);
         expect(c.m).to.equal('123');
         expect(c.t).to.equal({ u: 6 });
+        expect(c.s).to.equal(undefined);
     });
 
     it('overrides values in target (flip)', () => {
 
-        const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', m: 'abc' };
-        const b = { x: null, z: 4, v: 0, t: { u: 6 }, m: '123' };
+        const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', s: 1, m: 'abc' };
+        const b = { x: null, z: 4, v: 0, t: { u: 6 }, s: undefined, m: '123' };
 
         const d = Hoek.merge(b, a);
         expect(d.x).to.equal(1);
@@ -1000,6 +1001,7 @@ describe('merge()', () => {
         expect(d.v).to.equal(5);
         expect(d.m).to.equal('abc');
         expect(d.t).to.equal('test');
+        expect(d.s).to.equal(1);
     });
 
     it('retains Date properties', () => {
@@ -1408,6 +1410,30 @@ describe('applyToDefaults()', () => {
         expect(merged).to.equal(null);
     });
 
+    it('handles missing shallow key in defaults', () => {
+
+        const defaults = {
+            a: {
+                b: 1
+            }
+        };
+
+        const options = {
+            a: {
+                b: 4
+            },
+            c: {
+                d: 2
+            }
+        };
+
+        const merged = Hoek.applyToDefaults(defaults, options, { shallow: ['c'] });
+        expect(merged).to.equal({ a: { b: 4 }, c: { d: 2 } });
+        expect(merged.c).to.shallow.equal(options.c);
+
+        expect(Hoek.applyToDefaults(defaults, true, { shallow: ['c'] })).to.equal({ a: { b: 1 } });
+    });
+
     it('throws on missing defaults', () => {
 
         expect(() => {
@@ -1438,6 +1464,40 @@ describe('applyToDefaults()', () => {
 
             Hoek.applyToDefaults({}, true, { shallow: 123 });
         }).to.throw('Invalid keys');
+    });
+
+    it('handles array keys', () => {
+
+        const sym = Symbol();
+
+        const defaults = {
+            a: {
+                b: 5,
+                e: 3
+            },
+            c: {
+                d: 7,
+                [sym]: {
+                    f: 9
+                }
+            }
+        };
+
+        const options = {
+            a: {
+                b: 4
+            },
+            c: {
+                d: 6,
+                [sym]: {
+                    g: 1
+                }
+            }
+        };
+
+        const merged = Hoek.applyToDefaults(defaults, options, { shallow: [['c', sym]] });
+        expect(merged).to.equal({ a: { b: 4, e: 3 }, c: { d: 6, [sym]: { g: 1 } } });
+        expect(merged.c[sym]).to.shallow.equal(options.c[sym]);
     });
 });
 
