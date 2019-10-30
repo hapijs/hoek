@@ -440,3 +440,18 @@ export function wait(timeout?: number): Promise<void>;
  * Returns a Promise that never resolves.
  */
 export function block(): Promise<void>;
+
+
+export namespace ts {
+
+    /**
+     * Defines a type that can must be one of T or U but not both.
+     */
+    type XOR<T, U> = (T | U) extends object ? (internals.Without<T, U> & U) | (internals.Without<U, T> & T) : T | U;
+}
+
+
+declare namespace internals {
+
+    type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+}

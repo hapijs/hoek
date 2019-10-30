@@ -320,3 +320,18 @@ expect.type<void>(await Hoek.block());
 
 expect.error(Hoek.block(123));
 // $lab:types:on$
+
+
+// ts
+
+interface X { a: number; };
+interface Y { b: number; };
+
+function xor(input: Hoek.ts.XOR<X, Y>): number {
+
+    return input.a || input.b || 10;
+}
+
+xor({ a: 1 });
+xor({ b: 2 });
+expect.error(xor({ a: 1, b: 2 }));
