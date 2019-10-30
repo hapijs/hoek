@@ -1,3 +1,6 @@
+/// <reference types="node" />
+
+
 /**
  * Performs a deep comparison of the two values including support for circular dependencies, prototype, and enumerable properties.
  *
