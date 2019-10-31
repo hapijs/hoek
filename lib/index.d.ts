@@ -445,6 +445,16 @@ export function wait(timeout?: number): Promise<void>;
 export function block(): Promise<void>;
 
 
+/**
+ * Determines if an object is a promise.
+ * 
+ * @param promise - the object tested.
+ * 
+ * @returns true if the object is a promise, otherwise false.
+ */
+export function isPromise(promise: any): boolean;
+
+
 export namespace ts {
 
     /**

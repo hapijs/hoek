@@ -2767,3 +2767,32 @@ describe('stringify()', () => {
         expect(Hoek.stringify(obj)).to.contain('Cannot display object');
     });
 });
+
+describe('isPromise()', () => {
+
+    it('determines if an object is a promise', async () => {
+
+        expect(Hoek.isPromise({})).to.be.false();
+        expect(Hoek.isPromise(null)).to.be.false();
+        expect(Hoek.isPromise(false)).to.be.false();
+        expect(Hoek.isPromise(0)).to.be.false();
+        expect(Hoek.isPromise('')).to.be.false();
+        expect(Hoek.isPromise({ then: 1 })).to.be.false();
+        expect(Hoek.isPromise([])).to.be.false();
+
+        const items = [
+            Promise.resolve(),
+            Promise.reject()
+        ];
+
+        expect(Hoek.isPromise(items[0])).to.be.true();
+        expect(Hoek.isPromise(items[1])).to.be.true();
+        expect(Hoek.isPromise(new Promise(Hoek.ignore))).to.be.true();
+        expect(Hoek.isPromise({ then: Hoek.ignore })).to.be.true();
+
+        try {
+            await Promise.all(items);
+        }
+        catch (err) { }
+    });
+});

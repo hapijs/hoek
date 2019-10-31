@@ -393,3 +393,11 @@ await Hoek.wait(2000); // waits for 2 seconds
 
 #### block()
 A no-op Promise. Does nothing.
+
+
+#### isPromise(promise)
+
+Determines if an item is a promise where:
+- `promise` - the item being tested.
+
+Returns `true` is the item is a promise, otherwise `false`.

@@ -322,6 +322,18 @@ expect.error(Hoek.block(123));
 // $lab:types:on$
 
 
+// isPromise()
+
+Hoek.isPromise(1);
+Hoek.isPromise({});
+Hoek.isPromise(null);
+
+expect.type<boolean>(Hoek.isPromise(1));
+
+expect.error(Hoek.isPromise());
+expect.error(Hoek.isPromise(1, 2));
+
+
 // ts
 
 interface X { a: number; };
