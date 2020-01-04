@@ -14,5 +14,6 @@ This module is not intended to solve every problem for everyone, but rather as a
 
 - [Documentation and API](https://hapi.dev/family/hoek/)
 - [Version status](https://hapi.dev/resources/status/#hoek) (builds, dependencies, node versions, licenses, eol)
+- [Changelog](https://hapi.dev/family/hoek/changelog/)
 - [Project policies](https://hapi.dev/policies/)
 - [Free and commercial support options](https://hapi.dev/support/)
