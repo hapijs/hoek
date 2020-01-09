@@ -1248,7 +1248,7 @@ describe('applyToDefaults()', () => {
 
         const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['a'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { d: 6, g: 1, f: 7 } });
-        expect(merged.a).to.equal(source.a);
+        expect(merged.a).to.shallow.equal(source.a);
         expect(merged.a).to.not.equal(defaults.a);
         expect(merged.c).to.not.equal(source.c);
         expect(merged.c).to.not.equal(defaults.c);
@@ -1280,7 +1280,7 @@ describe('applyToDefaults()', () => {
 
         const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { d: 6, g: { h: 8 } } });
-        expect(merged.c.g).to.equal(source.c.g);
+        expect(merged.c.g).to.shallow.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (missing)', () => {
@@ -1304,7 +1304,7 @@ describe('applyToDefaults()', () => {
 
         const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
-        expect(merged.c.g).to.equal(source.c.g);
+        expect(merged.c.g).to.shallow.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (override)', () => {
@@ -1333,7 +1333,7 @@ describe('applyToDefaults()', () => {
 
         const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
-        expect(merged.c.g).to.equal(source.c.g);
+        expect(merged.c.g).to.shallow.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (deeper)', () => {
@@ -1359,7 +1359,7 @@ describe('applyToDefaults()', () => {
 
         const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g.r'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
-        expect(merged.c.g.r).to.equal(source.c.g.r);
+        expect(merged.c.g.r).to.shallow.equal(source.c.g.r);
     });
 
     it('shallow copies the nested keys (not present)', () => {
@@ -1396,7 +1396,7 @@ describe('applyToDefaults()', () => {
         };
 
         const merged = Hoek.applyToDefaults(defaults, {}, { shallow: ['a'] });
-        expect(merged.a).to.equal(defaults.a);
+        expect(merged.a).to.shallow.equal(defaults.a);
     });
 
     it('shallow copies the listed keys in the defaults (true)', () => {
@@ -1408,7 +1408,7 @@ describe('applyToDefaults()', () => {
         };
 
         const merged = Hoek.applyToDefaults(defaults, true, { shallow: ['a'] });
-        expect(merged.a).to.equal(defaults.a);
+        expect(merged.a).to.shallow.equal(defaults.a);
     });
 
     it('returns null on false', () => {
@@ -1449,34 +1449,22 @@ describe('applyToDefaults()', () => {
 
     it('throws on missing defaults', () => {
 
-        expect(() => {
-
-            Hoek.applyToDefaults(null, {}, { shallow: ['a'] });
-        }).to.throw('Invalid defaults value: must be an object');
+        expect(() => Hoek.applyToDefaults(null, {}, { shallow: ['a'] })).to.throw('Invalid defaults value: must be an object');
     });
 
     it('throws on invalid defaults', () => {
 
-        expect(() => {
-
-            Hoek.applyToDefaults('abc', {}, { shallow: ['a'] });
-        }).to.throw('Invalid defaults value: must be an object');
+        expect(() => Hoek.applyToDefaults('abc', {}, { shallow: ['a'] })).to.throw('Invalid defaults value: must be an object');
     });
 
     it('throws on invalid source', () => {
 
-        expect(() => {
-
-            Hoek.applyToDefaults({}, 'abc', { shallow: ['a'] });
-        }).to.throw('Invalid source value: must be true, falsy or an object');
+        expect(() => Hoek.applyToDefaults({}, 'abc', { shallow: ['a'] })).to.throw('Invalid source value: must be true, falsy or an object');
     });
 
     it('throws on missing keys', () => {
 
-        expect(() => {
-
-            Hoek.applyToDefaults({}, true, { shallow: 123 });
-        }).to.throw('Invalid keys');
+        expect(() => Hoek.applyToDefaults({}, true, { shallow: 123 })).to.throw('Invalid keys');
     });
 
     it('handles array keys', () => {
@@ -1527,7 +1515,7 @@ describe('applyToDefaults()', () => {
 
         const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['a'] });
         expect(merged).to.equal({ a: { b: 4 } });
-        expect(merged.a).to.equal(source.a);
+        expect(merged.a).to.shallow.equal(source.a);
         expect(merged.a).to.not.equal(defaults.a);
     });
 });
