@@ -208,6 +208,47 @@ describe('clone()', () => {
         expect(a).to.equal(b);
     });
 
+    it('clones array-based class', () => {
+
+        const A = class extends Array {
+            __x = 1;
+
+            __y() {
+
+                return 2;
+            }
+        };
+
+        const a = new A(1, 2, 3);
+
+        const b = Hoek.clone(a);
+
+        expect(a).to.equal(b);
+        expect(b.__x).to.equal(1);
+        expect(b.__y).to.exist();
+        expect(b.__y()).to.equal(2);
+    });
+
+    it('clones array-based class (without prototype)', () => {
+
+        const A = class extends Array {
+            __x = 1;
+
+            __y() {
+
+                return 2;
+            }
+        };
+
+        const a = new A(1, 2, 3);
+
+        const b = Hoek.clone(a, { prototype: false });
+
+        expect(a).to.equal(b);
+        expect(b.__x).to.equal(1);
+        expect(b.__y).to.not.exist();
+    });
+
     it('clones symbol properties', () => {
 
         const sym1 = Symbol(1);
