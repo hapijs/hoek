@@ -818,7 +818,7 @@ describe('clone()', () => {
 
     it('prevents prototype poisoning', () => {
 
-        const a = JSON.parse('{ "proto": { "x": 1 } }');
+        const a = JSON.parse('{ "__proto__": { "x": 1 } }');
         expect(a.x).to.not.exist();
 
         const b = Hoek.clone(a);
