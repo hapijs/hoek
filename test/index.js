@@ -2197,6 +2197,8 @@ describe('contain()', () => {
 
         expect(Hoek.contain(['a', 'b'], ['c'], { part: true })).to.be.false();
         expect(Hoek.contain(['a', 'b'], ['b'], { part: true })).to.be.true();
+
+        expect(Hoek.contain([{ a: 1 }], [1], { deep: true })).to.be.false();
     });
 
     it('tests objects', () => {
