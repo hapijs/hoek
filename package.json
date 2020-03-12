@@ -1,7 +1,7 @@
 {
     "name": "@hapi/hoek",
     "description": "General purpose node utilities",
-    "version": "9.0.3",
+    "version": "9.0.4",
     "repository": "git://github.com/hapijs/hoek",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
