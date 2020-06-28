@@ -3,6 +3,9 @@
   "description": "General purpose node utilities",
   "version": "4.3.0",
   "repository": "git://github.com/hapijs/hoek",
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "main": "lib/index.js",
   "keywords": [
     "utilities"

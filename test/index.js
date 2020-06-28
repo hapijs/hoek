@@ -2563,7 +2563,7 @@ describe('stringify()', (done) => {
 
         const obj = { a: 1 };
         obj.b = obj;
-        expect(Hoek.stringify(obj)).to.equal('[Cannot display object: Converting circular structure to JSON]');
+        expect(Hoek.stringify(obj)).to.match(/Cannot display object: Converting circular structure to JSON/);
         done();
     });
 });
