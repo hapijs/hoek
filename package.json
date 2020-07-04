@@ -3,6 +3,9 @@
     "description": "General purpose node utilities",
     "version": "8.5.1",
     "repository": "git://github.com/hapijs/hoek",
+    "engines": {
+        "node": ">=8.0.0"
+    },
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "keywords": [
