@@ -1,8 +1,11 @@
 {
-    "name": "@hapi/hoek",
+    "name": "@commercial/hoek",
     "description": "General purpose node utilities",
     "version": "9.0.4",
     "repository": "git://github.com/hapijs/hoek",
+    "engines": {
+        "node": ">=12.0.0"
+    },
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "keywords": [
@@ -20,5 +23,5 @@
         "test": "lab -a @hapi/code -t 100 -L -Y",
         "test-cov-html": "lab -a @hapi/code -t 100 -L -r html -o coverage.html"
     },
-    "license": "BSD-3-Clause"
+    "license": "SEE LICENSE IN LICENSE.md"
 }
