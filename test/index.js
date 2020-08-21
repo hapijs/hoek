@@ -2144,6 +2144,7 @@ describe('block()', () => {
 
         const result = await Promise.race([
             new Promise((resolve, reject) => {
+
                 setTimeout(resolve, 1, waited);
             }),
             promise
