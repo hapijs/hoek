@@ -384,11 +384,12 @@ A simple no-op function. It does nothing at all.
 
 ### Promises
 
-#### wait(timeout)
-Resolve the promise after `timeout`. Provide the `timeout` in milliseconds.
+#### wait(timeout, [returnValue])
+Resolve the promise after `timeout` milliseconds with the provided `returnValue`.
 
 ```javascript
 await Hoek.wait(2000); // waits for 2 seconds
+const timeout = Hoek.wait(1000, 'timeout'); // resolves after 1s with 'timeout'
 ```
 
 #### block()

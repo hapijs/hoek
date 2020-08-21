@@ -2130,6 +2130,62 @@ describe('isPromise()', () => {
     });
 });
 
+describe('wait()', () => {
+
+    it('delays for timeout ms', async () => {
+
+        // DO NOT USE Hoek.Bench() to time this, as its test depends on Hoek.wait()
+
+        const start = process.hrtime.bigint();
+        await Hoek.wait(10);
+        const end = process.hrtime.bigint();
+
+        expect(end - start).to.be.between(10_000_000, 20_000_000);
+    });
+
+    it('handles a return value', async () => {
+
+        // DO NOT USE Hoek.Bench() to time this, as its test depends on Hoek.wait()
+
+        const uniqueValue = {};
+        const start = process.hrtime.bigint();
+        const returnValue = await Hoek.wait(10, uniqueValue);
+        const end = process.hrtime.bigint();
+
+        expect(end - start).to.be.between(10_000_000, 20_000_000);
+        expect(returnValue).to.shallow.equal(uniqueValue);
+    });
+
+    it('undefined timeout resolves immediately', async () => {
+
+        const waited = Symbol('waited');
+        const result = await Promise.race([
+            Hoek.wait(undefined, waited),
+            Hoek.wait(0)
+        ]);
+
+        expect(result).to.equal(waited);
+    });
+
+    it('NaN timeout resolves immediately', async () => {
+
+        const waited = Symbol('waited');
+        const result = await Promise.race([
+            Hoek.wait(Number.NaN, waited),
+            Hoek.wait(0)
+        ]);
+
+        expect(result).to.equal(waited);
+    });
+
+    it('rejects on weird timeout values', async () => {
+
+        await expect(() => Hoek.wait({})).to.throw();
+        await expect(() => Hoek.wait(Symbol('hi'))).to.throw();
+        await expect(() => Hoek.wait(BigInt(10))).to.throw();
+    });
+});
+
 describe('block()', () => {
 
     it('returns a promise', () => {
@@ -2143,10 +2199,7 @@ describe('block()', () => {
         const waited = Symbol('waited');
 
         const result = await Promise.race([
-            new Promise((resolve, reject) => {
-
-                setTimeout(resolve, 1, waited);
-            }),
+            Hoek.wait(1, waited),
             promise
         ]);
 
