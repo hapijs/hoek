@@ -2129,3 +2129,27 @@ describe('isPromise()', () => {
         catch (err) { }
     });
 });
+
+describe('block()', () => {
+
+    it('returns a promise', () => {
+
+        expect(Hoek.block()).to.be.instanceOf(Promise);
+    });
+
+    it('does not immediately reject or resolve', async () => {
+
+        const promise = Hoek.block();
+        const waited = Symbol('waited');
+
+        const result = await Promise.race([
+            new Promise((resolve, reject) => {
+
+                setTimeout(resolve, 1, waited);
+            }),
+            promise
+        ]);
+
+        expect(result).to.be.equal(waited);
+    });
+});
