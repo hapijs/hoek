@@ -948,6 +948,49 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(sets[0], new Set())).to.be.false();
     });
 
+    it('compares extended sets', () => {
+
+        class PrivateSet extends Set {
+
+            has() {
+
+                throw new Error('not allowed');
+            }
+        }
+
+        const entries = ['a', undefined];
+        expect(Hoek.deepEqual(new PrivateSet(), new PrivateSet())).to.be.true();
+        expect(Hoek.deepEqual(new PrivateSet(entries), new PrivateSet(entries))).to.be.true();
+        expect(Hoek.deepEqual(new PrivateSet(entries), new Set(entries), { prototype: false })).to.be.true();
+        expect(Hoek.deepEqual(new PrivateSet(entries), new Set(entries), { prototype: true })).to.be.false();
+        expect(Hoek.deepEqual(new PrivateSet(), new PrivateSet(entries))).to.be.false();
+        expect(Hoek.deepEqual(new PrivateSet(entries), new PrivateSet())).to.be.false();
+
+        class LockableSet extends Set {
+
+            constructor(values, locked = true) {
+
+                super(values);
+                this.locked = locked;
+            }
+
+            has() {
+
+                if (this.locked) {
+                    throw new Error('not allowed');
+                }
+            }
+        }
+
+        expect(Hoek.deepEqual(new LockableSet(), new LockableSet())).to.be.true();
+        expect(Hoek.deepEqual(new LockableSet(entries), new LockableSet(entries))).to.be.true();
+        expect(Hoek.deepEqual(new LockableSet(entries, false), new LockableSet(entries, false))).to.be.true();
+        expect(Hoek.deepEqual(new LockableSet(entries, true), new LockableSet(entries, false))).to.be.false();
+        expect(Hoek.deepEqual(new LockableSet(entries, false), new LockableSet(entries, true))).to.be.false();
+        expect(Hoek.deepEqual(new LockableSet(entries), new Set(entries), { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(new LockableSet(entries), new PrivateSet(entries), { prototype: false })).to.be.false();
+    });
+
     it('compares maps', () => {
 
         const item1 = { key: 'value1' };
@@ -972,6 +1015,49 @@ describe('deepEqual()', () => {
         });
         expect(Hoek.deepEqual(maps[0], maps[1])).to.be.true();
         expect(Hoek.deepEqual(maps[0], new Map())).to.be.false();
+    });
+
+    it('compares extended maps', () => {
+
+        class PrivateMap extends Map {
+
+            get() {
+
+                throw new Error('not allowed');
+            }
+        }
+
+        const entries = [['a', 1], ['b', undefined]];
+        expect(Hoek.deepEqual(new PrivateMap(), new PrivateMap())).to.be.true();
+        expect(Hoek.deepEqual(new PrivateMap(entries), new PrivateMap(entries))).to.be.true();
+        expect(Hoek.deepEqual(new PrivateMap(entries), new Map(entries), { prototype: false })).to.be.true();
+        expect(Hoek.deepEqual(new PrivateMap(entries), new Map(entries), { prototype: true })).to.be.false();
+        expect(Hoek.deepEqual(new PrivateMap(), new PrivateMap(entries))).to.be.false();
+        expect(Hoek.deepEqual(new PrivateMap(entries), new PrivateMap())).to.be.false();
+
+        class LockableMap extends Map {
+
+            constructor(kvs, locked = true) {
+
+                super(kvs);
+                this.locked = locked;
+            }
+
+            get() {
+
+                if (this.locked) {
+                    throw new Error('not allowed');
+                }
+            }
+        }
+
+        expect(Hoek.deepEqual(new LockableMap(), new LockableMap())).to.be.true();
+        expect(Hoek.deepEqual(new LockableMap(entries), new LockableMap(entries))).to.be.true();
+        expect(Hoek.deepEqual(new LockableMap(entries, false), new LockableMap(entries, false))).to.be.true();
+        expect(Hoek.deepEqual(new LockableMap(entries, true), new LockableMap(entries, false))).to.be.false();
+        expect(Hoek.deepEqual(new LockableMap(entries, false), new LockableMap(entries, true))).to.be.false();
+        expect(Hoek.deepEqual(new LockableMap(entries), new Map(entries), { prototype: false })).to.be.false();
+        expect(Hoek.deepEqual(new LockableMap(entries), new PrivateMap(entries), { prototype: false })).to.be.false();
     });
 
     it('compares promises', () => {
