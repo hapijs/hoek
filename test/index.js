@@ -2220,25 +2220,21 @@ describe('wait()', () => {
 
     it('delays for timeout ms', async () => {
 
-        // DO NOT USE Hoek.Bench() to time this, as its test depends on Hoek.wait()
-
-        const start = process.hrtime.bigint();
+        let timeout = false;
+        setTimeout(() => (timeout = true), 10);
         await Hoek.wait(10);
-        const end = process.hrtime.bigint();
 
-        expect(end - start).to.be.between(10_000_000, 20_000_000);
+        expect(timeout).to.be.true();
     });
 
     it('handles a return value', async () => {
 
-        // DO NOT USE Hoek.Bench() to time this, as its test depends on Hoek.wait()
-
         const uniqueValue = {};
-        const start = process.hrtime.bigint();
+        let timeout = false;
+        setTimeout(() => (timeout = true), 10);
         const returnValue = await Hoek.wait(10, uniqueValue);
-        const end = process.hrtime.bigint();
 
-        expect(end - start).to.be.between(10_000_000, 20_000_000);
+        expect(timeout).to.be.true();
         expect(returnValue).to.shallow.equal(uniqueValue);
     });
 
