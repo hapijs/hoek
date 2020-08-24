@@ -305,6 +305,7 @@ await Hoek.wait(123);
 
 expect.type<Promise<void>>(Hoek.wait());
 expect.type<void>(await Hoek.wait(100));
+expect.type<Promise<string>>(Hoek.wait(100, 'ok'));
 
 expect.error(Hoek.wait({}));
 // $lab:types:on$
