@@ -2220,22 +2220,28 @@ describe('wait()', () => {
 
     it('delays for timeout ms', async () => {
 
-        let timeout = false;
-        setTimeout(() => (timeout = true), 10);
-        await Hoek.wait(10);
+        const timeout = {};
+        setTimeout(() => (timeout.before = true), 10);
+        const wait = Hoek.wait(10);
+        setTimeout(() => (timeout.after = true), 10);
 
-        expect(timeout).to.be.true();
+        await wait;
+
+        expect(timeout.before).to.be.true();
+        expect(timeout.after).to.be.undefined();
     });
 
     it('handles a return value', async () => {
 
         const uniqueValue = {};
-        let timeout = false;
-        setTimeout(() => (timeout = true), 10);
-        const returnValue = await Hoek.wait(10, uniqueValue);
+        const timeout = {};
+        setTimeout(() => (timeout.before = true), 10);
+        const wait = Hoek.wait(10, uniqueValue);
+        setTimeout(() => (timeout.after = true), 10);
 
-        expect(timeout).to.be.true();
-        expect(returnValue).to.shallow.equal(uniqueValue);
+        expect(await wait).to.shallow.equal(uniqueValue);
+        expect(timeout.before).to.be.true();
+        expect(timeout.after).to.be.undefined();
     });
 
     it('undefined timeout resolves immediately', async () => {
