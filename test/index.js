@@ -639,24 +639,54 @@ describe('applyToDefaults()', () => {
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
     });
 
-    it('shallow copies the nested keys (null/undefined)', () => {
+    it('shallow copies the nested keys (falsy)', () => {
 
         const defaults = {
-            a: {
-                y: 1
+            _undefined: {
+                a: 1
             },
-            b: {
-                y: 2
+            _null: {
+                a: 2
+            },
+            _false: {
+                a: 3
+            },
+            _emptyString: {
+                a: 4
+            },
+            _zero: {
+                a: 5
+            },
+            _NaN: {
+                a: 6
             }
         };
 
         const source = {
-            a: undefined,
-            b: null
+            _undefined: undefined,
+            _null: null,
+            _false: false,
+            _emptyString: '',
+            _zero: 0,
+            _NaN: NaN
         };
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['a.y', 'b.y'] });
-        expect(merged).to.equal({ a: { y: 1 }, b: { y: 2 } });
+        const merged = Hoek.applyToDefaults(defaults, source, { shallow: [
+            '_undefined.a',
+            '_null.a',
+            '_false.a',
+            '_emptyString.a',
+            '_zero.a',
+            '_NaN.a'
+        ] });
+        expect(merged).to.equal({
+            _undefined: { a: 1 },
+            _null: { a: 2 },
+            _false: false,
+            _emptyString: '',
+            _zero: 0,
+            _NaN: NaN
+        });
     });
 
     it('shallow copies the listed keys in the defaults', () => {
