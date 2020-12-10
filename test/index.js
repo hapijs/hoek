@@ -639,9 +639,10 @@ describe('applyToDefaults()', () => {
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
     });
 
-    it('shallow copies the nested keys (falsy)', () => {
+    it('shallow copies the nested keys (non-object)', () => {
 
         const defaults = {
+            // All falsy values:
             _undefined: {
                 a: 1
             },
@@ -659,6 +660,19 @@ describe('applyToDefaults()', () => {
             },
             _NaN: {
                 a: 6
+            },
+            // Other non-object values:
+            _string: {
+                a: 7
+            },
+            _number: {
+                a: 8
+            },
+            _true: {
+                a: 9
+            },
+            _function: {
+                a: 10
             }
         };
 
@@ -668,7 +682,11 @@ describe('applyToDefaults()', () => {
             _false: false,
             _emptyString: '',
             _zero: 0,
-            _NaN: NaN
+            _NaN: NaN,
+            _string: 'foo',
+            _number: 42,
+            _true: true,
+            _function: () => {}
         };
 
         const merged = Hoek.applyToDefaults(defaults, source, { shallow: [
@@ -677,7 +695,11 @@ describe('applyToDefaults()', () => {
             '_false.a',
             '_emptyString.a',
             '_zero.a',
-            '_NaN.a'
+            '_NaN.a',
+            '_string.a',
+            '_number.a',
+            '_true.a',
+            '_function.a'
         ] });
         expect(merged).to.equal({
             _undefined: { a: 1 },
@@ -685,7 +707,11 @@ describe('applyToDefaults()', () => {
             _false: false,
             _emptyString: '',
             _zero: 0,
-            _NaN: NaN
+            _NaN: NaN,
+            _string: 'foo',
+            _number: 42,
+            _true: true,
+            _function: source._function
         });
     });
 
