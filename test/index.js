@@ -846,6 +846,16 @@ describe('applyToDefaults()', () => {
         expect(merged.a).to.shallow.equal(source.a);
         expect(merged.a).to.not.equal(defaults.a);
     });
+
+    it('should respect nullOverride when shallow is used', () => {
+
+        const defaults = { host: 'localhost', port: 8000 };
+        const source = { host: null, port: 8080 };
+
+        const result = Hoek.applyToDefaults(defaults, source, { nullOverride: true, shallow: [] });
+        expect(result.host).to.equal(null);
+        expect(result.port).to.equal(8080);
+    });
 });
 
 describe('deepEqual()', () => {
