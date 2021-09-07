@@ -265,9 +265,8 @@ Replaces string parameters (`{name}`) with their corresponding object key values
 - `options` - optional [`reach()`](#reachobj-chain-options) options.
 
 ```javascript
-
 const template = '1+{a.b.c}=2';
-const obj = {a : {b : { c : 1}}};
+const obj = { a: { b: { c: 1 } } };
 
 Hoek.reachTemplate(obj, template); // returns '1+1=2'
 ```
