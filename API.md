@@ -266,10 +266,10 @@ Replaces string parameters (`{name}`) with their corresponding object key values
 
 ```javascript
 
-const chain = 'a.b.c';
+const template = '1+{a.b.c}=2';
 const obj = {a : {b : { c : 1}}};
 
-Hoek.reachTemplate(obj, '1+{a.b.c}=2'); // returns '1+1=2'
+Hoek.reachTemplate(obj, template); // returns '1+1=2'
 ```
 
 #### stringify(...args)
