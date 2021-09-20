@@ -2069,6 +2069,30 @@ describe('reachTemplate()', () => {
 
         expect(Hoek.reachTemplate(obj, template, '/')).to.equal('4:9:1::');
     });
+
+    it('isn\'t prone to ReDoS given an adversarial template', () => {
+
+        const sizes = [0, 1, 2, 3, 4]; // Should be evenly-spaced
+        const times = [];
+        const diffs = [];
+
+        for (const size of sizes) {
+            const start = Date.now();
+            Hoek.reachTemplate({}, '{'.repeat(size * 10000));
+            times.push(Date.now() - start);
+        }
+
+        for (let i = 1; i < times.length; ++i) {
+            diffs.push(times[i] - times[i - 1]);
+        }
+
+        // Under ReDoS, as the size of the input increases the timing accelerates upwards,
+        // i.e. each timing diff would be greater than the last.
+
+        const diffsMonotonic = diffs[0] < diffs[1] && diffs[1] < diffs[2] && diffs[2] < diffs[3];
+
+        expect(diffsMonotonic, 'Timing diffs monotonic').to.be.false();
+    });
 });
 
 describe('assert()', () => {
