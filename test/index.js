@@ -2141,7 +2141,7 @@ describe('assert()', () => {
 
         expect(() => {
 
-            Hoek.assert(false, 'This', 'is', new Error('spinal'), new Error('tap'));
+            Hoek.assert(false, new Error('This'), 'is', 'spinal', new Error('tap'));
         }).to.throw('This is spinal tap');
     });
 
