@@ -2341,6 +2341,87 @@ describe('wait()', () => {
         expect(timeout.after).to.be.undefined();
     });
 
+    it('delays for timeout ms as bigint', async () => {
+
+        const timeout = {};
+        setTimeout(() => (timeout.before = true), 10);
+        const wait = Hoek.wait(10n);
+        setTimeout(() => (timeout.after = true), 10);
+
+        await wait;
+
+        expect(timeout.before).to.be.true();
+        expect(timeout.after).to.be.undefined();
+    });
+
+    it('handles timeouts >= 2^31', async () => {
+
+        const flow = [];
+        let no = 0;
+
+        const fakeTimeout = function (cb, time) {
+
+            const timer = ++no;
+
+            flow.push(`CALL(${timer}): ${time}`);
+            setImmediate(() => {
+
+                flow.push(`PRE(${timer})`);
+                cb();
+                flow.push(`POST(${timer})`);
+            });
+        };
+
+        await Hoek.wait(2 ** 31, null, { setTimeout: fakeTimeout });
+        flow.push('DONE1');
+        await Hoek.wait(2 ** 32 + 2 ** 30, null, { setTimeout: fakeTimeout });
+        flow.push('DONE2');
+
+        expect(flow).to.equal([
+            'CALL(1): 2147483647',
+            'PRE(1)',
+            'CALL(2): 1',
+            'POST(1)',
+            'PRE(2)',
+            'POST(2)',
+            'DONE1',
+            'CALL(3): 2147483647',
+            'PRE(3)',
+            'CALL(4): 2147483647',
+            'POST(3)',
+            'PRE(4)',
+            'CALL(5): 1073741826',
+            'POST(4)',
+            'PRE(5)',
+            'POST(5)',
+            'DONE2'
+        ]);
+    });
+
+    it('returns never resolving promise when timeout >= Number.MAX_SAFE_INTEGER', async () => {
+
+        let calls = 0;
+        const fakeTimeout = function (cb) {
+
+            ++calls;
+            process.nextTick(cb);
+        };
+
+        await Hoek.wait(2 ** 31 - 1, null, { setTimeout: fakeTimeout });
+        expect(calls).to.equal(1);
+
+        const waited = Symbol('waited');
+
+        const result = await Promise.race([
+            Hoek.wait(1, waited),
+            Hoek.wait(Number.MAX_SAFE_INTEGER, null, { setTimeout: fakeTimeout }),
+            Hoek.wait(Infinity, null, { setTimeout: fakeTimeout })
+        ]);
+
+        expect(result).to.be.equal(waited);
+        expect(calls).to.equal(1);
+    });
+
     it('handles a return value', async () => {
 
         const uniqueValue = {};
@@ -2380,7 +2461,6 @@ describe('wait()', () => {
 
         await expect(() => Hoek.wait({})).to.throw();
         await expect(() => Hoek.wait(Symbol('hi'))).to.throw();
-        await expect(() => Hoek.wait(BigInt(10))).to.throw();
     });
 });
 
