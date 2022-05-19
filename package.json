@@ -5,6 +5,34 @@
   "repository": "git://github.com/hapijs/hoek",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./applyToDefaults": "./lib/applyToDefaults.js",
+    "./assert": "./lib/assert.js",
+    "./assertError": "./lib/assertError.js",
+    "./bench": "./lib/bench.js",
+    "./block": "./lib/block.js",
+    "./clone": "./lib/clone.js",
+    "./contain": "./lib/contain.js",
+    "./deepEqual": "./lib/deepEqual.js",
+    "./escapeHeaderAttribute": "./lib/escapeHeaderAttribute.js",
+    "./escapeHtml": "./lib/escapeHtml.js",
+    "./escapeJson": "./lib/escapeJson.js",
+    "./escapeRegex": "./lib/escapeRegex.js",
+    "./flatten": "./lib/flatten.js",
+    "./ignore": "./lib/ignore.js",
+    "./intersect": "./lib/intersect.js",
+    "./isPromise": "./lib/isPromise.js",
+    "./merge": "./lib/merge.js",
+    "./once": "./lib/once.js",
+    "./reach": "./lib/reach.js",
+    "./reachTemplate": "./lib/reachTemplate.js",
+    "./stringify": "./lib/stringify.js",
+    "./wait": "./lib/wait.js"
+  },
   "keywords": [
     "utilities"
   ],
