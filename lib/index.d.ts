@@ -6,7 +6,7 @@
  *
  * @param obj - The value being compared.
  * @param ref - The reference value used for comparison.
- * 
+ *
  * @return true when the two values are equal, otherwise false.
  */
 export function deepEqual(obj: any, ref: any, options?: deepEqual.Options): boolean;
@@ -329,6 +329,12 @@ export function reachTemplate(obj: object | null, template: string, options?: re
 export function assert(condition: any, error: Error): void;
 
 
+export class AssertError extends Error {
+
+    constructor(args: (string | Error | any)[]);
+}
+
+
 /**
  * Throw an error if condition is falsy.
  *
@@ -448,9 +454,9 @@ export function block(): Promise<void>;
 
 /**
  * Determines if an object is a promise.
- * 
+ *
  * @param promise - the object tested.
- * 
+ *
  * @returns true if the object is a promise, otherwise false.
  */
 export function isPromise(promise: any): boolean;

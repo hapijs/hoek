@@ -20,6 +20,7 @@ describe('import()', () => {
     it('exposes all methods and classes as named imports', () => {
 
         expect(Object.keys(Hoek)).to.equal([
+            'AssertError',
             'Bench',
             'Error',
             'applyToDefaults',
