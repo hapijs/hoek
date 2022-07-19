@@ -326,7 +326,7 @@ export function reachTemplate(obj: object | null, template: string, options?: re
  *
  * @return Does not return a value but throws if the `condition` is falsy.
  */
-export function assert(condition: any, error: Error): void;
+export function assert(condition: any, error: Error): asserts condition;
 
 
 /**
@@ -337,7 +337,16 @@ export function assert(condition: any, error: Error): void;
  *
  * @return Does not return a value but throws if the `condition` is falsy.
  */
-export function assert(condition: any, ...args: any): void;
+export function assert(condition: any, ...args: any): asserts condition;
+
+
+/**
+ * Assertion Error as thrown from Hoek.assert().
+ */
+export class AssertError extends Error {
+
+    name: 'AssertError';
+}
 
 
 /**

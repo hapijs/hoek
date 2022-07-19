@@ -348,3 +348,13 @@ function xor(input: Hoek.ts.XOR<X, Y>): number {
 xor({ a: 1 });
 xor({ b: 2 });
 expect.error(xor({ a: 1, b: 2 }));
+
+// AssertError
+
+expect.type<Hoek.AssertError>(new Hoek.AssertError());
+expect.type<Hoek.AssertError>(new Hoek.AssertError('fail'));
+expect.type<'AssertError'>(new Hoek.AssertError().name);
+expect.type<string>(new Hoek.AssertError().message);
+
+expect.error(new Hoek.AssertError(new Error()));
+expect.error(new Hoek.AssertError('fail', 'again'));
