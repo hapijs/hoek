@@ -337,7 +337,7 @@ export function assert(condition: any, error: Error): asserts condition;
  *
  * @return Does not return a value but throws if the `condition` is falsy.
  */
-export function assert(condition: any, ...args: any): void;
+export function assert(condition: any, ...args: any): asserts condition;
 
 
 /**
