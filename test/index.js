@@ -2102,7 +2102,7 @@ describe('assert()', () => {
         expect(() => {
 
             Hoek.assert(false, 'my error message');
-        }).to.throw('my error message');
+        }).to.throw(Hoek.AssertError, 'my error message');
     });
 
     it('throws an Error when using assert in a test with no message', () => {
@@ -2110,7 +2110,7 @@ describe('assert()', () => {
         expect(() => {
 
             Hoek.assert(false);
-        }).to.throw('Unknown error');
+        }).to.throw(Hoek.AssertError, 'Unknown error');
     });
 
     it('throws an Error when using assert in a test with multipart message', () => {
@@ -2118,7 +2118,7 @@ describe('assert()', () => {
         expect(() => {
 
             Hoek.assert(false, 'This', 'is', 'my message');
-        }).to.throw('This is my message');
+        }).to.throw(Hoek.AssertError, 'This is my message');
     });
 
     it('throws an Error when using assert in a test with multipart message (empty)', () => {
@@ -2126,7 +2126,7 @@ describe('assert()', () => {
         expect(() => {
 
             Hoek.assert(false, 'This', 'is', '', 'my message');
-        }).to.throw('This is my message');
+        }).to.throw(Hoek.AssertError, 'This is my message');
     });
 
     it('throws an Error when using assert in a test with object message', () => {
@@ -2134,7 +2134,7 @@ describe('assert()', () => {
         expect(() => {
 
             Hoek.assert(false, 'This', 'is', { spinal: 'tap' });
-        }).to.throw('This is {"spinal":"tap"}');
+        }).to.throw(Hoek.AssertError, 'This is {"spinal":"tap"}');
     });
 
     it('throws an Error when using assert in a test with multipart string and error messages', () => {
@@ -2142,13 +2142,13 @@ describe('assert()', () => {
         expect(() => {
 
             Hoek.assert(false, new Error('This'), 'is', 'spinal', new Error('tap'));
-        }).to.throw('This is spinal tap');
+        }).to.throw(Hoek.AssertError, 'This is spinal tap');
     });
 
     it('throws an Error when using assert in a test with error object message', () => {
 
-        const err = new Error('This is spinal tap');
-        const got = expect(() => Hoek.assert(false, err)).to.throw('This is spinal tap');
+        const err = new TypeError('This is spinal tap');
+        const got = expect(() => Hoek.assert(false, err)).to.throw(TypeError, 'This is spinal tap');
         expect(got).to.shallow.equal(err);
     });
 
@@ -2169,6 +2169,34 @@ describe('assert()', () => {
             expect(err).to.equal(error);  // should be the same reference
             expect(err).to.not.shallow.equal(error2); // error with the same message should not match
         }
+    });
+});
+
+describe('AssertError', () => {
+
+    it('takes an optional message', () => {
+
+        expect(new Hoek.AssertError().message).to.equal('Unknown error');
+        expect(new Hoek.AssertError(null).message).to.equal('Unknown error');
+        expect(new Hoek.AssertError('msg').message).to.equal('msg');
+    });
+
+    it('has AssertError name property', () => {
+
+        expect(new Hoek.AssertError().name).to.equal('AssertError');
+        expect(new Hoek.AssertError('msg').name).to.equal('AssertError');
+    });
+
+    it('uses ctor argument to hide stack', { skip: typeof Error.captureStackTrace !== 'function' }, () => {
+
+        const parentFn = () => {
+
+            throw new Hoek.AssertError('msg', parentFn);
+        };
+
+        const err = expect(parentFn).to.throw(Hoek.AssertError);
+
+        expect(err.stack).to.not.contain('parentFn');
     });
 });
 

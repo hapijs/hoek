@@ -341,6 +341,15 @@ export function assert(condition: any, ...args: any): asserts condition;
 
 
 /**
+ * Assertion Error as thrown from Hoek.assert().
+ */
+export class AssertError extends Error {
+
+    name: 'AssertError';
+}
+
+
+/**
  * A benchmarking timer, using the internal node clock for maximum accuracy.
  */
 export class Bench {
