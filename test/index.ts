@@ -1,9 +1,13 @@
 import * as Hoek from '..';
 import * as Lab from '@hapi/lab';
+import deepEqual = require('../lib/deepEqual');
 
 
 const { expect } = Lab.types;
 
+// Direct module import
+expect.type<Function>(deepEqual);
+expect.type<boolean>(deepEqual(1, 2));
 
 interface Foo {
     a?: number;
