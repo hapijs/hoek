@@ -694,7 +694,32 @@ describe('clone()', () => {
         expect(b).to.equal(a);
         expect(b).to.not.shallow.equal(a);
         expect(b).to.be.instanceOf(CustomError);
-        expect(b.stack).to.equal(a.stack);     // Explicitly validate the .stack getters
+        expect(b.stack).to.equal(a.stack);                 // Explicitly validate the .stack getters
+    });
+
+    it('clones Error with cause', () => {
+
+        const a = new TypeError('bad', { cause: new Error('embedded') });
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
+        expect(b).to.be.instanceOf(TypeError);
+        expect(b.stack).to.equal(a.stack);                 // Explicitly validate the .stack getters
+        expect(b.cause.stack).to.equal(a.cause.stack);     // Explicitly validate the .stack getters
+    });
+
+    it('clones Error with error message', () => {
+
+        const a = new Error();
+        a.message = new Error('message');
+
+        const b = Hoek.clone(a);
+
+        //expect(b).to.equal(a);                           // deepEqual() always compares message using ===
+        expect(b.message).to.equal(a.message);
+        expect(b.message).to.not.shallow.equal(a.message);
+        expect(b.stack).to.equal(a.stack);
     });
 
     it('cloned Error handles late stack update', () => {
