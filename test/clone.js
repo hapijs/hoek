@@ -680,6 +680,34 @@ describe('clone()', () => {
         expect(b.get(nestedObj)).to.equal(a.get(nestedObj));
     });
 
+    it('clones Error', () => {
+
+        class CustomError extends Error {
+            name = 'CustomError';
+        }
+
+        const a = new CustomError('bad');
+        a.test = Symbol('test');
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
+        expect(b).to.be.instanceOf(CustomError);
+        expect(b.stack).to.equal(a.stack);     // Explicitly validate the .stack getters
+    });
+
+    it('cloned Error handles late stack update', () => {
+
+        const a = new Error('bad');
+        const b = Hoek.clone(a);
+
+        a.stack = 'late update';
+
+        expect(b).to.equal(a);
+        expect(b.stack).to.not.equal(a.stack);
+    });
+
     it('ignores symbols', () => {
 
         const sym = Symbol();
