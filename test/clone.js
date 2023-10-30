@@ -706,7 +706,7 @@ describe('clone()', () => {
         expect(b.stack).to.equal(a.stack);                 // Explicitly validate the .stack getters
     });
 
-    it('clones Error with cause', { skip: process.version.startsWith('v14') }, () => {
+    it('clones Error with cause', () => {
 
         const a = new TypeError('bad', { cause: new Error('embedded') });
         const b = Hoek.clone(a);
