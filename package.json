@@ -1,60 +1,44 @@
 {
-  "name": "@hapi/hoek",
-  "description": "General purpose node utilities",
-  "version": "11.0.7",
-  "repository": "git://github.com/hapijs/hoek",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.js",
-      "types": "./lib/index.d.ts"
+    "name": "@hapi/hoek",
+    "version": "11.0.7",
+    "description": "General purpose node utilities",
+    "keywords": [
+        "utilities"
+    ],
+    "license": "BSD-3-Clause",
+    "repository": "git://github.com/hapijs/hoek",
+    "files": [
+        "dist",
+        "API.md",
+        "README.md"
+    ],
+    "type": "module",
+    "types": "./dist/index.d.mts",
+    "exports": {
+        ".": "./dist/index.mjs",
+        "./package.json": "./package.json"
     },
-    "./applyToDefaults": "./lib/applyToDefaults.js",
-    "./assert": "./lib/assert.js",
-    "./assertError": "./lib/assertError.js",
-    "./bench": "./lib/bench.js",
-    "./block": "./lib/block.js",
-    "./clone": "./lib/clone.js",
-    "./contain": "./lib/contain.js",
-    "./deepEqual": "./lib/deepEqual.js",
-    "./escapeHeaderAttribute": "./lib/escapeHeaderAttribute.js",
-    "./escapeHtml": "./lib/escapeHtml.js",
-    "./escapeJson": "./lib/escapeJson.js",
-    "./escapeRegex": "./lib/escapeRegex.js",
-    "./flatten": "./lib/flatten.js",
-    "./ignore": "./lib/ignore.js",
-    "./intersect": "./lib/intersect.js",
-    "./isPromise": "./lib/isPromise.js",
-    "./merge": "./lib/merge.js",
-    "./once": "./lib/once.js",
-    "./reach": "./lib/reach.js",
-    "./reachTemplate": "./lib/reachTemplate.js",
-    "./stringify": "./lib/stringify.js",
-    "./wait": "./lib/wait.js"
-  },
-  "keywords": [
-    "utilities"
-  ],
-  "files": [
-    "lib"
-  ],
-  "eslintConfig": {
-    "extends": [
-      "plugin:@hapi/module"
-    ]
-  },
-  "devDependencies": {
-    "@hapi/code": "^9.0.3",
-    "@hapi/eslint-plugin": "^7.0.0",
-    "@hapi/lab": "^26.0.0",
-    "@types/node": "^18.19.59",
-    "typescript": "~5.6.3"
-  },
-  "scripts": {
-    "test": "lab -a @hapi/code -t 100 -L -Y",
-    "test-cov-html": "lab -a @hapi/code -t 100 -L -r html -o coverage.html"
-  },
-  "license": "BSD-3-Clause"
+    "scripts": {
+        "prepare": "node --run build",
+        "test": "vitest run --coverage",
+        "typecheck": "tsc --noEmit",
+        "lint": "oxlint",
+        "lint:fix": "oxlint --fix",
+        "fmt": "oxfmt --check",
+        "fmt:fix": "oxfmt",
+        "build": "tsdown"
+    },
+    "devDependencies": {
+        "@hapi/oxc-plugin": "^1.0.2",
+        "@types/node": "^22.20.1",
+        "@vitest/coverage-v8": "^4.1.10",
+        "oxfmt": "^0.61.0",
+        "oxlint": "^1.76.0",
+        "tsdown": "^0.22.14",
+        "typescript": "^6.0.3",
+        "vitest": "^4.1.10"
+    },
+    "engines": {
+        "node": ">=22"
+    }
 }
