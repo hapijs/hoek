@@ -680,6 +680,15 @@ describe('clone()', () => {
         expect(b.get(nestedObj)).to.equal(a.get(nestedObj));
     });
 
+    it('clones an URL', () => {
+
+        const a = new URL('https://hapi.dev/');
+        const b = Hoek.clone(a);
+
+        expect(b.href).to.equal(a.href);
+        expect(b).to.not.shallow.equal(a);
+    });
+
     it('ignores symbols', () => {
 
         const sym = Symbol();
