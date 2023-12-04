@@ -1154,6 +1154,15 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(a, new Promise(() => { }))).to.be.false();
     });
 
+    it('compares urls', () => {
+
+        const a = new URL('https://hapi.dev/');
+
+        expect(Hoek.deepEqual(a, a)).to.be.true();
+        expect(Hoek.deepEqual(a, new URL('https://hapi.dev/?new'))).to.be.false();
+        expect(Hoek.deepEqual(a, {}, { prototype: false })).to.be.false();
+    });
+
     it('compares buffers', () => {
 
         expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 2, 3]))).to.be.true();
