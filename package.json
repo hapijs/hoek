@@ -8,7 +8,8 @@
   "exports": {
     ".": {
       "import": "./lib/index.mjs",
-      "require": "./lib/index.js"
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
     },
     "./applyToDefaults": "./lib/applyToDefaults.js",
     "./assert": "./lib/assert.js",
