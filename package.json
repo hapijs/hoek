@@ -1,5 +1,5 @@
 {
-  "name": "@commercial/hoek",
+  "name": "hoek",
   "description": "General purpose node utilities",
   "version": "4.3.0",
   "repository": "git://github.com/hapijs/hoek",
