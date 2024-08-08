@@ -116,14 +116,14 @@ export namespace merge {
         /**
          * When true, array value from `source` is merged with the existing value in `target`.
          *
-         * @default false
+         * @default true
          */
         readonly mergeArrays?: boolean;
 
         /**
          * Compare symbol properties.
          *
-         * @default true
+         * @default undefined
          */
         readonly symbols?: boolean;
     }
