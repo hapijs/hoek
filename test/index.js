@@ -2359,7 +2359,7 @@ describe('isPromise()', () => {
         try {
             await Promise.all(items);
         }
-        catch (err) { }
+        catch { }
     });
 });
 
