@@ -886,4 +886,32 @@ describe('clone()', () => {
         const b = Hoek.clone(a);
         expect(b.x).to.not.exist();
     });
+
+    it('handles structuredClone not returning proper Error instances', { skip: typeof structuredClone !== 'function' }, () => {
+
+        // This can happen when running in a VM
+
+        const error = new Error('blam');
+
+        const origStructuredClone = structuredClone;
+        try {
+            structuredClone = function (obj) {
+
+                const clone = origStructuredClone.call(this, obj);
+                if (obj === error) {
+                    Object.setPrototypeOf(clone, Object);
+                }
+
+                return clone;
+            };
+
+            var cloned = Hoek.clone(error);
+        }
+        finally {
+            structuredClone = origStructuredClone;
+        }
+
+        expect(cloned).to.be.instanceOf(Error);
+        expect(cloned).to.equal(error);
+    });
 });
