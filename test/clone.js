@@ -689,6 +689,59 @@ describe('clone()', () => {
         expect(b).to.not.shallow.equal(a);
     });
 
+    it('clones Error', () => {
+
+        class CustomError extends Error {
+            name = 'CustomError';
+        }
+
+        const a = new CustomError('bad');
+        a.test = Symbol('test');
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
+        expect(b).to.be.instanceOf(CustomError);
+        expect(b.stack).to.equal(a.stack);                 // Explicitly validate the .stack getters
+    });
+
+    it('clones Error with cause', { skip: process.version.startsWith('v14') }, () => {
+
+        const a = new TypeError('bad', { cause: new Error('embedded') });
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b).to.not.shallow.equal(a);
+        expect(b).to.be.instanceOf(TypeError);
+        expect(b.stack).to.equal(a.stack);                 // Explicitly validate the .stack getters
+        expect(b.cause.stack).to.equal(a.cause.stack);     // Explicitly validate the .stack getters
+    });
+
+    it('clones Error with error message', () => {
+
+        const a = new Error();
+        a.message = new Error('message');
+
+        const b = Hoek.clone(a);
+
+        //expect(b).to.equal(a);                           // deepEqual() always compares message using ===
+        expect(b.message).to.equal(a.message);
+        expect(b.message).to.not.shallow.equal(a.message);
+        expect(b.stack).to.equal(a.stack);
+    });
+
+    it('cloned Error handles late stack update', () => {
+
+        const a = new Error('bad');
+        const b = Hoek.clone(a);
+
+        a.stack = 'late update';
+
+        expect(b).to.equal(a);
+        expect(b.stack).to.not.equal(a.stack);
+    });
+
     it('ignores symbols', () => {
 
         const sym = Symbol();
