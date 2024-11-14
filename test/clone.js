@@ -731,6 +731,35 @@ describe('clone()', () => {
         expect(b.stack).to.equal(a.stack);
     });
 
+    it('clones Error with function property', () => {
+
+        const a = new Error('hello');
+        a.fun = new Function();
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b.stack).to.equal(a.stack);
+    });
+
+    it('clones legacy extended Error with function property', () => {
+
+        const CustomError = function () {
+
+            Error.call(this);
+        };
+
+        Object.setPrototypeOf(CustomError.prototype, Error.prototype);
+
+        const a = new CustomError('hello');
+        a.fun = new Function();
+
+        const b = Hoek.clone(a);
+
+        expect(b).to.equal(a);
+        expect(b.stack).to.equal(a.stack);
+    });
+
     it('cloned Error handles late stack update', () => {
 
         const a = new Error('bad');
