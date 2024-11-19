@@ -1,23 +1,23 @@
-import * as Hoek from '..';
+import * as Hoek from '../lib';
 import * as Lab from '@hapi/lab';
-import deepEqual = require('../lib/deepEqual');
+
 
 
 const { expect } = Lab.types;
 
 // Direct module import
-expect.type<Function>(deepEqual);
-expect.type<boolean>(deepEqual(1, 2));
+expect.type<Function>(Hoek.deepEqual);
+expect.type<boolean>(Hoek.deepEqual(1, 2));
 
 interface Foo {
     a?: number;
     b?: string;
-};
+}
 
 interface Bar {
     b?: string;
     c?: boolean;
-};
+}
 
 
 // deepEqual()
@@ -33,7 +33,7 @@ expect.type<boolean>(Hoek.deepEqual(1, 2));
 expect.error(Hoek.deepEqual());
 expect.error(Hoek.deepEqual(1, 2, {}, 'x'));
 expect.error(Hoek.deepEqual({}, {}, { unknown: true }));
-expect.error(Hoek.deepEqual({}, {}, { skip: [1] }))
+expect.error(Hoek.deepEqual({}, {}, { skip: [1] }));
 
 
 // clone()
@@ -341,8 +341,8 @@ expect.error(Hoek.isPromise(1, 2));
 
 // ts
 
-interface X { a: number; };
-interface Y { b: number; };
+interface X { a: number; }
+interface Y { b: number; }
 
 function xor(input: Hoek.ts.XOR<X, Y>): number {
 

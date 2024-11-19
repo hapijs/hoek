@@ -1,45 +1,23 @@
-'use strict';
+export { applyToDefaults } from './applyToDefaults';
+export { assert } from './assert';
+export { AssertError } from './assertError';
+export { Bench } from './bench';
+export { block } from './block';
+export { clone } from './clone';
+export { contain } from './contain';
+export { deepEqual } from './deepEqual';
+export { escapeHeaderAttribute } from './escapeHeaderAttribute';
+export { escapeHtml } from './escapeHtml';
+export { escapeJson } from './escapeJson';
+export { escapeRegex } from './escapeRegex';
+export { flatten } from './flatten';
+export { ignore } from './ignore';
+export { intersect } from './intersect';
+export { isPromise } from './isPromise';
+export { merge } from './merge';
+export { once } from './once';
+export { reach } from './reach';
+export { reachTemplate } from './reachTemplate';
+export { stringify } from './stringify';
+export { wait } from './wait';
 
-exports.applyToDefaults = require('./applyToDefaults');
-
-exports.assert = require('./assert');
-
-exports.AssertError = require('./assertError');
-
-exports.Bench = require('./bench');
-
-exports.block = require('./block');
-
-exports.clone = require('./clone');
-
-exports.contain = require('./contain');
-
-exports.deepEqual = require('./deepEqual');
-
-exports.escapeHeaderAttribute = require('./escapeHeaderAttribute');
-
-exports.escapeHtml = require('./escapeHtml');
-
-exports.escapeJson = require('./escapeJson');
-
-exports.escapeRegex = require('./escapeRegex');
-
-exports.flatten = require('./flatten');
-
-exports.ignore = require('./ignore');
-
-exports.intersect = require('./intersect');
-
-exports.isPromise = require('./isPromise');
-
-exports.merge = require('./merge');
-
-exports.once = require('./once');
-
-exports.reach = require('./reach');
-
-exports.reachTemplate = require('./reachTemplate');
-
-exports.stringify = require('./stringify');
-
-exports.wait = require('./wait');

@@ -1,4 +1,10 @@
-export const keys = (obj: object, options: { symbols?:boolean } = {}) => {
+export const keys = <T extends object>(obj: T, options: { symbols?:boolean } = {}) => {
 
-    return options.symbols !== false ? Reflect.ownKeys(obj) : Object.getOwnPropertyNames(obj);  // Defaults to true
+    // Defaults to true
+    const res = options.symbols !== false
+        ? Reflect.ownKeys(obj)
+        : Object.getOwnPropertyNames(obj);
+
+
+    return res as (keyof T)[];
 };

@@ -1,14 +1,9 @@
-'use strict';
-
-const Util = require('util');
-
-const Code = require('@hapi/code');
-const Hoek = require('..');
-const Lab = require('@hapi/lab');
-
-
-const internals = {};
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import Util from 'util';
+import Code from '@hapi/code';
+import * as Hoek from '../lib';
+import Lab from '@hapi/lab';
+import { MergeTypes } from '../lib/merge';
 
 const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
@@ -42,7 +37,7 @@ describe('merge()', () => {
             d: [],
             [sym1]: true,
             [sym3]: true
-        };
+        } as any;
 
         const source = {
             c: {
@@ -76,7 +71,7 @@ describe('merge()', () => {
             d: [],
             [sym1]: true,
             [sym3]: true
-        };
+        } as any;
 
         const source = {
             c: {
@@ -103,7 +98,7 @@ describe('merge()', () => {
 
         const a = {
             x: ['n', 'm']
-        };
+        } as any;
 
         const b = {
             x: {
@@ -121,7 +116,7 @@ describe('merge()', () => {
 
         const a = {
             x: ['n', 'm']
-        };
+        } as any;
 
         const b = {
             x: {
@@ -137,7 +132,7 @@ describe('merge()', () => {
 
     it('merges from null prototype objects', () => {
 
-        const a = {};
+        const a = {} as any;
 
         const b = Object.create(null);
         b.x = true;
@@ -148,7 +143,7 @@ describe('merge()', () => {
 
     it('skips non-enumerable properties', () => {
 
-        const a = { x: 0 };
+        const a = { x: 0 } as any;
 
         const b = {};
         Object.defineProperty(b, 'x', {
@@ -162,7 +157,7 @@ describe('merge()', () => {
 
     it('does not throw if source is null', () => {
 
-        const a = {};
+        const a = {} as any;
         const b = null;
         let c = null;
 
@@ -176,7 +171,7 @@ describe('merge()', () => {
 
     it('does not throw if source is undefined', () => {
 
-        const a = {};
+        const a = {} as any;
         const b = undefined;
         let c = null;
 
@@ -192,7 +187,7 @@ describe('merge()', () => {
 
         expect(() => {
 
-            const a = {};
+            const a = {} as any;
             const b = 0;
 
             Hoek.merge(a, b);
@@ -214,7 +209,7 @@ describe('merge()', () => {
 
         expect(() => {
 
-            const a = {};
+            const a = {} as any;
             const b = [1, 2];
 
             Hoek.merge(a, b);
@@ -223,7 +218,7 @@ describe('merge()', () => {
 
     it('returns the same object when merging arrays', () => {
 
-        const a = [];
+        const a = [] as any[];
         const b = [1, 2];
 
         expect(Hoek.merge(a, b)).to.equal(a);
@@ -231,7 +226,7 @@ describe('merge()', () => {
 
     it('combines an empty object with a non-empty object', () => {
 
-        const a = {};
+        const a = {} as any;
         const b = nestedObj;
 
         const c = Hoek.merge(a, b);
@@ -245,7 +240,7 @@ describe('merge()', () => {
         const b = { x: null, z: 4, v: 0, t: { u: 6 }, s: undefined, m: '123' };
 
         const c = Hoek.merge(a, b);
-        expect(c.x).to.equal(null);
+        expect(c.x).to.equal(null as never);
         expect(c.y).to.equal(2);
         expect(c.z).to.equal(4);
         expect(c.v).to.equal(0);
@@ -282,7 +277,7 @@ describe('merge()', () => {
         const a = { x: new Date(1378776452757) };
 
         const b = Hoek.merge({ x: {} }, a);
-        expect(a.x.getTime()).to.equal(b.x.getTime());
+        expect(a.x.getTime()).to.equal((b.x as Date).getTime());
     });
 
     it('overrides Buffer', () => {
@@ -326,7 +321,7 @@ describe('applyToDefaults()', () => {
 
         expect(() => {
 
-            Hoek.applyToDefaults(null, {});
+            Hoek.applyToDefaults(null as never, {});
         }).to.throw('Invalid defaults value: must be an object');
     });
 
@@ -334,12 +329,12 @@ describe('applyToDefaults()', () => {
 
         expect(() => {
 
-            Hoek.applyToDefaults({}, {}, false);
+            Hoek.applyToDefaults({}, {}, false as never);
         }).to.throw('Invalid options: must be an object');
 
         expect(() => {
 
-            Hoek.applyToDefaults({}, {}, 123);
+            Hoek.applyToDefaults({}, {}, 123 as never);
         }).to.throw('Invalid options: must be an object');
     });
 
@@ -373,7 +368,7 @@ describe('applyToDefaults()', () => {
             g: 'test'
         };
 
-        const result = Hoek.applyToDefaults(defaults, null);
+        const result = Hoek.applyToDefaults(defaults, null as never);
         expect(result).to.equal(null);
     });
 
@@ -435,8 +430,10 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const result = Hoek.applyToDefaults(defaults, obj);
-        expect(result.c.e).to.equal([4]);
+        type D = MergeTypes<typeof defaults, typeof obj>;
+
+        const result = Hoek.applyToDefaults<D>(defaults, obj)!;
+        expect(result.c!.e).to.equal([4]);
         expect(result.a).to.equal(1);
         expect(result.b).to.equal(2);
         expect(result.f).to.equal(0);
@@ -467,8 +464,10 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const result = Hoek.applyToDefaults(defaults, obj, { nullOverride: true });
-        expect(result.c.e).to.equal([4]);
+        type D = MergeTypes<typeof defaults, typeof obj>;
+
+        const result = Hoek.applyToDefaults<D>(defaults, obj, { nullOverride: true })!;
+        expect(result.c!.e).to.equal([4]);
         expect(result.a).to.equal(null);
         expect(result.b).to.equal(2);
         expect(result.f).to.equal(0);
@@ -498,7 +497,9 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['a'] });
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: ['a'] })!;
         expect(merged).to.equal({ a: { b: 4 }, c: { d: 6, g: 1, f: 7 } });
         expect(merged.a).to.shallow.equal(source.a);
         expect(merged.a).to.not.equal(defaults.a);
@@ -530,9 +531,11 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: ['c.g'] })!;
         expect(merged).to.equal({ a: { b: 4 }, c: { d: 6, g: { h: 8 } } });
-        expect(merged.c.g).to.shallow.equal(source.c.g);
+        expect(merged.c!.g).to.shallow.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (missing)', () => {
@@ -554,9 +557,11 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: ['c.g'] })!;
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
-        expect(merged.c.g).to.shallow.equal(source.c.g);
+        expect(merged.c!.g).to.shallow.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (override)', () => {
@@ -583,9 +588,11 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g'] });
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: ['c.g'] })!;
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { h: 8 } } });
-        expect(merged.c.g).to.shallow.equal(source.c.g);
+        expect(merged.c!.g).to.shallow.equal(source.c.g);
     });
 
     it('shallow copies the nested keys (deeper)', () => {
@@ -609,9 +616,11 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['c.g.r'] });
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: ['c.g.r'] })!;
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
-        expect(merged.c.g.r).to.shallow.equal(source.c.g.r);
+        expect(merged.c!.g.r).to.shallow.equal(source.c.g.r);
     });
 
     it('shallow copies the nested keys (not present)', () => {
@@ -635,7 +644,9 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['x.y'] });
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: ['x.y'] });
         expect(merged).to.equal({ a: { b: 4 }, c: { g: { r: { h: 8 } } } });
     });
 
@@ -689,7 +700,9 @@ describe('applyToDefaults()', () => {
             _function: () => {}
         };
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: [
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: [
             '_undefined.a',
             '_null.a',
             '_false.a',
@@ -723,7 +736,7 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, {}, { shallow: ['a'] });
+        const merged = Hoek.applyToDefaults(defaults, {}, { shallow: ['a'] })!;
         expect(merged.a).to.shallow.equal(defaults.a);
     });
 
@@ -735,7 +748,7 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, true, { shallow: ['a'] });
+        const merged = Hoek.applyToDefaults(defaults, true, { shallow: ['a'] })!;
         expect(merged.a).to.shallow.equal(defaults.a);
     });
 
@@ -768,7 +781,10 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, options, { shallow: ['c'] });
+        type D = MergeTypes<typeof defaults, typeof options>;
+
+
+        const merged = Hoek.applyToDefaults<D>(defaults, options, { shallow: ['c'] })!;
         expect(merged).to.equal({ a: { b: 4 }, c: { d: 2 } });
         expect(merged.c).to.shallow.equal(options.c);
 
@@ -777,7 +793,7 @@ describe('applyToDefaults()', () => {
 
     it('throws on missing defaults', () => {
 
-        expect(() => Hoek.applyToDefaults(null, {}, { shallow: ['a'] })).to.throw('Invalid defaults value: must be an object');
+        expect(() => Hoek.applyToDefaults(null as never, {}, { shallow: ['a'] })).to.throw('Invalid defaults value: must be an object');
     });
 
     it('throws on invalid defaults', () => {
@@ -792,7 +808,7 @@ describe('applyToDefaults()', () => {
 
     it('throws on missing keys', () => {
 
-        expect(() => Hoek.applyToDefaults({}, true, { shallow: 123 })).to.throw('Invalid keys');
+        expect(() => Hoek.applyToDefaults({}, true, { shallow: 123 } as never)).to.throw('Invalid keys');
     });
 
     it('handles array keys', () => {
@@ -824,9 +840,11 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const merged = Hoek.applyToDefaults(defaults, options, { shallow: [['c', sym]] });
+        type D = MergeTypes<typeof defaults, typeof options>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, options, { shallow: [['c', sym]] })!;
         expect(merged).to.equal({ a: { b: 4, e: 3 }, c: { d: 6, [sym]: { g: 1 } } });
-        expect(merged.c[sym]).to.shallow.equal(options.c[sym]);
+        expect(merged.c![sym]).to.shallow.equal(options.c[sym]);
     });
 
     it('does not modify shallow entries in source', () => {
@@ -837,11 +855,13 @@ describe('applyToDefaults()', () => {
             }
         };
 
-        const source = {};
+        const source = {} as { a?: { b: number } };
 
         Object.defineProperty(source, 'a', { value: { b: 4 } });
 
-        const merged = Hoek.applyToDefaults(defaults, source, { shallow: ['a'] });
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: ['a'] })!;
         expect(merged).to.equal({ a: { b: 4 } });
         expect(merged.a).to.shallow.equal(source.a);
         expect(merged.a).to.not.equal(defaults.a);
@@ -852,7 +872,9 @@ describe('applyToDefaults()', () => {
         const defaults = { host: 'localhost', port: 8000 };
         const source = { host: null, port: 8080 };
 
-        const result = Hoek.applyToDefaults(defaults, source, { nullOverride: true, shallow: [] });
+        type D = MergeTypes<typeof defaults, typeof source>;
+
+        const result = Hoek.applyToDefaults<D>(defaults, source, { nullOverride: true, shallow: [] })!;
         expect(result.host).to.equal(null);
         expect(result.port).to.equal(8080);
     });
@@ -863,6 +885,7 @@ describe('deepEqual()', () => {
     it('compares identical references', () => {
 
         const x = {};
+
         expect(Hoek.deepEqual(x, x)).to.be.true();
     });
 
@@ -1023,11 +1046,11 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new WeakSet(), new WeakSet())).to.be.true();
         const obj = {};
         expect(Hoek.deepEqual(new WeakSet([obj]), new WeakSet())).to.be.true();
-        expect(Hoek.deepEqual(new WeakSet(), new Set()), { prototype: false }).to.be.false();
+        expect(Hoek.deepEqual(new WeakSet(), new Set(), { prototype: false })).to.be.false();
 
         const sets = [new Set(), new Set()].map((set) => {
 
-            set.modified = true;
+            (set as any).modified = true;
             return set;
         });
         expect(Hoek.deepEqual(sets[0], sets[1])).to.be.true();
@@ -1038,7 +1061,7 @@ describe('deepEqual()', () => {
 
         class PrivateSet extends Set {
 
-            has() {
+            has(): boolean {
 
                 throw new Error('not allowed');
             }
@@ -1054,17 +1077,21 @@ describe('deepEqual()', () => {
 
         class LockableSet extends Set {
 
-            constructor(values, locked = true) {
+            locked: boolean;
+
+            constructor(values?: any[], locked = true) {
 
                 super(values);
                 this.locked = locked;
             }
 
-            has() {
+            has(key: any) {
 
                 if (this.locked) {
                     throw new Error('not allowed');
                 }
+
+                return super.has(key);
             }
         }
 
@@ -1092,11 +1119,11 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new Map([[{}, 1]]), new Map([[{}, 1]]))).to.be.false();
         expect(Hoek.deepEqual(new WeakMap(), new WeakMap())).to.be.true();
         expect(Hoek.deepEqual(new WeakMap([[item1, 1]]), new WeakMap())).to.be.true();
-        expect(Hoek.deepEqual(new WeakMap(), new Map()), { prototype: false }).to.be.false();
+        expect(Hoek.deepEqual(new WeakMap(), new Map(), { prototype: false })).to.be.false();
 
         const maps = [new Map(), new Map()].map((map) => {
 
-            map.modified = true;
+            (map as any).modified = true;
             return map;
         });
         expect(Hoek.deepEqual(maps[0], maps[1])).to.be.true();
@@ -1107,13 +1134,20 @@ describe('deepEqual()', () => {
 
         class PrivateMap extends Map {
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            constructor(args?: any) {
+
+                super();
+            }
+
             get() {
 
                 throw new Error('not allowed');
             }
         }
 
-        const entries = [['a', 1], ['b', undefined]];
+        const entries = [['a', 1], ['b', undefined]] as const;
+
         expect(Hoek.deepEqual(new PrivateMap(), new PrivateMap())).to.be.true();
         expect(Hoek.deepEqual(new PrivateMap(entries), new PrivateMap(entries))).to.be.true();
         expect(Hoek.deepEqual(new PrivateMap(entries), new Map(entries), { prototype: false })).to.be.true();
@@ -1123,9 +1157,15 @@ describe('deepEqual()', () => {
 
         class LockableMap extends Map {
 
-            constructor(kvs, locked = true) {
+            locked: boolean;
 
+            constructor(kvs?: any, locked = true) {
+
+                // https://stackoverflow.com/questions/70677360/in-typescript-when-i-use-mymap-to-extends-map-but-it-s-show-expected-0-argument
+                // https://stackoverflow.com/questions/67631458/no-overload-matches-this-call-while-constructing-map-from-array
+                // @ts-expect-error - See above
                 super(kvs);
+
                 this.locked = locked;
             }
 
@@ -1267,7 +1307,7 @@ describe('deepEqual()', () => {
 
     it('handles circular dependency', () => {
 
-        const a = {};
+        const a = {} as any;
         a.x = a;
 
         const b = Hoek.clone(a);
@@ -1276,7 +1316,7 @@ describe('deepEqual()', () => {
 
     it('handles obj only circular dependency', () => {
 
-        const a = {};
+        const a = {} as any;
         a.x = a;
 
         const b = { x: {} };
@@ -1286,36 +1326,44 @@ describe('deepEqual()', () => {
 
     it('handles irregular circular dependency', () => {
 
-        const a = {};
+        const a = {} as any;
         a.x = a;
 
-        const b = { x: {} };
+        const b = { x: {} } as any;
+
         b.x.x = b;
 
-        const c = { x: { x: {} } };
+        const c = { x: { x: {} } } as any;
         c.x.x.x = c;
+
         expect(Hoek.deepEqual(a, b)).to.be.true();
         expect(Hoek.deepEqual(b, a)).to.be.true();
         expect(Hoek.deepEqual(a, c)).to.be.true();
         expect(Hoek.deepEqual(b, c)).to.be.true();
         expect(Hoek.deepEqual(c, a)).to.be.true();
         expect(Hoek.deepEqual(c, b)).to.be.true();
+
         b.x.y = 1;
+
         expect(Hoek.deepEqual(a, b)).to.be.false();
         expect(Hoek.deepEqual(b, a)).to.be.false();
     });
 
     it('handles cross circular dependency', () => {
 
-        const a = {};
-        const b = { x: {}, y: a };
+        const a = {} as any;
+        const b = { x: {}, y: a } as any;
+
         b.x.x = b;
         b.x.y = b.x;
         a.x = b;
         a.y = a;
+
         expect(Hoek.deepEqual(b, a)).to.be.true();
         expect(Hoek.deepEqual(a, b)).to.be.true();
+
         b.x.y = 1;
+
         expect(Hoek.deepEqual(b, a)).to.be.false();
         expect(Hoek.deepEqual(a, b)).to.be.false();
     });
@@ -1332,7 +1380,9 @@ describe('deepEqual()', () => {
 
         const throwing = class {
 
-            constructor(value) {
+            value: string;
+
+            constructor(value: string) {
 
                 this.value = value;
             }
@@ -1353,7 +1403,9 @@ describe('deepEqual()', () => {
 
         const identity = class {
 
-            constructor(value) {
+            value: string;
+
+            constructor(value: string) {
 
                 this.value = value;
             }
@@ -1372,15 +1424,26 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual({ value: 'a' }, new identity('a'), { prototype: false })).to.be.true();
     });
 
+
+    interface BaseItf {
+        value: string;
+        surprice?: number;
+    }
+
     it('skips enumerable properties on prototype chain', () => {
 
-        const base = function (value, surprice) {
+        const base: any = function (
+            this: BaseItf,
+            value: string,
+            surprice?: number
+        ) {
 
             this.value = value;
+
             if (surprice) {
                 this.surprice = surprice;
             }
-        };
+        } as any;
 
         Object.defineProperty(base.prototype, 'enum', {
             enumerable: true,
@@ -1399,15 +1462,20 @@ describe('deepEqual()', () => {
 
     it('skips non-enumerable properties', () => {
 
-        const base = function Base(value, surprice) {
+        const base: any = function Base(
+            this: BaseItf,
+            value: string,
+            surprice: number
+        ) {
 
             this.value = value;
+
             if (surprice) {
                 this.surprice = surprice;
             }
         };
 
-        const createObj = (...args) => {
+        const createObj = (...args: any[]) => {
 
             const obj = new base(...args);
 
@@ -1430,7 +1498,7 @@ describe('deepEqual()', () => {
 
     it('compares an object with property getter while executing it', () => {
 
-        const obj = {};
+        const obj = {} as any;
         const value = 1;
         let execCount = 0;
 
@@ -1445,6 +1513,7 @@ describe('deepEqual()', () => {
         });
 
         const copy = Hoek.clone(obj);
+
         expect(Hoek.deepEqual(obj, copy)).to.be.true();
         expect(execCount).to.equal(2);
         expect(copy.test).to.equal(1);
@@ -1454,6 +1523,8 @@ describe('deepEqual()', () => {
     it('compares objects with property getters', () => {
 
         const obj = {};
+        const ref = {};
+
         Object.defineProperty(obj, 'test', {
             enumerable: true,
             configurable: true,
@@ -1463,7 +1534,6 @@ describe('deepEqual()', () => {
             }
         });
 
-        const ref = {};
         Object.defineProperty(ref, 'test', {
             enumerable: true,
             configurable: true,
@@ -1478,7 +1548,11 @@ describe('deepEqual()', () => {
 
     it('compares object prototypes', () => {
 
-        const Obj = function () {
+        interface Itf {
+            a: number,
+        }
+
+        const Obj: any = function (this: Itf) {
 
             this.a = 5;
         };
@@ -1488,7 +1562,7 @@ describe('deepEqual()', () => {
             return this.a;
         };
 
-        const Ref = function () {
+        const Ref: any = function (this: Itf) {
 
             this.a = 5;
         };

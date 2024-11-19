@@ -1,9 +1,14 @@
+/* eslint-disable func-style */
 import { assert as Assert } from './assert';
 import { deepEqual as DeepEqual } from './deepEqual';
-import { escapeRegex as EscapeRegex } from './escapeRegex';
+import { escapeRegex } from './escapeRegex';
 import * as Utils from './utils';
 
-export     interface ContainOptions {
+// Partial one or many
+type PartOOM<T> = Partial<T> | Partial<T>[];
+type ContainValues<T = unknown> = PartOOM<string> | PartOOM<T> | PartOOM<keyof T>;
+
+export interface ContainOptions {
 
     /**
      * Perform a deep comparison.
@@ -41,8 +46,15 @@ export     interface ContainOptions {
     readonly symbols?: boolean;
 }
 
-
-export const contain = <T extends string|any[]|object>(ref:T, values: T extends string? (string|string[]): T extends any[]?any:T extends object?(string|string[]):never, options:ContainOptions = {}) => {        // options: { deep, once, only, part, symbols }
+export function contain(ref: string, values: PartOOM<string>, options?: ContainOptions): boolean;
+export function contain <T>(ref: T[], values: PartOOM<T>, options?: ContainOptions): boolean;
+export function contain <T>(
+    ref: T,
+    values: PartOOM<keyof T> | PartOOM<T>,
+    options?: ContainOptions
+): boolean;
+export function contain(ref: unknown, values: unknown, options: ContainOptions = {}): boolean {
+    // options: { deep, once, only, part, symbols }
 
     /*
         string -> string(s)
@@ -60,26 +72,28 @@ export const contain = <T extends string|any[]|object>(ref:T, values: T extends 
     // String
 
     if (typeof ref === 'string') {
-        return compareString(ref, values, options);
+        return compareString(ref, values as string[], options);
     }
 
     // Array
 
     if (Array.isArray(ref)) {
-        return containArray(ref, values, options);
+        return containArray(ref, values as [], options);
     }
 
     // Object
 
     Assert(typeof ref === 'object', 'Reference must be string or an object');
-    return containObject(ref, values, options);
-};
+
+    return containObject(ref!, values as object, options);
+
+}
 
 
-const containArray = function (ref, values, options:ContainOptions) {
+const containArray = function <T> (ref: T[], values: ContainValues<T>, options:ContainOptions) {
 
     if (!Array.isArray(values)) {
-        values = [values];
+        values = [values] as T[];
     }
 
     if (!ref.length) {
@@ -187,7 +201,7 @@ const containArray = function (ref, values, options:ContainOptions) {
 };
 
 
-const containObject = function (ref: object, values, options:ContainOptions) {
+const containObject = function <T extends object> (ref: T, values: ContainValues, options:ContainOptions) {
 
     Assert(options.once === undefined, 'Cannot use option once with object');
 
@@ -197,8 +211,8 @@ const containObject = function (ref: object, values, options:ContainOptions) {
     }
 
     // Keys list
-
     if (Array.isArray(values)) {
+
         return containArray(keys, values, options);
     }
 
@@ -211,7 +225,7 @@ const containObject = function (ref: object, values, options:ContainOptions) {
     const set = new Set(targets);
 
     for (const key of keys) {
-        if (!set.has(key)) {
+        if (!set.has(key as string)) {
             if (options.only) {
                 return false;
             }
@@ -219,11 +233,11 @@ const containObject = function (ref: object, values, options:ContainOptions) {
             continue;
         }
 
-        if (!compareFn(values[key], ref[key])) {
+        if (!compareFn(values[key as never], ref[key])) {
             return false;
         }
 
-        set.delete(key);
+        set.delete(key as string);
     }
 
     if (set.size) {
@@ -234,7 +248,7 @@ const containObject = function (ref: object, values, options:ContainOptions) {
 };
 
 
-const compareString = function (ref, values, options:ContainOptions) {
+const compareString = function (ref: string, values: string[], options: ContainOptions) {
 
     // Empty string
 
@@ -246,7 +260,7 @@ const compareString = function (ref, values, options:ContainOptions) {
     // Map values
 
     const map = new Map();
-    const patterns = [];
+    const patterns = [] as string[];
 
     for (const value of values) {
         Assert(typeof value === 'string', 'Cannot compare string reference to non-string value');
@@ -258,7 +272,7 @@ const compareString = function (ref, values, options:ContainOptions) {
             }
             else {
                 map.set(value, { allowed: 1, hits: 0 });
-                patterns.push(EscapeRegex(value));
+                patterns.push(escapeRegex(value));
             }
         }
         else if (options.once ||
@@ -316,7 +330,7 @@ const compareString = function (ref, values, options:ContainOptions) {
 };
 
 
-const compare = function (options:ContainOptions) {
+const compare = function (options: ContainOptions) {
 
     if (!options.deep) {
         return shallow;
@@ -330,7 +344,7 @@ const compare = function (options:ContainOptions) {
         part: hasOnly ? !options.only : hasPart ? options.part : false
     };
 
-    return (a, b) => DeepEqual(a, b, flags);
+    return <A, B>(a: A, b: B) => DeepEqual(a, b, flags);
 };
 
 

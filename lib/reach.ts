@@ -72,7 +72,7 @@ export const reach = <T>(obj: object | null, chain: string | (string | number)[]
         let key = path[i];
         const isSetType = isSet(ref);
         const isMapType = isMap(ref);
-        const isIterable= isSetType||isMapType;
+        const isIterable = isSetType || isMapType;
 
         if (Array.isArray(ref) ||
             isSetType) {

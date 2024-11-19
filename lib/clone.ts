@@ -1,37 +1,49 @@
 import { reach } from './reach';
-import * as Types from './types';
+import { prototypes, getInternalProto } from './types';
 import * as Utils from './utils';
 
 const internals = {
-    needsProtoHack: new Set([Types.set, Types.map, Types.weakSet, Types.weakMap])
+    needsProtoHack: new Set([
+        prototypes.set,
+        prototypes.map,
+        prototypes.weakSet,
+        prototypes.weakMap
+    ])
 };
 
-export     interface CloneOptions {
+type ObjKey = string | symbol | number;
+export type ShallowKeys = ObjKey[] | ObjKey[][];
+
+export interface CloneOptions {
 
     /**
      * Clone the object's prototype.
      *
      * @default true
      */
-    readonly prototype?: boolean;
+    prototype?: boolean;
 
     /**
      * Include symbol properties.
      *
      * @default true
      */
-    readonly symbols?: boolean;
+    symbols?: boolean;
 
     /**
      * Shallow clone the specified keys.
      *
      * @default undefined
      */
-    readonly shallow?: string[] | string[][] | boolean;
+    shallow?: ShallowKeys | boolean;
 }
 
 
-export const clone = function <T> (obj: T, options:CloneOptions = {}, _seen: Map<any, any> | null = null): T {
+export const clone = function <T> (
+    obj: T,
+    options: CloneOptions = {},
+    _seen: Map<unknown, unknown> | null = null
+): T {
 
     if (typeof obj !== 'object' ||
         obj === null) {
@@ -43,19 +55,25 @@ export const clone = function <T> (obj: T, options:CloneOptions = {}, _seen: Map
     let seen = _seen;
 
     if (options.shallow) {
+
         if (options.shallow !== true) {
+
             return cloneWithShallow(obj, options);
         }
 
         cloneFn = (value) => value;
     }
     else if (seen) {
+
         const lookup = seen.get(obj);
+
         if (lookup) {
-            return lookup;
+
+            return lookup as T;
         }
     }
     else {
+
         seen = new Map();
     }
 
@@ -77,7 +95,7 @@ export const clone = function <T> (obj: T, options:CloneOptions = {}, _seen: Map
         return new URL(obj) as T;
     }
 
-    const baseProto = Types.getInternalProto(obj);
+    const baseProto = getInternalProto(obj);
 
     // Generic objects
 
@@ -90,14 +108,17 @@ export const clone = function <T> (obj: T, options:CloneOptions = {}, _seen: Map
         seen.set(obj, newObj);                              // Set seen, since obj could recurse
     }
 
-    if (baseProto === Types.set) {
-        for (const value of obj) {
-            newObj.add(cloneFn(value, options, seen));
+    if (baseProto as never === prototypes.set) {
+        for (const value of obj as never[]) {
+            (newObj as unknown as Set<any>).add(cloneFn(value, options, seen));
         }
     }
-    else if (baseProto === Types.map) {
-        for (const [key, value] of obj) {
-            newObj.set(key, cloneFn(value, options, seen));
+    else if (baseProto as never  === prototypes.map) {
+        for (
+            const [key, value] of
+            obj as unknown as Map<unknown, unknown>
+        ) {
+            (newObj as unknown as Map<any, any>).set(key, cloneFn(value, options, seen));
         }
     }
 
@@ -107,15 +128,17 @@ export const clone = function <T> (obj: T, options:CloneOptions = {}, _seen: Map
             continue;
         }
 
-        if (baseProto === Types.array &&
+        if (baseProto === prototypes.array &&
             key === 'length') {
 
-            newObj.length = obj.length;
+            (newObj as []).length = (obj as []).length;
             continue;
         }
 
-        if (baseProto === Types.error &&
-            key === 'stack') {
+        if (
+            (baseProto as unknown as Error) === prototypes.error &&
+            key === 'stack'
+        ) {
 
             continue;       // Already a part of the base object
         }
@@ -148,10 +171,10 @@ export const clone = function <T> (obj: T, options:CloneOptions = {}, _seen: Map
 };
 
 
-const cloneWithShallow = function (source, options) {
+const cloneWithShallow = function <T extends object> (source: T, options: CloneOptions) {
 
-    const keys = options.shallow;
-    options = Object.assign({}, options);
+    const keys = options.shallow as string[] | string[][];
+    options = Object.assign({}, options) as CloneOptions;
     options.shallow = false;
 
     const seen = new Map();
@@ -165,18 +188,18 @@ const cloneWithShallow = function (source, options) {
         }
     }
 
-    return internals.clone(source, options, seen);
+    return clone(source, options, seen);
 };
 
 
-const base = function (obj, baseProto, options) {
+const base = function <T> (obj: T, baseProto: any, options: CloneOptions): T {
 
     if (options.prototype === false) {                  // Defaults to true
         if (internals.needsProtoHack.has(baseProto)) {
             return new baseProto.constructor();
         }
 
-        return baseProto === Types.array ? [] : {};
+        return baseProto === prototypes.array ? [] as T : {} as T;
     }
 
     const proto = Object.getPrototypeOf(obj);
@@ -186,25 +209,31 @@ const base = function (obj, baseProto, options) {
         return obj;
     }
 
-    if (baseProto === Types.array) {
-        const newObj = [];
+    if (baseProto === prototypes.array) {
+
+        const newObj = [] as unknown as T;
+
         if (proto !== baseProto) {
             Object.setPrototypeOf(newObj, proto);
         }
 
         return newObj;
     }
-    else if (baseProto === Types.error) {
-        const err = structuredClone(obj);                    // Needed to copy internal stack state
+    else if (baseProto === prototypes.error) {
+
+        const err = structuredClone(obj); // Needed to copy internal stack state
+
         if (Object.getPrototypeOf(err) !== proto) {
-            Object.setPrototypeOf(err, proto);               // Fix prototype
+            Object.setPrototypeOf(err, proto); // Fix prototype
         }
 
         return err;
     }
 
     if (internals.needsProtoHack.has(baseProto)) {
+
         const newObj = new proto.constructor();
+
         if (proto !== baseProto) {
             Object.setPrototypeOf(newObj, proto);
         }

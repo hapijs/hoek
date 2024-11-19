@@ -4,7 +4,7 @@ import { stringify } from './stringify';
 import { AssertError } from './assertError';
 
 // eslint-disable-next-line func-style -- https://github.com/microsoft/TypeScript/issues/34523
-export function assert(condition: any, ...args: any[]): asserts condition {
+export function assert <T>(condition: T, ...args: (string | Error)[]): asserts condition {
 
     if (condition) {
         return;
@@ -25,3 +25,5 @@ export function assert(condition: any, ...args: any[]): asserts condition {
 
     throw new AssertError(msgs.join(' '), assert);
 }
+
+export default assert;

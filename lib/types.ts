@@ -1,50 +1,65 @@
-export const    array = Array.prototype;
-export const    buffer = Buffer && Buffer.prototype;             // $lab:coverage:ignore$
-export const    date = Date.prototype;
-export const    error = Error.prototype;
-export const    generic = Object.prototype;
-export const    map = Map.prototype;
-export const    promise = Promise.prototype;
-export const    regex = RegExp.prototype;
-export const    set = Set.prototype;
-export const url = URL.prototype;
-export const    weakMap = WeakMap.prototype;
-export const    weakSet = WeakSet.prototype;
+export const prototypes = {
 
+    array: Array.prototype,
+    buffer: Buffer.prototype, // $lab:coverage:ignore
+    date: Date.prototype,
+    error: Error.prototype,
+    generic: Object.prototype,
+    map: Map.prototype,
+    promise: Promise.prototype,
+    regex: RegExp.prototype,
+    set: Set.prototype,
+    url: URL.prototype,
+    weakMap: WeakMap.prototype,
+    weakSet: WeakSet.prototype
+};
 
-const typeMap = new Map([
-    ['[object Error]', exports.error],
-    ['[object Map]', exports.map],
-    ['[object Promise]', exports.promise],
-    ['[object Set]', exports.set],
-    ['[object URL]', exports.url],
-    ['[object WeakMap]', exports.weakMap],
-    ['[object WeakSet]', exports.weakSet]
+export type AnyPrototype = (
+    Array<any> |
+    Buffer |
+    Date |
+    Error |
+    Map<any, any> |
+    Promise<any> |
+    RegExp |
+    Set<any> |
+    URL |
+    WeakMap<object, any> |
+    WeakSet<object>
+)
+
+const typeMap = new Map<string, AnyPrototype>([
+    ['[object Error]', prototypes.error],
+    ['[object Map]', prototypes.map],
+    ['[object Promise]', prototypes.promise],
+    ['[object Set]', prototypes.set],
+    ['[object URL]', prototypes.url],
+    ['[object WeakMap]', prototypes.weakMap],
+    ['[object WeakSet]', prototypes.weakSet]
 ]);
 
-
-export const getInternalProto = <T extends object>(obj: T): T => {
+export const getInternalProto = <T>(obj: T) => {
 
     if (Array.isArray(obj)) {
-        return exports.array;
+        return prototypes.array;
     }
 
     if (Buffer && obj instanceof Buffer) {          // $lab:coverage:ignore$
-        return exports.buffer;
+        return prototypes.buffer;
     }
 
     if (obj instanceof Date) {
-        return exports.date;
+        return prototypes.date;
     }
 
     if (obj instanceof RegExp) {
-        return exports.regex;
+        return prototypes.regex;
     }
 
     if (obj instanceof Error) {
-        return exports.error;
+        return prototypes.error;
     }
 
     const objName = Object.prototype.toString.call(obj);
-    return typeMap.get(objName) || exports.generic;
+    return typeMap.get(objName) || prototypes.generic;
 };
