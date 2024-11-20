@@ -1,4 +1,4 @@
-export const flatten = <T>(array: Array<T>): FlatArray<T, typeof Infinity>[] => {
+export const flatten = <T>(array: Array<T>) => {
 
     return array.flat(Infinity);
 };

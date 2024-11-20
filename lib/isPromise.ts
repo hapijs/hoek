@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Determines if an object is a promise.
  *
@@ -7,7 +5,7 @@
  *
  * @returns true if the object is a promise, otherwise false.
  */
-export const isPromise = function (promise: any):promise is Promise<unknown> {
+export const isPromise = function (promise: unknown): promise is Promise<unknown> {
 
-    return typeof promise?.then === 'function';
+    return typeof (promise as Promise<any>)?.then === 'function';
 };

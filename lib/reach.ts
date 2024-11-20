@@ -1,7 +1,5 @@
 import { assert } from './assert';
 
-const internals = {};
-
 export interface ReachOptions {
 
     /**

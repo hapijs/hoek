@@ -1,4 +1,4 @@
-export type IntersectArray<T> = Array<T>|Set<T>|null
+export type IntersectArray<T> = Array<T> | Set<T> | null
 
 export interface IntersectOptions {
 
@@ -10,7 +10,7 @@ export interface IntersectOptions {
     readonly first?: boolean;
 }
 
-export const intersect = function <T1,T2> (array1: IntersectArray<T1>, array2: IntersectArray<T2>, options: IntersectOptions = {}) {
+export const intersect = function <T1, T2> (array1: IntersectArray<T1>, array2: IntersectArray<T2>, options: IntersectOptions = {}) {
 
     if (!array1 ||
         !array2) {
@@ -21,9 +21,13 @@ export const intersect = function <T1,T2> (array1: IntersectArray<T1>, array2: I
     const common = [];
     const hash = (Array.isArray(array1) ? new Set(array1) : array1);
     const found = new Set();
+
     for (const value of array2) {
-        if (has(hash, value) &&
-            !found.has(value)) {
+
+        if (
+            has(hash, value as never) &&
+            !found.has(value)
+        ) {
 
             if (options.first) {
                 return value;
@@ -38,11 +42,14 @@ export const intersect = function <T1,T2> (array1: IntersectArray<T1>, array2: I
 };
 
 
-const has = function (ref:NonNullable<IntersectArray<any>>, key:string) {
+const has = function (ref: NonNullable<IntersectArray<any>>, key: string) {
 
-    if (typeof ref.has === 'function') {
-        return ref.has(key);
+    const asSet = ref as Set<any>;
+    const asArray = ref as Array<any>;
+
+    if (typeof asSet.has === 'function') {
+        return asSet.has(key);
     }
 
-    return ref[key] !== undefined;
+    return asArray[key as any] !== undefined;
 };

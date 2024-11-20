@@ -1,5 +1,6 @@
+/* eslint-disable @hapi/scope-start */
 
-import {Reach, ReachOptions} from "./reach";
+import { reach, ReachOptions } from './reach';
 
 
 /**
@@ -10,8 +11,16 @@ import {Reach, ReachOptions} from "./reach";
  *
  * @return The template string with the {} enclosed keys replaced with looked-up values.
  */
-export const reachTemplate = (obj: object | null, template: string, options?: ReachOptions) => template.replace(/{([^{}]+)}/g, ($0, chain) => {
+export const reachTemplate = (
+    obj: object | null,
+    template: string,
+    options?: ReachOptions
+) => {
 
-    const value = Reach(obj, chain, options);
-    return value ?? '';
-});
+    return template.replace(/{([^{}]+)}/g, (_: string, chain: string) => {
+
+        const value = reach(obj, chain, options) as string | null;
+        return value ?? '';
+    });
+
+};

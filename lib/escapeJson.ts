@@ -10,7 +10,7 @@ export const escapeJson = (input:string): string => {
 
 const escape = function (char: string): string {
 
-    return replacements.get(char);
+    return replacements.get(char)!;
 };
 
 

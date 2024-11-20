@@ -22,7 +22,7 @@ export const escapeHtml = function (input:string):string {
 };
 
 
-const escapeHtmlChar = function (charCode) {
+const escapeHtmlChar = function (charCode: number) {
 
     const namedEscape = namedHtml.get(charCode);
     if (namedEscape) {

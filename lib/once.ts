@@ -11,15 +11,17 @@ export const once = function <T extends WrappedFunction> (method: T): T {
         return method;
     }
 
-    let once = false;
-    const wrappedFn = function (...args: Parameters<T>): ReturnType<T> {
+    let didRun = false;
 
-        if (!once) {
-            once = true;
+    const wrappedFn = function (...args: Parameters<T>) {
+
+        if (!didRun) {
+            didRun = true;
             method(...args);
         }
     };
 
     wrappedFn[wrapped] = true;
-    return wrappedFn;
+
+    return wrappedFn as T;
 };

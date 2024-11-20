@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+type StringifyParams = Parameters<typeof JSON.stringify>;
 
 /**
  * Converts a JavaScript value to a JavaScript Object Notation (JSON) string with protection against thrown errors.
@@ -9,12 +9,20 @@
  *
  * @return The JSON string. If the operation fails, an error string value is returned (no exception thrown).
  */
-export const stringify = (value: any, replacer?: (this: any, key: string, value: any) => any, space?: string | number): string => {
+export const stringify = (
+    value: any,
+    replacer?: StringifyParams[1],
+    space?: StringifyParams[2]
+): string => {
 
     try {
-        return JSON.stringify(value,replacer,space);
+
+        return JSON.stringify(value, replacer, space);
     }
     catch (err) {
-        return '[Cannot display object: ' + err.message + ']';
+
+        const error = err as Error;
+
+        return '[Cannot display object: ' + error.message + ']';
     }
 };
