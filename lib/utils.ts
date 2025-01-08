@@ -1,4 +1,4 @@
-export const keys = <T extends object>(obj: T, options: { symbols?:boolean } = {}) => {
+export const keys = <T extends object>(obj: T, options: { symbols?: boolean | undefined } = {}) => {
 
     // Defaults to true
     const res = options.symbols !== false

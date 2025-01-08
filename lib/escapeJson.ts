@@ -1,4 +1,4 @@
-export const escapeJson = (input:string): string => {
+export const escapeJson = (input?: string | null): string => {
 
     if (!input) {
         return '';

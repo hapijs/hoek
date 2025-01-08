@@ -21,21 +21,21 @@ export interface CloneOptions {
      *
      * @default true
      */
-    prototype?: boolean;
+    prototype?: boolean | undefined;
 
     /**
      * Include symbol properties.
      *
      * @default true
      */
-    symbols?: boolean;
+    symbols?: boolean | undefined;
 
     /**
      * Shallow clone the specified keys.
      *
      * @default undefined
      */
-    shallow?: ShallowKeys | boolean;
+    shallow?: ShallowKeys | boolean | undefined;
 }
 
 

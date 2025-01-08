@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { assert } from './assert';
 import { clone } from './clone';
 import * as Utils from './utils';
@@ -15,37 +16,37 @@ export interface MergeOptions {
      *
      * @default true
      */
-    prototype?: boolean;
+    prototype?: boolean | undefined;
 
     /**
      * Include symbol properties.
      *
      * @default true
      */
-    symbols?: boolean;
+    symbols?: boolean | undefined;
 
     /**
      * Shallow clone the specified keys.
      *
      * @default undefined
      */
-    shallow?: string[] | string[][] | boolean;
+    shallow?: string[] | string[][] | boolean | undefined;
 
     /**
      * When true, arrays are merged together.
      */
-    mergeArrays?: boolean;
+    mergeArrays?: boolean | undefined;
 
 
     /**
      * When true, null value from source overrides target.
      */
-    nullOverride?: boolean;
+    nullOverride?: boolean | undefined;
 }
 
-export function merge <T1>(target: T1, source: null | undefined, options?: MergeOptions): T1;
-export function merge <T1, T2>(target: T1, source: T2, options?: MergeOptions): MergeTypes<T1, T2>;
-export function merge <T1, T2>(target: T1, source: T2, options: MergeOptions = {}) {
+export function merge <T1 extends object>(target: T1, source: null | undefined, options?: MergeOptions): T1;
+export function merge <T1 extends object, T2 extends object>(target: T1, source: T2, options?: MergeOptions): MergeTypes<T1, T2>;
+export function merge <T1 extends object, T2 extends object>(target: T1, source: T2, options: MergeOptions = {}) {
 
     assert(target && typeof target === 'object', 'Invalid target value: must be an object');
     assert(source === null || source === undefined || typeof source === 'object', 'Invalid source value: must be null, undefined, or an object');
@@ -70,7 +71,7 @@ export function merge <T1, T2>(target: T1, source: T2, options: MergeOptions = {
             target.push(clone(source[i], { symbols: options.symbols }));
         }
 
-        return target;
+        return target as MergeTypes<T1, T2>;
     }
 
     const keys = Utils.keys(source, options);
@@ -92,7 +93,7 @@ export function merge <T1, T2>(target: T1, source: T2, options: MergeOptions = {
             typeof value === 'object'
         ) {
 
-            const current = target[key as keyof T1];
+            const current = target[key as unknown as keyof T1];
 
             if (current === value) {
 
@@ -133,6 +134,6 @@ export function merge <T1, T2>(target: T1, source: T2, options: MergeOptions = {
         }
     }
 
-    return target as T1 & T2;
+    return target as MergeTypes<T1, T2>;
 }
 

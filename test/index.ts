@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Util from 'util';
 import Code from '@hapi/code';
-import * as Hoek from '../lib';
 import Lab from '@hapi/lab';
+
+import * as Hoek from '../lib';
 import { MergeTypes } from '../lib/merge';
 
 const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
-
 
 const nestedObj = {
     v: [7, 8, 9],
@@ -22,7 +21,6 @@ const nestedObj = {
     y: 'y',
     z: new Date(1378775452757)
 };
-
 
 describe('merge()', () => {
 
@@ -190,6 +188,7 @@ describe('merge()', () => {
             const a = {} as any;
             const b = 0;
 
+            // @ts-expect-error - intentionally invalid
             Hoek.merge(a, b);
         }).to.throw('Invalid source value: must be null, undefined, or an object');
     });
@@ -201,6 +200,7 @@ describe('merge()', () => {
             const a = 0;
             const b = {};
 
+            // @ts-expect-error - intentionally invalid
             Hoek.merge(a, b);
         }).to.throw('Invalid target value: must be an object');
     });

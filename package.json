@@ -44,13 +44,14 @@
     "@hapi/code": "^9.0.3",
     "@hapi/eslint-plugin": "^7.0.0",
     "@hapi/lab": "^26.0.0",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "typescript": "~5.6.3",
     "typescript-eslint": "^8.11.0"
   },
   "scripts": {
     "test": "lab -a @hapi/code -t 100 -L -Y",
-    "test-cov-html": "lab -a @hapi/code -t 100 -L -r html -o coverage.html"
+    "test-cov-html": "lab -a @hapi/code -t 100 -L -r html -o coverage.html",
+    "lint": "tsc --noEmit && eslint . --ext .js,.ts"
   },
   "license": "BSD-3-Clause",
   "packageManager": "pnpm@9.12.0+sha512.4abf725084d7bcbafbd728bfc7bee61f2f791f977fd87542b3579dcb23504d170d46337945e4c66485cd12d588a0c0e570ed9c477e7ccdd8507cf05f3f92eaca"

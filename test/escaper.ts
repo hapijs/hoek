@@ -1,12 +1,7 @@
-'use strict';
+import Code from '@hapi/code';
+import Lab from '@hapi/lab';
 
-const Code = require('@hapi/code');
-const Hoek = require('..');
-const Lab = require('@hapi/lab');
-
-
-const internals = {};
-
+import * as Hoek from '..';
 
 const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;

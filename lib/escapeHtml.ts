@@ -1,4 +1,4 @@
-export const escapeHtml = function (input:string):string {
+export const escapeHtml = function (input?: string | null):string {
 
     if (!input) {
         return '';

@@ -54,8 +54,8 @@ expect.type<string>(Hoek.clone('string'));
 expect.type<object>(Hoek.clone({}));
 expect.type<Bar>(Hoek.clone({} as Bar));
 expect.type<Foo>(Hoek.clone({ a: 1 } as Foo, { shallow: ['b'] }));
-
 expect.error(Hoek.clone({}, { unknown: true }));
+
 expect.error(Hoek.clone({}, { shallow: [1] }));
 expect.error(Hoek.clone({}, { shallow: 1 }));
 
@@ -69,8 +69,13 @@ Hoek.merge({ a: 1 }, { a: null }, { mergeArrays: true, nullOverride: true, symbo
 expect.type<object>(Hoek.merge({}, {}));
 expect.type<Foo & Bar>(Hoek.merge({ a: 1 } as Foo, { b: 'x' } as Bar));
 
+// Cannot merge non-object
 expect.error(Hoek.merge(1, 2));
+
+// Options must be an object
 expect.error(Hoek.merge({ a: 1 }, { a: null }, true));
+
+// Options must have known properties
 expect.error(Hoek.merge({ a: 1 }, { a: null }, { unknown: true }));
 
 
@@ -85,9 +90,9 @@ Hoek.applyToDefaults({ a: 1 } as object, { b: 'x' });
 Hoek.applyToDefaults({ a: 1 } as Foo, { b: 'x' }, { shallow: ['b'] });
 Hoek.applyToDefaults({ a: 1 } as object, { b: 'x' }, { shallow: ['c'] });
 
-expect.type<object>(Hoek.applyToDefaults({}, {}));
-expect.type<Foo>(Hoek.applyToDefaults({ a: 1 } as Foo, { b: 'x' }));
-expect.type<object>(Hoek.applyToDefaults({}, {}, { shallow: [] }));
+expect.type<object>(Hoek.applyToDefaults({}, {})!);
+expect.type<Foo>(Hoek.applyToDefaults({ a: 1 } as Foo, { b: 'x' })!);
+expect.type<object>(Hoek.applyToDefaults({}, {}, { shallow: [] })!);
 
 expect.error(Hoek.applyToDefaults({} as Foo, 0));
 expect.error(Hoek.applyToDefaults({} as Foo, 0, { shallow: [] }));

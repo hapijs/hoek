@@ -16,7 +16,8 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": true
+        "noUnusedParameters": true,
+        "exactOptionalPropertyTypes": true,
     },
     "include": [
         "lib",
