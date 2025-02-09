@@ -135,7 +135,7 @@ const defaults = {
     }
 };
 
-const source = { server: { port: 8080 } };
+const source = { db: { server: { port: 8080 } } };
 
 const config = Hoek.applyToDefaults(defaults, source, { shallow: ['db.server'] });        // results in { db: { server: { port: 8080 }, name: 'example' } }
 const config = Hoek.applyToDefaults(defaults, source, { shallow: [['db', 'server']] });   // results in { db: { server: { port: 8080 }, name: 'example' } }
