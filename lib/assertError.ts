@@ -1,6 +1,6 @@
 export class AssertError extends Error {
 
-    name = 'AssertError';
+    name = 'AssertError' as const;
 
     constructor(message?: string | undefined | null, ctor?: Function) {
 

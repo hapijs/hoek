@@ -20,11 +20,11 @@ interface Options {
  *
  * @return A Promise that resolves with `returnValue`.
  */
-export function wait<T>(
+export function wait<T = void>(
     timeout?: bigint | number | undefined,
     returnValue?: T,
     options?: Options
-) {
+): Promise<T> {
 
     if ((typeof timeout !== 'number' && typeof timeout !== 'bigint') && timeout !== undefined) {
         throw new TypeError('Timeout must be a number or bigint');
@@ -49,7 +49,7 @@ export function wait<T>(
 
             timeout = timeout as number - time;
 
-            _setTimeout(() => (timeout as number > 0 ? activate() : resolve(returnValue)), time);
+            _setTimeout(() => (timeout as number > 0 ? activate() : resolve(returnValue as T)), time);
         };
 
         if (timeout !== Infinity) {

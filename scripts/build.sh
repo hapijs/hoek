@@ -16,5 +16,3 @@ for file in esm/*.mjs; do
     sed -i '' 's/\.js'/.mjs'/g' "$file"
     sed -i '' 's/\.js"/.mjs"/g' "${file}.map"
 done
-
-
