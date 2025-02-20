@@ -1,4 +1,4 @@
-import { assert } from './assert';
+import { assert } from './assert.js';
 
 /**
  * Escape string for usage as an attribute value in HTTP headers.

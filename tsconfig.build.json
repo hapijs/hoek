@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "emitDeclarationOnly": false,
+        "target": "ESNext",
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "inlineSources": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "exactOptionalPropertyTypes": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "lib/**/*.ts"
+    ],
+    "ts-node": {
+        "esm": true
+    }
+}

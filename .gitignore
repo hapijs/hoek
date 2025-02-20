@@ -11,3 +11,5 @@ coverage.*
 **/.vs
 **/.vscode
 **/.idea
+esm
+cjs

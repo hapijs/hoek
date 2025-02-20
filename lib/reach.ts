@@ -1,4 +1,4 @@
-import { assert } from './assert';
+import { assert } from './assert.js';
 
 export interface ReachOptions {
 
@@ -78,46 +78,56 @@ export const reach = <T>(
         const isMapType = isMap(ref);
         const isIterable = isSetType || isMapType;
 
-        if (Array.isArray(ref) ||
-            isSetType) {
+        if (isIterable && !options.iterables) {
+            ref = options.default;
+            break;
+        }
+
+        if (Array.isArray(ref) || isSetType) {
 
             const number = Number(key);
+
             if (Number.isInteger(number)) {
-                const length = isSetType ? ref.size() : ref.length;
-                key = number < 0 ? ref.length + number : number;
+                const length = isSetType ? (ref as Set<any>).size : (ref as Array<any>).length;
+                key = number < 0 ? length + number : number;
             }
         }
 
-        if (!ref ||
-            typeof ref === 'function' && options.functions === false ||         // Defaults to true
-            !isIterable && ref[key] === undefined) {
+        if (
+            !ref ||
+            (typeof ref === 'function' && options.functions === false) ||         // Defaults to true
+            (!isIterable && ref[key as keyof typeof ref] === undefined)
+        ) {
 
-            assert(!options.strict || i + 1 === path.length, 'Missing segment', key, 'in reach path ', chain);
-            assert(typeof ref === 'object' || options.functions === true || typeof ref !== 'function', 'Invalid segment', key, 'in reach path ', chain);
+            assert(!options.strict || i + 1 === path.length, 'Missing segment', key!, 'in reach path ', chain);
+            assert(
+                typeof ref === 'object' || options.functions === true || typeof ref !== 'function',
+                'Invalid segment', key!, 'in reach path ', chain
+            );
             ref = options.default;
             break;
         }
 
         if (!isIterable) {
-            ref = ref[key];
+            ref = ref[key as keyof typeof ref];
         }
         else if (isSetType) {
-            ref = [...ref][key];
+            ref = [...(ref as Set<any>)][Number(key)];
         }
         else if (isMapType) {  // type === 'map'
-            ref = ref.get(key);
+            ref = (ref as Map<any, any>).get(key);
         }
     }
 
-    return ref;
+    return ref as T;
 };
 
-const isSet = function <T> (ref: T): ref is Set<any> {
+const isSet = function (ref: unknown): ref is Set<any> {
 
-      return ref instanceof Set;
+    return ref instanceof Set;
 };
 
-const isMap = function <T> (ref: T): ref is Map<any,any> {
+const isMap = function (ref: unknown): ref is Map<any, any> {
 
-      return ref instanceof Map;
+    return ref instanceof Map;
 };

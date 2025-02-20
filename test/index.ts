@@ -1,11 +1,11 @@
 import Util from 'util';
 import Code from '@hapi/code';
-import Lab from '@hapi/lab';
+import { describe, it } from 'node:test';
+
 
 import * as Hoek from '../lib';
 import { MergeTypes } from '../lib/merge';
 
-const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
 
 const nestedObj = {
@@ -1134,10 +1134,10 @@ describe('deepEqual()', () => {
 
         class PrivateMap extends Map {
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             constructor(args?: any) {
 
-                super();
+                // @ts-expect-error - Map typing is a MapConstructor, but for whatever reason, it thinks it doesn't accept arguments
+                super(args);
             }
 
             get() {
@@ -1666,8 +1666,8 @@ describe('intersect()', () => {
 
     it('returns an empty array if either input is null', () => {
 
-        expect(Hoek.intersect([1], null).length).to.equal(0);
-        expect(Hoek.intersect(null, [1]).length).to.equal(0);
+        expect(Hoek.intersect([1], null)!.length).to.equal(0);
+        expect(Hoek.intersect(null, [1])!.length).to.equal(0);
         expect(Hoek.intersect(null, [1], { first: true })).to.be.null();
     });
 
@@ -1675,7 +1675,7 @@ describe('intersect()', () => {
 
         const array1 = { 1: true, 2: true, 3: true, 4: true, 5: true };
         const array2 = [5, 4, 5, 6, 7];
-        const common = Hoek.intersect(array1, array2);
+        const common = Hoek.intersect(array1, array2) as number[];
         expect(common.length).to.equal(2);
     });
 });

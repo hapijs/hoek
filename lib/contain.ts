@@ -1,8 +1,8 @@
 /* eslint-disable func-style */
-import { assert as Assert } from './assert';
-import { deepEqual as DeepEqual } from './deepEqual';
-import { escapeRegex } from './escapeRegex';
-import * as Utils from './utils';
+import { assert as Assert } from './assert.js';
+import { deepEqual as DeepEqual } from './deepEqual.js';
+import { escapeRegex } from './escapeRegex.js';
+import * as Utils from './utils.js';
 
 // Partial one or many
 type PartOOM<T> = Partial<T> | Partial<T>[];
@@ -289,7 +289,7 @@ const compareString = function (ref: string, values: string[], options: ContainO
     // Match patterns
 
     const regex = new RegExp(`(${patterns.join('|')})`, 'g');
-    const leftovers = ref.replace(regex, ($0, $1) => {
+    const leftovers = ref.replace(regex, (_, $1) => {
 
         ++map.get($1).hits;
         return '';                              // Remove from string

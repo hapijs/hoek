@@ -1,9 +1,8 @@
 import Code from '@hapi/code';
-import Lab from '@hapi/lab';
+import { describe, it } from 'node:test';
 
-import * as Hoek from '..';
+import * as Hoek from '../lib';
 
-const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
 
 

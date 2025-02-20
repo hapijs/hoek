@@ -1,3 +1,3 @@
-import { ignore } from './ignore';
+import { ignore } from './ignore.js';
 
 export const block = () => new Promise(ignore);

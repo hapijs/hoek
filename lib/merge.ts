@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-import { assert } from './assert';
-import { clone } from './clone';
-import * as Utils from './utils';
+import { assert } from './assert.js';
+import { clone } from './clone.js';
+import * as Utils from './utils.js';
 
 export type MergeTypes<T1, T2> = {
     [K in keyof T1]: K extends keyof T2 ? T2[K] | T1[K] : T1[K];

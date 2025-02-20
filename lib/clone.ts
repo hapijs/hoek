@@ -1,6 +1,6 @@
-import { reach } from './reach';
-import { prototypes, getInternalProto } from './types';
-import * as Utils from './utils';
+import { reach } from './reach.js';
+import { prototypes, getInternalProto } from './types.js';
+import * as Utils from './utils.js';
 
 const internals = {
     needsProtoHack: new Set([

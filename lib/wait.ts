@@ -26,7 +26,7 @@ export function wait<T>(
     options?: Options
 ) {
 
-    if (typeof timeout !== 'number' && timeout !== undefined) {
+    if ((typeof timeout !== 'number' && typeof timeout !== 'bigint') && timeout !== undefined) {
         throw new TypeError('Timeout must be a number or bigint');
     }
 

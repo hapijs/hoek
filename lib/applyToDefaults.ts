@@ -1,7 +1,7 @@
-import { assert } from './assert';
-import { clone, ShallowKeys } from './clone';
-import { merge } from './merge';
-import { reach } from './reach';
+import { assert } from './assert.js';
+import { clone, ShallowKeys } from './clone.js';
+import { merge } from './merge.js';
+import { reach } from './reach.js';
 
 export type ApplyToDefaultsOptions = {
     /**
@@ -79,7 +79,7 @@ const applyToDefaultsWithShallow = function <T extends object, U extends object>
 
     const nullOverride = options.nullOverride !== undefined ? options.nullOverride : false;
 
-    return merge(copy, source, { nullOverride, mergeArrays: false });
+    return merge(copy, source as object, { nullOverride, mergeArrays: false });
 };
 
 

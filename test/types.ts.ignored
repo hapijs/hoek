@@ -1,8 +1,6 @@
 import * as Hoek from '../lib';
 import * as Lab from '@hapi/lab';
 
-
-
 const { expect } = Lab.types;
 
 // Direct module import
