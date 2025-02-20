@@ -20,7 +20,11 @@ interface Options {
  *
  * @return A Promise that resolves with `returnValue`.
  */
-export function wait<T>(timeout: number, returnValue?: T, options?: Options) {
+export function wait<T>(
+    timeout?: bigint | number | undefined,
+    returnValue?: T,
+    options?: Options
+) {
 
     if (typeof timeout !== 'number' && timeout !== undefined) {
         throw new TypeError('Timeout must be a number or bigint');
@@ -30,7 +34,7 @@ export function wait<T>(timeout: number, returnValue?: T, options?: Options) {
         timeout = Number(timeout);
     }
 
-    if (timeout >= Number.MAX_SAFE_INTEGER) {         // Thousands of years
+    if (timeout! >= Number.MAX_SAFE_INTEGER) {         // Thousands of years
         timeout = Infinity;
     }
 
@@ -41,11 +45,11 @@ export function wait<T>(timeout: number, returnValue?: T, options?: Options) {
 
         const activate = () => {
 
-            const time = Math.min(timeout, maxTimer);
+            const time = Math.min(timeout as number, maxTimer);
 
-            timeout -= time;
+            timeout = timeout as number - time;
 
-            _setTimeout(() => (timeout > 0 ? activate() : resolve(returnValue)), time);
+            _setTimeout(() => (timeout as number > 0 ? activate() : resolve(returnValue)), time);
         };
 
         if (timeout !== Infinity) {

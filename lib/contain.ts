@@ -15,43 +15,43 @@ export interface ContainOptions {
      *
      * @default false
      */
-    readonly deep?: boolean;
+    readonly deep?: boolean | undefined;
 
     /**
      * Allow only one occurrence of each value.
      *
      * @default false
      */
-    readonly once?: boolean;
+    readonly once?: boolean | undefined;
 
     /**
      * Allow only values explicitly listed.
      *
      * @default false
      */
-    readonly only?: boolean;
+    readonly only?: boolean | undefined;
 
     /**
      * Allow partial match.
      *
      * @default false
      */
-    readonly part?: boolean;
+    readonly part?: boolean | undefined;
 
     /**
      * Include symbol properties.
      *
      * @default true
      */
-    readonly symbols?: boolean;
+    readonly symbols?: boolean | undefined;
 }
 
-export function contain(ref: string, values: PartOOM<string>, options?: ContainOptions): boolean;
-export function contain <T>(ref: T[], values: PartOOM<T>, options?: ContainOptions): boolean;
+export function contain(ref: string, values: PartOOM<string>, options?: ContainOptions | undefined): boolean;
+export function contain <T>(ref: T[], values: PartOOM<T>, options?: ContainOptions | undefined): boolean;
 export function contain <T>(
     ref: T,
     values: PartOOM<keyof T> | PartOOM<T>,
-    options?: ContainOptions
+    options?: ContainOptions | undefined
 ): boolean;
 export function contain(ref: unknown, values: unknown, options: ContainOptions = {}): boolean {
     // options: { deep, once, only, part, symbols }

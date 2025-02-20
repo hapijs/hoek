@@ -1,8 +1,8 @@
 const wrapped = Symbol('wrapped');
 
 interface WrappedFunction {
-    (...args: unknown[]): unknown;
-    [wrapped]?: boolean;
+    (...args: any[]): any;
+    [wrapped]?: boolean | undefined;
 }
 
 export const once = function <T extends WrappedFunction> (method: T): T {

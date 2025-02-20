@@ -2,7 +2,7 @@ export class AssertError extends Error {
 
     name = 'AssertError';
 
-    constructor(message:string, ctor: Function) {
+    constructor(message?: string | undefined | null, ctor?: Function) {
 
         super(message || 'Unknown error');
 

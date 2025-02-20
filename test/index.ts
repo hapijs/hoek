@@ -1706,8 +1706,8 @@ describe('contain()', () => {
         expect(Hoek.contain('', 'a', { only: true })).to.be.false();
 
         expect(Hoek.contain('', '')).to.be.true();
-        expect(Hoek.contain('', ''), { only: true }).to.be.true();
-        expect(Hoek.contain('', ''), { once: true }).to.be.true();
+        expect(Hoek.contain('', '', { only: true })).to.be.true();
+        expect(Hoek.contain('', '', { once: true })).to.be.true();
         expect(Hoek.contain('', ['', ''])).to.be.true();
         expect(Hoek.contain('', ['', ''], { only: true })).to.be.true();
         expect(Hoek.contain('', ['', ''], { once: true })).to.be.false();
@@ -1741,7 +1741,7 @@ describe('contain()', () => {
         expect(Hoek.contain([[1], [2]], [[1]], { deep: true })).to.be.true();
         expect(Hoek.contain([[1], [2], 3], [[1]], { deep: true })).to.be.true();
         expect(Hoek.contain([[1, 2]], [[1]], { deep: true, part: true })).to.be.true();
-        expect(Hoek.contain([[1, 2]], [[1], 2], { deep: true, part: true })).to.be.true();
+        expect(Hoek.contain<(number[] | number)[]>([[1, 2]], [[1], 2], { deep: true, part: true })).to.be.true();
         expect(Hoek.contain([1, 2, 1], [1, 1, 2], { only: true })).to.be.true();
         expect(Hoek.contain([1, 2, 1], [1, 1, 2], { only: true, once: true })).to.be.true();
         expect(Hoek.contain([1, 2, 1], [1, 2, 2], { only: true })).to.be.false();
@@ -1780,65 +1780,87 @@ describe('contain()', () => {
 
     it('tests objects', () => {
 
+        type TTnum = Record<string, number>;
+        type TTstr = Record<string, string>;
+        type TTo = Record<string, TTnum>;
+        type TTn = Record<string, TTo>;
+        type TTa = Record<string, TTnum[]>;
+
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'a')).to.be.true();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'c'])).to.be.true();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'b', 'c'], { only: true })).to.be.true();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1 })).to.be.true();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, c: 3 })).to.be.true();
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true })).to.be.true();
+        expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true })).to.be.true();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }, { only: true })).to.be.true();
         expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] }, { deep: true })).to.be.true();
-        expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true })).to.be.false();
-        expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, part: true })).to.be.true();
-        expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, part: false })).to.be.false();
-        expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, only: true })).to.be.false();
-        expect(Hoek.contain({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, only: false })).to.be.true();
+        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true })).to.be.false();
+        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, part: true })).to.be.true();
+        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, part: false })).to.be.false();
+        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, only: true })).to.be.false();
+        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, only: false })).to.be.true();
         expect(Hoek.contain({ a: [1, 2, 3] }, { a: [2, 4, 6] }, { deep: true, part: true })).to.be.true();
 
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, 'd')).to.be.false();
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, ['a', 'd'])).to.be.false();
+        expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, 'd')).to.be.false();
+        expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, ['a', 'd'])).to.be.false();
         expect(Hoek.contain({ a: 1, b: 2, c: 3, d: 4 }, ['a', 'b', 'c'], { only: true })).to.be.false();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2 })).to.be.false();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2, b: 2 }, { part: true })).to.be.false();             // part does not ignore bad value
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 3 })).to.be.false();
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 })).to.be.false();
+        expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, { a: 1, d: 3 })).to.be.false();
+        expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 })).to.be.false();
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 }, { only: true })).to.be.false();
         expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] })).to.be.false();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } })).to.be.false();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true })).to.be.false();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: true })).to.be.false();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: false })).to.be.true();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: true })).to.be.true();
-        expect(Hoek.contain({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: false })).to.be.false();
+        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } })).to.be.false();
+        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true })).to.be.false();
+        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: true })).to.be.false();
+        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: false })).to.be.true();
+        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: true })).to.be.true();
+        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: false })).to.be.false();
         expect(Hoek.contain({ a: [1, 2, 3] }, { a: [4, 5, 6] }, { deep: true, part: true })).to.be.false();
 
         expect(Hoek.contain({}, 'a')).to.be.false();
         expect(Hoek.contain({}, 'a', { only: true })).to.be.false();
 
-        expect(Hoek.contain({ a: 'foo', b: 'bar' }, ['a', 'b', 'c'])).to.be.false();
-        expect(Hoek.contain({ a: 'foo', b: 'bar' }, ['a', 'b', 'c'], { only: true })).to.be.false();
-        expect(Hoek.contain({ a: 'foo', b: 'bar' }, { a: 'foo', b: 'bar', c: 'x' })).to.be.false();
-        expect(Hoek.contain({ a: 'foo', b: 'bar' }, { a: 'foo', b: 'bar', c: 'x' }, { only: true })).to.be.false();
+        expect(Hoek.contain<TTstr>({ a: 'foo', b: 'bar' }, ['a', 'b', 'c'])).to.be.false();
+        expect(Hoek.contain<TTstr>({ a: 'foo', b: 'bar' }, ['a', 'b', 'c'], { only: true })).to.be.false();
+        expect(Hoek.contain<TTstr>({ a: 'foo', b: 'bar' }, { a: 'foo', b: 'bar', c: 'x' })).to.be.false();
+        expect(Hoek.contain<TTstr>({ a: 'foo', b: 'bar' }, { a: 'foo', b: 'bar', c: 'x' }, { only: true })).to.be.false();
 
-        expect(Hoek.contain({ a: 1, b: 2 }, ['c'], { part: true })).to.be.false();
-        expect(Hoek.contain({ a: 1, b: 2 }, ['b'], { part: true })).to.be.true();
+        expect(Hoek.contain<TTnum>({ a: 1, b: 2 }, ['c'], { part: true })).to.be.false();
+        expect(Hoek.contain<TTnum>({ a: 1, b: 2 }, ['b'], { part: true })).to.be.true();
 
         // Getter check
 
         {
-            const Foo = function (bar) {
+
+            type FooType = {
+
+                bar?: string;
+                baz?: string;
+            }
+
+            interface FooItf extends FooType {
+
+                new (bar: string): FooType;
+            }
+
+            type FooRecord = Record<string, FooType>;
+
+
+            const Foo = function (this: FooItf, bar: string) {
 
                 this.bar = bar;
-            };
+            } as unknown as FooItf;
 
-            const getBar = function () {
+            const getBar = function (this: FooItf) {
 
                 return this.bar;
             };
 
-            const createFoo = (value) => {
+            const createFoo = (value: string) => {
 
                 const foo = new Foo(value);
+
                 Object.defineProperty(foo, 'baz', {
                     enumerable: true,
                     get: getBar
@@ -1849,31 +1871,45 @@ describe('contain()', () => {
 
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true })).to.be.true();
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true, part: true })).to.be.true();
-            expect(Hoek.contain({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true })).to.be.true();
-            expect(Hoek.contain({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true, only: true })).to.be.false();
-            expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).to.be.false();
-            expect(Hoek.contain({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).to.be.true();
+            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true })).to.be.true();
+            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true, only: true })).to.be.false();
+            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).to.be.false();
+            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).to.be.true();
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true })).to.be.true();
+
         }
 
         // Properties on prototype not visible
 
         {
-            const Foo = function () {
+
+            type FooType = {
+
+                a: number;
+                b: number;
+                c: number;
+            }
+
+            interface FooItf extends FooType {
+
+                new (): FooType;
+            }
+
+            const Foo = function (this: FooItf) {
 
                 this.a = 1;
-            };
+            } as unknown as FooItf;
 
             Object.defineProperty(Foo.prototype, 'b', {
                 enumerable: true,
                 value: 2
             });
 
-            const Bar = function () {
+            const Bar = function (this: FooItf) {
 
                 Foo.call(this);
                 this.c = 3;
-            };
+            } as unknown as FooItf;
 
             Util.inherits(Bar, Foo);
 
@@ -1887,7 +1923,11 @@ describe('contain()', () => {
         // Non-Enumerable properties
 
         {
-            const foo = { a: 1, b: 2 };
+            const foo = { a: 1, b: 2 } as {
+                a: number;
+                b: number;
+                c?: number;
+            };
 
             Object.defineProperty(foo, 'c', {
                 enumerable: false,
@@ -1909,12 +1949,18 @@ describe('contain()', () => {
         expect(Hoek.contain({ [sym]: 1, a: 2 }, { [sym]: 1 })).to.be.true();
 
         expect(Hoek.contain([sym], Symbol())).to.be.false();
-        expect(Hoek.contain({ [sym]: 1 }, Symbol())).to.be.false();
+        expect(Hoek.contain<any>({ [sym]: 1 }, Symbol())).to.be.false();
     });
 
     it('compares error keys', () => {
 
-        const error = new Error('test');
+        const error = new Error('test') as (
+            Error & {
+                x?: number;
+                y?: number;
+            }
+        );
+
         expect(Hoek.contain(error, { x: 1 })).to.be.false();
         expect(Hoek.contain(error, { x: 1 }, { part: true })).to.be.false();
 
@@ -1958,7 +2004,7 @@ describe('reach()', () => {
                 v: true
             }
         },
-        i: function () { },
+        i: (function () { }) as ((() => any) & { x: number }),
         j: null,
         k: [4, 8, 9, 1]
     };
@@ -2166,13 +2212,13 @@ describe('reachTemplate()', () => {
         }
 
         for (let i = 1; i < times.length; ++i) {
-            diffs.push(times[i] - times[i - 1]);
+            diffs.push(times[i]! - times[i - 1]!);
         }
 
         // Under ReDoS, as the size of the input increases the timing accelerates upwards,
         // i.e. each timing diff would be greater than the last.
 
-        const diffsMonotonic = diffs[0] < diffs[1] && diffs[1] < diffs[2] && diffs[2] < diffs[3];
+        const diffsMonotonic = diffs[0]! < diffs[1]! && diffs[1]! < diffs[2]! && diffs[2]! < diffs[3]!;
 
         expect(diffsMonotonic, 'Timing diffs monotonic').to.be.false();
     });
@@ -2216,7 +2262,7 @@ describe('assert()', () => {
 
         expect(() => {
 
-            Hoek.assert(false, 'This', 'is', { spinal: 'tap' });
+            Hoek.assert(false, 'This', 'is', { spinal: 'tap' } as never);
         }).to.throw(Hoek.AssertError, 'This is {"spinal":"tap"}');
     });
 
@@ -2359,7 +2405,7 @@ describe('once()', () => {
     it('allows function to only execute once', () => {
 
         let gen = 0;
-        let add = function (x) {
+        let add = function (x: number) {
 
             gen += x;
         };
@@ -2375,7 +2421,7 @@ describe('once()', () => {
 
     it('double once wraps one time', () => {
 
-        let method = function () { };
+        let method = function () { } as ((() => void) & { x?: number });
         method = Hoek.once(method);
         method.x = 1;
         method = Hoek.once(method);
@@ -2402,7 +2448,7 @@ describe('stringify()', () => {
 
     it('returns error in result string', () => {
 
-        const obj = { a: 1 };
+        const obj = { a: 1 } as any;
         obj.b = obj;
         expect(Hoek.stringify(obj)).to.contain('Cannot display object');
     });
@@ -2441,7 +2487,7 @@ describe('wait()', () => {
 
     it('delays for timeout ms', async () => {
 
-        const timeout = {};
+        const timeout = {} as { before?: boolean; after?: boolean };
         setTimeout(() => (timeout.before = true), 10);
         const wait = Hoek.wait(10);
         setTimeout(() => (timeout.after = true), 10);
@@ -2454,7 +2500,7 @@ describe('wait()', () => {
 
     it('delays for timeout ms as bigint', async () => {
 
-        const timeout = {};
+        const timeout = {} as { before?: boolean; after?: boolean };
         setTimeout(() => (timeout.before = true), 10);
         const wait = Hoek.wait(10n);
         setTimeout(() => (timeout.after = true), 10);
@@ -2470,7 +2516,7 @@ describe('wait()', () => {
         const flow = [];
         let no = 0;
 
-        const fakeTimeout = function (cb, time) {
+        const fakeTimeout = function (cb: Function, time: number) {
 
             const timer = ++no;
 
@@ -2512,7 +2558,7 @@ describe('wait()', () => {
     it('returns never resolving promise when timeout >= Number.MAX_SAFE_INTEGER', async () => {
 
         let calls = 0;
-        const fakeTimeout = function (cb) {
+        const fakeTimeout = function (cb: Function) {
 
             ++calls;
             process.nextTick(cb);
@@ -2536,7 +2582,7 @@ describe('wait()', () => {
     it('handles a return value', async () => {
 
         const uniqueValue = {};
-        const timeout = {};
+        const timeout = {} as { before?: boolean; after?: boolean };
         setTimeout(() => (timeout.before = true), 10);
         const wait = Hoek.wait(10, uniqueValue);
         setTimeout(() => (timeout.after = true), 10);
@@ -2570,8 +2616,8 @@ describe('wait()', () => {
 
     it('rejects on weird timeout values', async () => {
 
-        await expect(() => Hoek.wait({})).to.throw();
-        await expect(() => Hoek.wait(Symbol('hi'))).to.throw();
+        await expect(() => Hoek.wait({} as never)).to.throw();
+        await expect(() => Hoek.wait(Symbol('hi') as never)).to.throw();
     });
 });
 

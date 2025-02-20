@@ -1,4 +1,5 @@
-export type IntersectArray<T> = Array<T> | Set<T> | null
+export type IntersectArray<T> = Array<T> | Set<T> | Record<number, T> | null
+
 
 export interface IntersectOptions {
 
@@ -10,7 +11,11 @@ export interface IntersectOptions {
     readonly first?: boolean;
 }
 
-export const intersect = function <T1, T2> (array1: IntersectArray<T1>, array2: IntersectArray<T2>, options: IntersectOptions = {}) {
+export const intersect = function <T1, T2> (
+    array1: IntersectArray<T1>,
+    array2: IntersectArray<T2>,
+    options: IntersectOptions = {}
+) {
 
     if (!array1 ||
         !array2) {

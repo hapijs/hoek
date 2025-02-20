@@ -43,10 +43,15 @@ export interface ReachOptions {
  *
  * @param obj - the object from which to look up the value.
  * @param chain - the string path of the requested value. The chain string is split into key names using `options.separator`, or an array containing each individual key name. A chain including negative numbers will work like a negative index on an array.
+ * @param options - optional settings. Can be a string with the separator character, or ReachOptions
  *
  * @return The value referenced by the chain if found, otherwise undefined. If chain is null, undefined, or false, the object itself will be returned.
  */
-export const reach = <T>(obj: object | null, chain: string | (string | number)[] | false | null | undefined, options?: ReachOptions):T => {
+export const reach = <T>(
+    obj: object | null,
+    chain?: string | (string | number | symbol)[] | false | null | undefined,
+    options?: ReachOptions | string
+):T => {
 
     if (chain === false ||
         chain === null ||
@@ -56,6 +61,7 @@ export const reach = <T>(obj: object | null, chain: string | (string | number)[]
     }
 
     options = options || {};
+
     if (typeof options === 'string') {
         options = { separator: options };
     }
