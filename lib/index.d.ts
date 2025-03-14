@@ -443,10 +443,30 @@ export function stringify(value: any, replacer?: any, space?: string | number): 
  *
  * @param timeout - The number of milliseconds to wait before resolving the Promise.
  * @param returnValue - The value that the Promise will resolve to.
+ * @param options - Optional settings.
  *
  * @return A Promise that resolves with `returnValue`.
  */
-export function wait<T>(timeout?: number, returnValue?: T): Promise<T>;
+export function wait<T>(timeout?: number, returnValue?: T, options?: wait.Options): Promise<T>;
+
+export namespace wait {
+
+    interface Options {
+
+        /**
+         * setTimeout function to be used by wait.
+         *
+         */
+        readonly setTimeout?: (
+            /**
+             *
+             * @param callback - A function to be executed after the timer expires.
+             * @param delay - The time, in milliseconds that the timer should wait before the specified function is executed.
+             *
+             */
+            callback: Function, delay: number) => void;
+    }
+}
 
 
 /**
