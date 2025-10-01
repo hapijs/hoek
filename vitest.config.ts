@@ -9,6 +9,11 @@ export default defineConfig({
             enabled: true,
             provider: 'v8',
             all: true,
+            thresholds: {
+                functions: 100,
+                lines: 100,
+                branches: 100
+            },
             reportsDirectory: './coverage',
             reporter: ['text', 'lcov'],
             exclude: [
@@ -16,7 +21,8 @@ export default defineConfig({
                 'tsdown.config.ts',
                 'vitest.config.ts',
                 'test/**',
-                'dist/**'
+                'dist/**',
+                '**/*.d.ts'
             ]
         }
     }
