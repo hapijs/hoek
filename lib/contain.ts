@@ -9,7 +9,6 @@ type PartOOM<T> = Partial<T> | Partial<T>[];
 type ContainValues<T = unknown> = PartOOM<string> | PartOOM<T> | PartOOM<keyof T>;
 
 export interface ContainOptions {
-
     /**
      * Perform a deep comparison.
      *
@@ -47,11 +46,11 @@ export interface ContainOptions {
 }
 
 export function contain(ref: string, values: PartOOM<string>, options?: ContainOptions | undefined): boolean;
-export function contain <T>(ref: T[], values: PartOOM<T>, options?: ContainOptions | undefined): boolean;
-export function contain <T>(
+export function contain<T>(ref: T[], values: PartOOM<T>, options?: ContainOptions | undefined): boolean;
+export function contain<T>(
     ref: T,
     values: PartOOM<keyof T> | PartOOM<T>,
-    options?: ContainOptions | undefined
+    options?: ContainOptions | undefined,
 ): boolean;
 export function contain(ref: unknown, values: unknown, options: ContainOptions = {}): boolean {
     // options: { deep, once, only, part, symbols }
@@ -86,12 +85,9 @@ export function contain(ref: unknown, values: unknown, options: ContainOptions =
     Assert(typeof ref === 'object', 'Reference must be string or an object');
 
     return containObject(ref!, values as object, options);
-
 }
 
-
-const containArray = function <T> (ref: T[], values: ContainValues<T>, options:ContainOptions) {
-
+const containArray = function <T>(ref: T[], values: ContainValues<T>, options: ContainOptions) {
     if (!Array.isArray(values)) {
         values = [values] as T[];
     }
@@ -100,10 +96,7 @@ const containArray = function <T> (ref: T[], values: ContainValues<T>, options:C
         return false;
     }
 
-    if (options.only &&
-        options.once &&
-        ref.length !== values.length) {
-
+    if (options.only && options.once && ref.length !== values.length) {
         return false;
     }
 
@@ -111,21 +104,16 @@ const containArray = function <T> (ref: T[], values: ContainValues<T>, options:C
 
     // Map values
 
-    const map = new Map<unknown, {allowed:number;hits:number}>();
+    const map = new Map<unknown, { allowed: number; hits: number }>();
     for (const value of values) {
-        if (!options.deep ||
-            !value ||
-            typeof value !== 'object') {
-
+        if (!options.deep || !value || typeof value !== 'object') {
             const existing = map.get(value);
             if (existing) {
                 ++existing.allowed;
-            }
-            else {
+            } else {
                 map.set(value, { allowed: 1, hits: 0 });
             }
-        }
-        else {
+        } else {
             compareFn = compareFn ?? compare(options);
 
             let found = false;
@@ -148,13 +136,9 @@ const containArray = function <T> (ref: T[], values: ContainValues<T>, options:C
     let hits = 0;
     for (const item of ref) {
         let match;
-        if (!options.deep ||
-            !item ||
-            typeof item !== 'object') {
-
+        if (!options.deep || !item || typeof item !== 'object') {
             match = map.get(item);
-        }
-        else {
+        } else {
             compareFn = compareFn ?? compare(options);
 
             for (const [key, existing] of map.entries()) {
@@ -169,9 +153,7 @@ const containArray = function <T> (ref: T[], values: ContainValues<T>, options:C
             ++match.hits;
             ++hits;
 
-            if (options.once &&
-                match.hits > match.allowed) {
-
+            if (options.once && match.hits > match.allowed) {
                 return false;
             }
         }
@@ -179,9 +161,7 @@ const containArray = function <T> (ref: T[], values: ContainValues<T>, options:C
 
     // Validate results
 
-    if (options.only &&
-        hits !== ref.length) {
-
+    if (options.only && hits !== ref.length) {
         return false;
     }
 
@@ -190,9 +170,7 @@ const containArray = function <T> (ref: T[], values: ContainValues<T>, options:C
             continue;
         }
 
-        if (match.hits < match.allowed &&
-            !options.part) {
-
+        if (match.hits < match.allowed && !options.part) {
             return false;
         }
     }
@@ -200,9 +178,7 @@ const containArray = function <T> (ref: T[], values: ContainValues<T>, options:C
     return !!hits;
 };
 
-
-const containObject = function <T extends object> (ref: T, values: ContainValues, options:ContainOptions) {
-
+const containObject = function <T extends object>(ref: T, values: ContainValues, options: ContainOptions) {
     Assert(options.once === undefined, 'Cannot use option once with object');
 
     const keys = Utils.keys(ref, options);
@@ -212,7 +188,6 @@ const containObject = function <T extends object> (ref: T, values: ContainValues
 
     // Keys list
     if (Array.isArray(values)) {
-
         return containArray(keys, values, options);
     }
 
@@ -247,14 +222,14 @@ const containObject = function <T extends object> (ref: T, values: ContainValues
     return true;
 };
 
-
 const compareString = function (ref: string, values: string[], options: ContainOptions) {
-
     // Empty string
 
     if (ref === '') {
-        return values.length === 1 && values[0] === '' ||               // '' contains ''
-            !options.once && !values.some((v) => v !== '');             // '' contains multiple '' if !once
+        return (
+            (values.length === 1 && values[0] === '') || // '' contains ''
+            (!options.once && !values.some((v) => v !== ''))
+        ); // '' contains multiple '' if !once
     }
 
     // Map values
@@ -269,20 +244,17 @@ const compareString = function (ref: string, values: string[], options: ContainO
             const existing = map.get(value);
             if (existing) {
                 ++existing.allowed;
-            }
-            else {
+            } else {
                 map.set(value, { allowed: 1, hits: 0 });
                 patterns.push(escapeRegex(value));
             }
-        }
-        else if (options.once ||
-            options.only) {
-
+        } else if (options.once || options.only) {
             return false;
         }
     }
 
-    if (!patterns.length) {                     // Non-empty string contains unlimited empty string
+    if (!patterns.length) {
+        // Non-empty string contains unlimited empty string
         return true;
     }
 
@@ -290,16 +262,13 @@ const compareString = function (ref: string, values: string[], options: ContainO
 
     const regex = new RegExp(`(${patterns.join('|')})`, 'g');
     const leftovers = ref.replace(regex, (_, $1) => {
-
         ++map.get($1).hits;
-        return '';                              // Remove from string
+        return ''; // Remove from string
     });
 
     // Validate results
 
-    if (options.only &&
-        leftovers) {
-
+    if (options.only && leftovers) {
         return false;
     }
 
@@ -313,9 +282,7 @@ const compareString = function (ref: string, values: string[], options: ContainO
             continue;
         }
 
-        if (match.hits < match.allowed &&
-            !options.part) {
-
+        if (match.hits < match.allowed && !options.part) {
             return false;
         }
 
@@ -329,9 +296,7 @@ const compareString = function (ref: string, values: string[], options: ContainO
     return !!any;
 };
 
-
 const compare = function (options: ContainOptions) {
-
     if (!options.deep) {
         return shallow;
     }
@@ -341,14 +306,12 @@ const compare = function (options: ContainOptions) {
 
     const flags = {
         prototype: hasOnly ? options.only : hasPart ? !options.part : false,
-        part: hasOnly ? !options.only : hasPart ? options.part : false
+        part: hasOnly ? !options.only : hasPart ? options.part : false,
     };
 
     return <A, B>(a: A, b: B) => DeepEqual(a, b, flags);
 };
 
-
 const shallow = function (a: unknown, b: unknown) {
-
     return a === b;
 };

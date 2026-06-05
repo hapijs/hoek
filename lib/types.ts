@@ -1,5 +1,4 @@
 export const prototypes = {
-
     array: Array.prototype,
     buffer: Buffer.prototype, // $lab:coverage:ignore
     date: Date.prototype,
@@ -11,22 +10,21 @@ export const prototypes = {
     set: Set.prototype,
     url: URL.prototype,
     weakMap: WeakMap.prototype,
-    weakSet: WeakSet.prototype
+    weakSet: WeakSet.prototype,
 };
 
-export type AnyPrototype = (
-    Array<any> |
-    Buffer |
-    Date |
-    Error |
-    Map<any, any> |
-    Promise<any> |
-    RegExp |
-    Set<any> |
-    URL |
-    WeakMap<object, any> |
-    WeakSet<object>
-)
+export type AnyPrototype =
+    | Array<any>
+    | Buffer
+    | Date
+    | Error
+    | Map<any, any>
+    | Promise<any>
+    | RegExp
+    | Set<any>
+    | URL
+    | WeakMap<object, any>
+    | WeakSet<object>;
 
 const typeMap = new Map<string, AnyPrototype>([
     ['[object Error]', prototypes.error],
@@ -35,16 +33,16 @@ const typeMap = new Map<string, AnyPrototype>([
     ['[object Set]', prototypes.set],
     ['[object URL]', prototypes.url],
     ['[object WeakMap]', prototypes.weakMap],
-    ['[object WeakSet]', prototypes.weakSet]
+    ['[object WeakSet]', prototypes.weakSet],
 ]);
 
 export const getInternalProto = <T>(obj: T) => {
-
     if (Array.isArray(obj)) {
         return prototypes.array;
     }
 
-    if (Buffer && obj instanceof Buffer) {          // $lab:coverage:ignore$
+    if (Buffer && obj instanceof Buffer) {
+        // $lab:coverage:ignore$
         return prototypes.buffer;
     }
 

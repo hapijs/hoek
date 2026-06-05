@@ -1,5 +1,4 @@
-export const escapeHtml = function (input?: string | null):string {
-
+export const escapeHtml = function (input?: string | null): string {
     if (!input) {
         return '';
     }
@@ -7,13 +6,11 @@ export const escapeHtml = function (input?: string | null):string {
     let escaped = '';
 
     for (let i = 0; i < input.length; ++i) {
-
         const charCode = input.charCodeAt(i);
 
         if (isSafe(charCode)) {
             escaped += input[i];
-        }
-        else {
+        } else {
             escaped += escapeHtmlChar(charCode);
         }
     }
@@ -21,9 +18,7 @@ export const escapeHtml = function (input?: string | null):string {
     return escaped;
 };
 
-
 const escapeHtmlChar = function (charCode: number) {
-
     const namedEscape = namedHtml.get(charCode);
     if (namedEscape) {
         return namedEscape;
@@ -37,12 +32,9 @@ const escapeHtmlChar = function (charCode: number) {
     return `&#x${hexValue};`;
 };
 
-
-const isSafe = function (charCode:number):boolean {
-
+const isSafe = function (charCode: number): boolean {
     return safeCharCodes.has(charCode);
 };
-
 
 const namedHtml = new Map([
     [38, '&amp;'],
@@ -54,29 +46,29 @@ const namedHtml = new Map([
     [163, '&pound;'],
     [164, '&curren;'],
     [169, '&copy;'],
-    [174, '&reg;']
+    [174, '&reg;'],
 ]);
 
-
 const safeCharCodes = (function () {
-
     const safe = new Set<number>();
 
     for (let i = 32; i < 123; ++i) {
-
-        if ((i >= 97) ||                    // a-z
-            (i >= 65 && i <= 90) ||         // A-Z
-            (i >= 48 && i <= 57) ||         // 0-9
-            i === 32 ||                     // space
-            i === 46 ||                     // .
-            i === 44 ||                     // ,
-            i === 45 ||                     // -
-            i === 58 ||                     // :
-            i === 95) {                     // _
+        if (
+            i >= 97 || // a-z
+            (i >= 65 && i <= 90) || // A-Z
+            (i >= 48 && i <= 57) || // 0-9
+            i === 32 || // space
+            i === 46 || // .
+            i === 44 || // ,
+            i === 45 || // -
+            i === 58 || // :
+            i === 95
+        ) {
+            // _
 
             safe.add(i);
         }
     }
 
     return safe;
-}());
+})();

@@ -12,18 +12,19 @@ export default defineConfig({
             thresholds: {
                 functions: 100,
                 lines: 100,
-                branches: 100
+                branches: 100,
             },
             reportsDirectory: './coverage',
             reporter: ['text', 'lcov'],
             exclude: [
-                'eslint.config.cjs',
+                'oxlint.config.ts',
+                'oxfmt.config.ts',
                 'tsdown.config.ts',
                 'vitest.config.ts',
                 'test/**',
                 'dist/**',
-                '**/*.d.ts'
-            ]
-        }
-    }
+                '**/*.d.ts',
+            ],
+        },
+    },
 });

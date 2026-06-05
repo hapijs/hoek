@@ -3,19 +3,13 @@ import { prototypes, getInternalProto } from './types.ts';
 import * as Utils from './utils.ts';
 
 const internals = {
-    needsProtoHack: new Set([
-        prototypes.set,
-        prototypes.map,
-        prototypes.weakSet,
-        prototypes.weakMap
-    ])
+    needsProtoHack: new Set([prototypes.set, prototypes.map, prototypes.weakSet, prototypes.weakMap]),
 };
 
 type ObjKey = string | symbol | number;
 export type ShallowKeys = ObjKey[] | ObjKey[][];
 
 export interface CloneOptions {
-
     /**
      * Clone the object's prototype.
      *
@@ -38,16 +32,8 @@ export interface CloneOptions {
     shallow?: ShallowKeys | boolean | undefined;
 }
 
-
-export const clone = function <T> (
-    obj: T,
-    options: CloneOptions = {},
-    _seen: Map<unknown, unknown> | null = null
-): T {
-
-    if (typeof obj !== 'object' ||
-        obj === null) {
-
+export const clone = function <T>(obj: T, options: CloneOptions = {}, _seen: Map<unknown, unknown> | null = null): T {
+    if (typeof obj !== 'object' || obj === null) {
         return obj;
     }
 
@@ -55,25 +41,18 @@ export const clone = function <T> (
     let seen = _seen;
 
     if (options.shallow) {
-
         if (options.shallow !== true) {
-
             return cloneWithShallow(obj, options);
         }
 
         cloneFn = (value) => value;
-    }
-    else if (seen) {
-
+    } else if (seen) {
         const lookup = seen.get(obj);
 
         if (lookup) {
-
             return lookup as T;
         }
-    }
-    else {
-
+    } else {
         seen = new Map();
     }
 
@@ -105,19 +84,15 @@ export const clone = function <T> (
     }
 
     if (seen) {
-        seen.set(obj, newObj);                              // Set seen, since obj could recurse
+        seen.set(obj, newObj); // Set seen, since obj could recurse
     }
 
-    if (baseProto as never === prototypes.set) {
+    if ((baseProto as never) === prototypes.set) {
         for (const value of obj as never[]) {
             (newObj as unknown as Set<any>).add(cloneFn(value, options, seen));
         }
-    }
-    else if (baseProto as never  === prototypes.map) {
-        for (
-            const [key, value] of
-            obj as unknown as Map<unknown, unknown>
-        ) {
+    } else if ((baseProto as never) === prototypes.map) {
+        for (const [key, value] of obj as unknown as Map<unknown, unknown>) {
             (newObj as unknown as Map<any, any>).set(key, cloneFn(value, options, seen));
         }
     }
@@ -128,41 +103,35 @@ export const clone = function <T> (
             continue;
         }
 
-        if (baseProto === prototypes.array &&
-            key === 'length') {
-
+        if (baseProto === prototypes.array && key === 'length') {
             (newObj as []).length = (obj as []).length;
             continue;
         }
 
-        if (
-            (baseProto as unknown as Error) === prototypes.error &&
-            key === 'stack'
-        ) {
-
-            continue;       // Already a part of the base object
+        if ((baseProto as unknown as Error) === prototypes.error && key === 'stack') {
+            continue; // Already a part of the base object
         }
 
         const descriptor = Object.getOwnPropertyDescriptor(obj, key);
         if (descriptor) {
-            if (descriptor.get ||
-                descriptor.set) {
-
+            if (descriptor.get || descriptor.set) {
                 Object.defineProperty(newObj, key, descriptor);
-            }
-            else if (descriptor.enumerable) {
+            } else if (descriptor.enumerable) {
                 newObj[key] = cloneFn(obj[key], options, seen);
+            } else {
+                Object.defineProperty(newObj, key, {
+                    enumerable: false,
+                    writable: true,
+                    configurable: true,
+                    value: cloneFn(obj[key], options, seen),
+                });
             }
-            else {
-                Object.defineProperty(newObj, key, { enumerable: false, writable: true, configurable: true, value: cloneFn(obj[key], options, seen) });
-            }
-        }
-        else {
+        } else {
             Object.defineProperty(newObj, key, {
                 enumerable: true,
                 writable: true,
                 configurable: true,
-                value: cloneFn(obj[key], options, seen)
+                value: cloneFn(obj[key], options, seen),
             });
         }
     }
@@ -170,9 +139,7 @@ export const clone = function <T> (
     return newObj;
 };
 
-
-const cloneWithShallow = function <T extends object> (source: T, options: CloneOptions) {
-
+const cloneWithShallow = function <T extends object>(source: T, options: CloneOptions) {
     const keys = options.shallow as string[] | string[][];
     options = Object.assign({}, options) as CloneOptions;
     options.shallow = false;
@@ -181,9 +148,7 @@ const cloneWithShallow = function <T extends object> (source: T, options: CloneO
 
     for (const key of keys) {
         const ref = reach(source, key);
-        if (typeof ref === 'object' ||
-            typeof ref === 'function') {
-
+        if (typeof ref === 'object' || typeof ref === 'function') {
             seen.set(ref, ref);
         }
     }
@@ -191,26 +156,22 @@ const cloneWithShallow = function <T extends object> (source: T, options: CloneO
     return clone(source, options, seen);
 };
 
-
-const base = function <T> (obj: T, baseProto: any, options: CloneOptions): T {
-
-    if (options.prototype === false) {                  // Defaults to true
+const base = function <T>(obj: T, baseProto: any, options: CloneOptions): T {
+    if (options.prototype === false) {
+        // Defaults to true
         if (internals.needsProtoHack.has(baseProto)) {
             return new baseProto.constructor();
         }
 
-        return baseProto === prototypes.array ? [] as T : {} as T;
+        return baseProto === prototypes.array ? ([] as T) : ({} as T);
     }
 
     const proto = Object.getPrototypeOf(obj);
-    if (proto &&
-        proto.isImmutable) {
-
+    if (proto && proto.isImmutable) {
         return obj;
     }
 
     if (baseProto === prototypes.array) {
-
         const newObj = [] as unknown as T;
 
         if (proto !== baseProto) {
@@ -218,9 +179,7 @@ const base = function <T> (obj: T, baseProto: any, options: CloneOptions): T {
         }
 
         return newObj;
-    }
-    else if (baseProto === prototypes.error) {
-
+    } else if (baseProto === prototypes.error) {
         const err = structuredClone(obj); // Needed to copy internal stack state
 
         if (Object.getPrototypeOf(err) !== proto) {
@@ -231,7 +190,6 @@ const base = function <T> (obj: T, baseProto: any, options: CloneOptions): T {
     }
 
     if (internals.needsProtoHack.has(baseProto)) {
-
         const newObj = new proto.constructor();
 
         if (proto !== baseProto) {

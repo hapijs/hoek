@@ -1,11 +1,10 @@
 import { prototypes, type AnyPrototype, getInternalProto } from './types.ts';
 
 const internals = {
-    mismatched: null
+    mismatched: null,
 };
 
 export interface DeepEqualOptions {
-
     /**
      * Compare functions with difference references by comparing their internal code and properties.
      *
@@ -42,18 +41,15 @@ export interface DeepEqualOptions {
     readonly symbols?: boolean;
 }
 
-
 export const deepEqual = (obj: unknown, ref: unknown, options?: DeepEqualOptions): boolean => {
-
     options = Object.assign({ prototype: true }, options);
 
     return !!isDeepEqual(obj, ref, options, []);
 };
 
-
 const isDeepEqual = (obj: unknown, ref: unknown, options: DeepEqualOptions, seen: SeenEntry[]) => {
-
-    if (obj === ref) {                                                      // Copied from Deep-eql, copyright(c) 2013 Jake Luer, jake@alogicalparadox.com, MIT Licensed, https://github.com/chaijs/deep-eql
+    if (obj === ref) {
+        // Copied from Deep-eql, copyright(c) 2013 Jake Luer, jake@alogicalparadox.com, MIT Licensed, https://github.com/chaijs/deep-eql
         return obj !== 0 || 1 / obj === 1 / (ref as never);
     }
 
@@ -63,30 +59,25 @@ const isDeepEqual = (obj: unknown, ref: unknown, options: DeepEqualOptions, seen
         return false;
     }
 
-    if (obj === null ||
-        ref === null) {
-
+    if (obj === null || ref === null) {
         return false;
     }
 
     if (type === 'function') {
-        if (!options.deepFunction ||
-            obj!.toString() !== ref!.toString()) {
-
+        if (!options.deepFunction || obj!.toString() !== ref!.toString()) {
             return false;
         }
 
         // Continue as object
-    }
-    else if (type !== 'object') {
-        return obj !== obj && ref !== ref;                                  // NaN
+    } else if (type !== 'object') {
+        return obj !== obj && ref !== ref; // NaN
     }
 
     const instanceType = getSharedType(obj as object, ref, !!options.prototype);
 
     switch (instanceType) {
         case prototypes.buffer:
-            return Buffer && Buffer.prototype.equals.call(obj, ref);        // $lab:coverage:ignore$
+            return Buffer && Buffer.prototype.equals.call(obj, ref); // $lab:coverage:ignore$
         case prototypes.promise:
             return obj === ref;
         case prototypes.regex:
@@ -98,29 +89,20 @@ const isDeepEqual = (obj: unknown, ref: unknown, options: DeepEqualOptions, seen
 
     for (let i = seen.length - 1; i >= 0; --i) {
         if (seen[i]!.isSame(obj, ref)) {
-            return true;                                                    // If previous comparison failed, it would have stopped execution
+            return true; // If previous comparison failed, it would have stopped execution
         }
     }
 
     seen.push(new SeenEntry(obj, ref));
 
     try {
-        return isDeepEqualObj(
-            instanceType,
-            obj as never,
-            ref as never,
-            options,
-            seen
-        );
-    }
-    finally {
+        return isDeepEqualObj(instanceType, obj as never, ref as never, options, seen);
+    } finally {
         seen.pop();
     }
 };
 
-
 const getSharedType = function (obj: object, ref: unknown, checkPrototype: boolean) {
-
     if (checkPrototype) {
         if (Object.getPrototypeOf(obj) !== Object.getPrototypeOf(ref)) {
             return internals.mismatched;
@@ -137,9 +119,7 @@ const getSharedType = function (obj: object, ref: unknown, checkPrototype: boole
     return type;
 };
 
-
 const valueOf = function (obj: any) {
-
     const objValueOf = obj.valueOf;
     if (objValueOf === undefined) {
         return obj;
@@ -147,21 +127,16 @@ const valueOf = function (obj: any) {
 
     try {
         return objValueOf.call(obj);
-    }
-    catch (err) {
+    } catch (err) {
         return err;
     }
 };
 
-
 const hasOwnEnumerableProperty = function (obj: object, key: string | symbol | number) {
-
     return Object.prototype.propertyIsEnumerable.call(obj, key);
 };
 
-
 const isSetSimpleEqual = function (obj: unknown, ref: unknown) {
-
     for (const entry of Set.prototype.values.call(obj)) {
         if (!Set.prototype.has.call(ref, entry)) {
             return false;
@@ -176,49 +151,37 @@ const isDeepEqualObj = function (
     obj: AnyPrototype,
     ref: AnyPrototype,
     options: DeepEqualOptions,
-    seen: SeenEntry[]
+    seen: SeenEntry[],
 ) {
-
     const { keys, getOwnPropertySymbols } = Object;
 
     if (instanceType === prototypes.array) {
-
         const objArr = obj as [];
         const refArr = ref as [];
 
         if (options.part) {
-
             // Check if any index match any other index
             for (const objValue of objArr) {
                 for (const refValue of refArr) {
-
                     if (isDeepEqual(objValue, refValue, options, seen)) {
                         return true;
                     }
-
                 }
             }
-        }
-        else {
-
-            if (objArr.length !== (refArr).length) {
-
+        } else {
+            if (objArr.length !== refArr.length) {
                 return false;
             }
 
-            for (let i = 0; i < (objArr).length; ++i) {
-
+            for (let i = 0; i < objArr.length; ++i) {
                 if (!isDeepEqual(objArr[i], refArr[i], options, seen)) {
-
                     return false;
                 }
             }
 
             return true;
         }
-    }
-    else if (instanceType === prototypes.set) {
-
+    } else if (instanceType === prototypes.set) {
         const objSet = obj as Set<any>;
         const refSet = ref as Set<any>;
 
@@ -227,7 +190,6 @@ const isDeepEqualObj = function (
         }
 
         if (!isSetSimpleEqual(objSet, refSet)) {
-
             // Check for deep equality
 
             const ref2 = new Set(Set.prototype.values.call(refSet));
@@ -250,9 +212,7 @@ const isDeepEqualObj = function (
                 }
             }
         }
-    }
-    else if (instanceType === prototypes.map) {
-
+    } else if (instanceType === prototypes.map) {
         const objMap = obj as Map<any, any>;
         const refMap = ref as Map<any, any>;
 
@@ -269,19 +229,13 @@ const isDeepEqualObj = function (
                 return false;
             }
         }
-    }
-    else if (instanceType === prototypes.error) {
-
+    } else if (instanceType === prototypes.error) {
         const objError = obj as Error;
         const refError = ref as Error;
 
         // Always check name and message
 
-        if (
-            objError.name !== refError.name ||
-            objError.message !== refError.message
-        ) {
-
+        if (objError.name !== refError.name || objError.message !== refError.message) {
             return false;
         }
     }
@@ -290,9 +244,7 @@ const isDeepEqualObj = function (
 
     const valueOfObj = valueOf(obj);
     const valueOfRef = valueOf(ref);
-    if ((obj !== valueOfObj || ref !== valueOfRef) &&
-        !isDeepEqual(valueOfObj, valueOfRef, options, seen)) {
-
+    if ((obj !== valueOfObj || ref !== valueOfRef) && !isDeepEqual(valueOfObj, valueOfRef, options, seen)) {
         return false;
     }
 
@@ -302,18 +254,13 @@ const isDeepEqualObj = function (
     // Check properties
 
     const objKeys = keys(objAsObject);
-    if (!options.part &&
-        objKeys.length !== keys(refAsObject).length &&
-        !options.skip) {
-
+    if (!options.part && objKeys.length !== keys(refAsObject).length && !options.skip) {
         return false;
     }
 
     let skipped = 0;
     for (const key of objKeys) {
-        if (options.skip &&
-            options.skip.includes(key)) {
-
+        if (options.skip && options.skip.includes(key)) {
             if (refAsObject[key as never] === undefined) {
                 ++skipped;
             }
@@ -330,21 +277,19 @@ const isDeepEqualObj = function (
         }
     }
 
-    if (!options.part &&
-        objKeys.length - skipped !== keys(refAsObject).length) {
-
+    if (!options.part && objKeys.length - skipped !== keys(refAsObject).length) {
         return false;
     }
 
     // Check symbols
 
-    if (options.symbols !== false) {                                // Defaults to true
+    if (options.symbols !== false) {
+        // Defaults to true
         const objSymbols = getOwnPropertySymbols(obj);
         const refSymbols = new Set(getOwnPropertySymbols(ref));
 
         for (const key of objSymbols) {
             if (!options.skip?.includes(key)) {
-
                 if (hasOwnEnumerableProperty(obj, key)) {
                     if (!hasOwnEnumerableProperty(ref, key)) {
                         return false;
@@ -353,8 +298,7 @@ const isDeepEqualObj = function (
                     if (!isDeepEqual(obj[key as never], ref[key as never], options, seen)) {
                         return false;
                     }
-                }
-                else if (hasOwnEnumerableProperty(ref, key)) {
+                } else if (hasOwnEnumerableProperty(ref, key)) {
                     return false;
                 }
             }
@@ -372,19 +316,16 @@ const isDeepEqualObj = function (
     return true;
 };
 
-
 class SeenEntry {
     obj: unknown;
     ref: unknown;
 
-    constructor(obj:unknown, ref:unknown) {
-
+    constructor(obj: unknown, ref: unknown) {
         this.obj = obj;
         this.ref = ref;
     }
 
-    isSame(obj:unknown, ref:unknown) {
-
+    isSame(obj: unknown, ref: unknown) {
         return this.obj === obj && this.ref === ref;
     }
 }

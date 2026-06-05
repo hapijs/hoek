@@ -5,5 +5,5 @@ export default defineConfig({
     outDir: './dist',
     exports: true,
     format: 'esm',
-    target: 'node22'
+    target: 'node22',
 });

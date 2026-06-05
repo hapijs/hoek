@@ -1,7 +1,6 @@
 import { assert } from './assert.ts';
 
 export interface ReachOptions {
-
     /**
      * String to split chain path on. Defaults to '.'.
      *
@@ -24,14 +23,16 @@ export interface ReachOptions {
     readonly strict?: boolean;
 
     /**
-     * If true, allows traversing functions for properties. false will throw an error if a function is part of the chain.
+     * If true, allows traversing functions for properties. false will throw an error if a function is part of the
+     * chain.
      *
      * @default true
      */
     readonly functions?: boolean;
 
     /**
-     * If true, allows traversing Set and Map objects for properties. false will return undefined regardless of the Set or Map passed.
+     * If true, allows traversing Set and Map objects for properties. false will return undefined regardless of the Set
+     * or Map passed.
      *
      * @default false
      */
@@ -41,22 +42,20 @@ export interface ReachOptions {
 /**
  * Convert an object key chain string to reference.
  *
- * @param obj - the object from which to look up the value.
- * @param chain - the string path of the requested value. The chain string is split into key names using `options.separator`, or an array containing each individual key name. A chain including negative numbers will work like a negative index on an array.
- * @param options - optional settings. Can be a string with the separator character, or ReachOptions
- *
- * @return The value referenced by the chain if found, otherwise undefined. If chain is null, undefined, or false, the object itself will be returned.
+ * @param obj - The object from which to look up the value.
+ * @param chain - The string path of the requested value. The chain string is split into key names using
+ *   `options.separator`, or an array containing each individual key name. A chain including negative numbers will work
+ *   like a negative index on an array.
+ * @param options - Optional settings. Can be a string with the separator character, or ReachOptions
+ * @returns The value referenced by the chain if found, otherwise undefined. If chain is null, undefined, or false, the
+ *   object itself will be returned.
  */
 export const reach = <T>(
     obj: object | null,
     chain?: string | (string | number | symbol)[] | false | null | undefined,
-    options?: ReachOptions | string
-):T => {
-
-    if (chain === false ||
-        chain === null ||
-        chain === undefined) {
-
+    options?: ReachOptions | string,
+): T => {
+    if (chain === false || chain === null || chain === undefined) {
         return obj as T;
     }
 
@@ -84,7 +83,6 @@ export const reach = <T>(
         }
 
         if (Array.isArray(ref) || isSetType) {
-
             const number = Number(key);
 
             if (Number.isInteger(number)) {
@@ -95,14 +93,16 @@ export const reach = <T>(
 
         if (
             !ref ||
-            (typeof ref === 'function' && options.functions === false) ||         // Defaults to true
+            (typeof ref === 'function' && options.functions === false) || // Defaults to true
             (!isIterable && ref[key as keyof typeof ref] === undefined)
         ) {
-
             assert(!options.strict || i + 1 === path.length, 'Missing segment', key!, 'in reach path ', chain);
             assert(
                 typeof ref === 'object' || options.functions === true || typeof ref !== 'function',
-                'Invalid segment', key!, 'in reach path ', chain
+                'Invalid segment',
+                key!,
+                'in reach path ',
+                chain,
             );
             ref = options.default;
             break;
@@ -110,11 +110,10 @@ export const reach = <T>(
 
         if (!isIterable) {
             ref = ref[key as keyof typeof ref];
-        }
-        else if (isSetType) {
+        } else if (isSetType) {
             ref = [...(ref as Set<any>)][Number(key)];
-        }
-        else if (isMapType) {  // type === 'map'
+        } else if (isMapType) {
+            // type === 'map'
             ref = (ref as Map<any, any>).get(key);
         }
     }
@@ -123,11 +122,9 @@ export const reach = <T>(
 };
 
 const isSet = function (ref: unknown): ref is Set<any> {
-
     return ref instanceof Set;
 };
 
 const isMap = function (ref: unknown): ref is Map<any, any> {
-
     return ref instanceof Map;
 };

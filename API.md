@@ -1,12 +1,12 @@
-
 ### Object
 
 **hoek** provides several helpful methods for objects and arrays.
 
 #### clone(obj, [options])
 
-Clones an object or an array. A *deep copy* is made (duplicates everything, including values that are
+Clones an object or an array. A _deep copy_ is made (duplicates everything, including values that are
 objects, as well as non-enumerable properties) where:
+
 - `obj` - the object to be cloned.
 - `options` - optional settings:
     - `symbols` - clone symbol properties. Defaults to `true`.
@@ -15,54 +15,53 @@ objects, as well as non-enumerable properties) where:
         - `true` to shallow copy all object properties. Used to shallow copy an object with non-enumerable properties and prototype;
 
 ```javascript
-
 const nestedObj = {
-        w: /^something$/ig,
-        x: {
-            a: [1, 2, 3],
-            b: 123456,
-            c: new Date()
-        },
-        y: 'y',
-        z: new Date()
-    };
+    w: /^something$/gi,
+    x: {
+        a: [1, 2, 3],
+        b: 123456,
+        c: new Date(),
+    },
+    y: 'y',
+    z: new Date(),
+};
 
 const copy = Hoek.clone(nestedObj);
 
 copy.x.b = 100;
 
-console.log(copy.y);        // results in 'y'
+console.log(copy.y); // results in 'y'
 console.log(nestedObj.x.b); // results in 123456
-console.log(copy.x.b);      // results in 100
+console.log(copy.x.b); // results in 100
 ```
 
 Clones an object or array excluding some keys which are shallow copied:
 
 ```javascript
-
 const nestedObj = {
-        w: /^something$/ig,
-        x: {
-            a: [1, 2, 3],
-            b: 123456,
-            c: new Date()
-        },
-        y: 'y',
-        z: new Date()
-    };
+    w: /^something$/gi,
+    x: {
+        a: [1, 2, 3],
+        b: 123456,
+        c: new Date(),
+    },
+    y: 'y',
+    z: new Date(),
+};
 
 const copy = Hoek.clone(nestedObj, { shallow: ['x'] });
 
 copy.x.b = 100;
 
-console.log(copy.y);        // results in 'y'
+console.log(copy.y); // results in 'y'
 console.log(nestedObj.x.b); // results in 100
-console.log(copy.x.b);      // results in 100
+console.log(copy.x.b); // results in 100
 ```
 
 #### merge(target, source, [options])
 
 Merge all the properties of source into target where:
+
 - `target` - the object onto which the properties of `source` are copied to.
 - `source` - the object copied onto `target`.
 - `options` - optional settings:
@@ -75,27 +74,26 @@ Merge all the properties of source into target where:
 Note that source wins in conflict, and by default null and undefined from source are applied.
 Merge is destructive where the target is modified. For non destructive merge, use `applyToDefaults`.
 
-
 ```javascript
+const target = { a: 1, b: 2 };
+const source = { a: 0, c: 5 };
+const source2 = { a: null, c: 5 };
 
-const target = {a: 1, b : 2};
-const source = {a: 0, c: 5};
-const source2 = {a: null, c: 5};
-
-Hoek.merge(target, source);         // results in {a: 0, b: 2, c: 5}
-Hoek.merge(target, source2);        // results in {a: null, b: 2, c: 5}
-Hoek.merge(target, source2, { nullOverride: false} ); // results in {a: 1, b: 2, c: 5}
+Hoek.merge(target, source); // results in {a: 0, b: 2, c: 5}
+Hoek.merge(target, source2); // results in {a: null, b: 2, c: 5}
+Hoek.merge(target, source2, { nullOverride: false }); // results in {a: 1, b: 2, c: 5}
 
 const targetArray = [1, 2, 3];
 const sourceArray = [4, 5];
 
-Hoek.merge(targetArray, sourceArray);              // results in [1, 2, 3, 4, 5]
+Hoek.merge(targetArray, sourceArray); // results in [1, 2, 3, 4, 5]
 Hoek.merge(targetArray, sourceArray, { mergeArrays: false }); // results in [4, 5]
 ```
 
 #### applyToDefaults(defaults, source, [options])
 
 Apply source to a copy of the defaults where:
+
 - `defaults` - the default object to clone and then apply `source` onto.
 - `source` - the object applied to the `defaults`.
 - `options` - optional settings:
@@ -104,8 +102,7 @@ Apply source to a copy of the defaults where:
     - `shallow` - an array of dot-separated or array-based key paths to shallow copy values in `source`.
 
 ```javascript
-
-const defaults = { host: "localhost", port: 8000 };
+const defaults = { host: 'localhost', port: 8000 };
 const source = { port: 8080 };
 
 const config = Hoek.applyToDefaults(defaults, source); // results in { host: "localhost", port: 8080 }
@@ -114,8 +111,7 @@ const config = Hoek.applyToDefaults(defaults, source); // results in { host: "lo
 Apply source with a null value to a copy of the defaults
 
 ```javascript
-
-const defaults = { host: "localhost", port: 8000 };
+const defaults = { host: 'localhost', port: 8000 };
 const source = { host: null, port: 8080 };
 
 const config = Hoek.applyToDefaults(defaults, source, { nullOverride: true }); // results in { host: null, port: 8080 }
@@ -124,27 +120,27 @@ const config = Hoek.applyToDefaults(defaults, source, { nullOverride: true }); /
 Apply source to a copy of the defaults where the shallow keys specified in the last parameter are shallow copied from source instead of merged
 
 ```javascript
-
 const defaults = {
     db: {
         server: {
-            host: "localhost",
-            port: 8000
+            host: 'localhost',
+            port: 8000,
         },
-        name: 'example'
-    }
+        name: 'example',
+    },
 };
 
 const source = { server: { port: 8080 } };
 
-const config = Hoek.applyToDefaults(defaults, source, { shallow: ['db.server'] });        // results in { db: { server: { port: 8080 }, name: 'example' } }
-const config = Hoek.applyToDefaults(defaults, source, { shallow: [['db', 'server']] });   // results in { db: { server: { port: 8080 }, name: 'example' } }
+const config = Hoek.applyToDefaults(defaults, source, { shallow: ['db.server'] }); // results in { db: { server: { port: 8080 }, name: 'example' } }
+const config = Hoek.applyToDefaults(defaults, source, { shallow: [['db', 'server']] }); // results in { db: { server: { port: 8080 }, name: 'example' } }
 ```
 
 #### deepEqual(a, b, [options])
 
 Performs a deep comparison of the two values including support for circular dependencies,
 prototype, and enumerable properties, where:
+
 - `a` - the first value.
 - `b` - the second value.
 - `options` - optional settings:
@@ -168,13 +164,13 @@ Hoek.deepEqual(Object.create(null), {}); //results in false
 #### intersect(array1, array2, [options])
 
 Find the common unique items betwee two arrays where:
+
 - `array1` - the first array.
 - `array2` - the second array.
 - `options` - optional settings:
     - `first` - if `true`, return only the first intersecting item. Defaults to `false`.
 
 ```javascript
-
 const array1 = [1, 2, 3];
 const array2 = [1, 4, 5];
 
@@ -184,6 +180,7 @@ const newArray = Hoek.intersect(array1, array2); // results in [1]
 #### contain(ref, values, [options])
 
 Tests if the reference value contains the provided values where:
+
 - `ref` - the reference string, array, or object.
 - `values` - a single or array of values to find within the `ref` value. If `ref` is an object, `values` can be a key name,
   an array of key names, or an object with key-value pairs to compare.
@@ -198,9 +195,9 @@ Note: comparing a string to overlapping values will result in failed comparison 
 Also, if an object key's value does not match the provided value, `false` is returned even when `part` is specified.
 
 ```javascript
-Hoek.contain('aaa', 'a', { only: true });							// true
-Hoek.contain([{ a: 1 }], [{ a: 1 }], { deep: true });				// true
-Hoek.contain([1, 2, 2], [1, 2], { once: true });					// false
+Hoek.contain('aaa', 'a', { only: true }); // true
+Hoek.contain([{ a: 1 }], [{ a: 1 }], { deep: true }); // true
+Hoek.contain([1, 2, 2], [1, 2], { once: true }); // false
 Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true }); // true
 ```
 
@@ -209,7 +206,6 @@ Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true }); // true
 Flatten an array
 
 ```javascript
-
 const array = [1, [2, 3]];
 
 const flattenedArray = Hoek.flatten(array); // results in [1, 2, 3]
@@ -243,14 +239,13 @@ A chain including negative numbers will work like negative indices on an array.
 If chain is `null`, `undefined` or `false`, the object itself will be returned.
 
 ```javascript
-
 const chain = 'a.b.c';
-const obj = {a : {b : { c : 1}}};
+const obj = { a: { b: { c: 1 } } };
 
 Hoek.reach(obj, chain); // returns 1
 
 const chain = ['a', 'b', -1];
-const obj = {a : {b : [2,3,6]}};
+const obj = { a: { b: [2, 3, 6] } };
 
 Hoek.reach(obj, chain); // returns 6
 ```
@@ -280,7 +275,7 @@ error message) without the need to worry about invalid conversion.
 ```javascript
 const a = {};
 a.b = a;
-Hoek.stringify(a);		// Returns '[Cannot display object: Converting circular structure to JSON]'
+Hoek.stringify(a); // Returns '[Cannot display object: Converting circular structure to JSON]'
 ```
 
 ### Bench
@@ -293,21 +288,19 @@ human-readable timestamps. More accurate for benchmarking or internal timers.
 **hoek** provides convenient methods for escaping html characters. The escaped characters are as followed:
 
 ```javascript
-
 internals.htmlEscaped = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
     "'": '&#x27;',
-    '`': '&#x60;'
+    '`': '&#x60;',
 };
 ```
 
 #### escapeHtml(string)
 
 ```javascript
-
 const string = '<html> hey </html>';
 const escapedString = Hoek.escapeHtml(string); // returns &lt;html&gt; hey &lt;/html&gt;
 ```
@@ -317,8 +310,7 @@ const escapedString = Hoek.escapeHtml(string); // returns &lt;html&gt; hey &lt;/
 Escape attribute value for use in HTTP header
 
 ```javascript
-
-const a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  //returns I said \"go w\\o me\"
+const a = Hoek.escapeHeaderAttribute('I said "go w\\o me"'); //returns I said \"go w\\o me\"
 ```
 
 #### escapeJson(string)
@@ -326,9 +318,8 @@ const a = Hoek.escapeHeaderAttribute('I said "go w\\o me"');  //returns I said \
 Unicode escapes the characters `<`, `>`, and `&` to prevent mime-sniffing older browsers mistaking JSON as HTML, and escapes line and paragraph separators for JSONP and script contexts.
 
 ```javascript
-
 const lineSeparator = String.fromCharCode(0x2028);
-const a = Hoek.escapeJson('I said <script>confirm(&).' + lineSeparator);  //returns I said \\u003cscript\\u003econfirm(\\u0026).\\u2028
+const a = Hoek.escapeJson('I said <script>confirm(&).' + lineSeparator); //returns I said \\u003cscript\\u003econfirm(\\u0026).\\u2028
 ```
 
 #### escapeRegex(string)
@@ -336,8 +327,7 @@ const a = Hoek.escapeJson('I said <script>confirm(&).' + lineSeparator);  //retu
 Escape string for Regex construction
 
 ```javascript
-
-const a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns 4\^f\$s\.4\*5\+\-_\?%\=#\!\:@\|~\\\/`"\(>\)\[<\]d\{\}s\,
+const a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,'); // returns 4\^f\$s\.4\*5\+\-_\?%\=#\!\:@\|~\\\/`"\(>\)\[<\]d\{\}s\,
 ```
 
 ### Errors
@@ -345,17 +335,17 @@ const a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');  // returns
 #### assert(condition, message)
 
 ```javascript
+const a = 1,
+    b = 2;
 
-const a = 1, b = 2;
-
-Hoek.assert(a === b, 'a should equal b');  // Throws 'a should equal b'
+Hoek.assert(a === b, 'a should equal b'); // Throws 'a should equal b'
 ```
 
 Note that you may also pass an already created Error object as the second parameter, and `assert` will throw that object.
 
 ```javascript
-
-const a = 1, b = 2;
+const a = 1,
+    b = 2;
 
 Hoek.assert(a === b, new Error('a should equal b')); // Throws the given error object
 ```
@@ -367,7 +357,6 @@ Hoek.assert(a === b, new Error('a should equal b')); // Throws the given error o
 Returns a new function that can be run multiple times, but makes sure `fn` is only run once.
 
 ```javascript
-
 const myFn = function () {
     console.log('Ran myFn');
 };
@@ -384,6 +373,7 @@ A simple no-op function. It does nothing at all.
 ### Promises
 
 #### wait(timeout, [returnValue])
+
 Resolve the promise after `timeout` milliseconds with the provided `returnValue`.
 
 ```javascript
@@ -392,12 +382,13 @@ const timeout = Hoek.wait(1000, 'timeout'); // resolves after 1s with 'timeout'
 ```
 
 #### block()
-A no-op Promise. Does nothing.
 
+A no-op Promise. Does nothing.
 
 #### isPromise(promise)
 
 Determines if an item is a promise where:
+
 - `promise` - the item being tested.
 
 Returns `true` is the item is a promise, otherwise `false`.

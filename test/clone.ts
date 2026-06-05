@@ -2,26 +2,22 @@ import { describe, it, expect } from 'vitest';
 
 import * as Hoek from '../lib/index.ts';
 
-
 const nestedObj = {
     v: [7, 8, 9],
-    w: /^something$/igm,
+    w: /^something$/gim,
     x: {
         a: [1, 2, 3],
         b: 123456,
         c: new Date(),
-        d: /hi/igm,
-        e: /hello/
+        d: /hi/gim,
+        e: /hello/,
     },
     y: 'y' as string | number,
-    z: new Date(1378775452757)
+    z: new Date(1378775452757),
 };
 
-
 describe('clone()', () => {
-
     it('clones a nested object', () => {
-
         const a = nestedObj;
         const b = Hoek.clone(a);
 
@@ -30,14 +26,12 @@ describe('clone()', () => {
     });
 
     it('clones a null object', () => {
-
         const b = Hoek.clone(null);
 
         expect(b).toHoequal(null);
     });
 
     it('should not convert undefined properties to null', () => {
-
         const obj = { something: undefined };
         const b = Hoek.clone(obj);
 
@@ -45,25 +39,22 @@ describe('clone()', () => {
     });
 
     it('should not throw on circular reference', () => {
-
         const a = {} as any;
         a.x = a;
 
         expect(() => {
-
             Hoek.clone(a);
         }).not.toThrow();
     });
 
     it('clones circular reference', () => {
-
         type Nested = {
-            z: Date,
-            y: Nested
+            z: Date;
+            y: Nested;
         };
 
         const x = {
-            'z': new Date()
+            z: new Date(),
         } as Nested;
 
         x.y = x;
@@ -78,7 +69,6 @@ describe('clone()', () => {
     });
 
     it('clones an object with a null prototype', () => {
-
         const obj = Object.create(null);
         const b = Hoek.clone(obj);
 
@@ -86,17 +76,16 @@ describe('clone()', () => {
     });
 
     it('clones deeply nested object', () => {
-
         const a = {
             x: {
                 y: {
                     a: [1, 2, 3],
                     b: 123456,
                     c: new Date(),
-                    d: /hi/igm,
-                    e: /hello/
-                }
-            }
+                    d: /hi/gim,
+                    e: /hello/,
+                },
+            },
         };
 
         const b = Hoek.clone(a);
@@ -106,7 +95,6 @@ describe('clone()', () => {
     });
 
     it('clones deeply nested set with circular references', () => {
-
         const s = new Set();
         s.add('a');
         s.add('b');
@@ -115,9 +103,9 @@ describe('clone()', () => {
         const a = {
             x: {
                 y: {
-                    a: s
-                }
-            }
+                    a: s,
+                },
+            },
         };
 
         const b = Hoek.clone(a);
@@ -136,7 +124,6 @@ describe('clone()', () => {
     });
 
     it('shallow clones set', () => {
-
         const set = new Set();
         set.add('a');
         set.add('b');
@@ -149,7 +136,6 @@ describe('clone()', () => {
     });
 
     it('clones deeply nested map with circular references', () => {
-
         const m = new Map();
         m.set('a', 'a');
         m.set('b', 'b');
@@ -158,9 +144,9 @@ describe('clone()', () => {
         const a = {
             x: {
                 y: {
-                    a: m
-                }
-            }
+                    a: m,
+                },
+            },
         };
 
         const b = Hoek.clone(a);
@@ -174,7 +160,6 @@ describe('clone()', () => {
     });
 
     it('shallow clones map', () => {
-
         const map = new Map();
         map.set('a', { x: 1 });
         map.set(map, map);
@@ -187,7 +172,6 @@ describe('clone()', () => {
     });
 
     it('clones arrays', () => {
-
         const a = [1, 2, 3];
 
         const b = Hoek.clone(a);
@@ -196,7 +180,6 @@ describe('clone()', () => {
     });
 
     it('clones holey arrays', () => {
-
         const a = new Array(3);
         a[1] = 'one';
 
@@ -206,12 +189,10 @@ describe('clone()', () => {
     });
 
     it('clones array-based class', () => {
-
         const A = class extends Array {
             __x = 1;
 
             __y() {
-
                 return 2;
             }
         };
@@ -227,12 +208,10 @@ describe('clone()', () => {
     });
 
     it('clones array-based class (without prototype)', () => {
-
         const A = class extends Array {
             __x = 1;
 
             __y() {
-
                 return 2;
             }
         };
@@ -247,10 +226,9 @@ describe('clone()', () => {
     });
 
     it('clones symbol properties', () => {
-
         const sym1 = Symbol(1);
         const sym2 = Symbol(2);
-        const a = { [sym1]: 1 } as { [sym1]: number, [sym2]: number };
+        const a = { [sym1]: 1 } as { [sym1]: number; [sym2]: number };
         Object.defineProperty(a, sym2, { value: 2 });
 
         const b = Hoek.clone(a);
@@ -263,7 +241,6 @@ describe('clone()', () => {
     });
 
     it('performs actual copy for shallow keys (no pass by reference)', () => {
-
         const x = Hoek.clone(nestedObj);
         const y = Hoek.clone(nestedObj);
 
@@ -290,7 +267,6 @@ describe('clone()', () => {
     });
 
     it('performs actual copy for deep keys (no pass by reference)', () => {
-
         const x = Hoek.clone(nestedObj);
         const y = Hoek.clone(nestedObj);
 
@@ -302,26 +278,23 @@ describe('clone()', () => {
     });
 
     it('copies functions with properties', () => {
-
         const a = {
             x: function () {
-
                 return 1;
             },
-            y: {}
+            y: {},
         } as {
             x: Function & {
-                z?: string,
-                v?: Function
-            },
+                z?: string;
+                v?: Function;
+            };
             y: {
-                u?: any
-            },
+                u?: any;
+            };
         };
 
         a.x.z = 'string in function';
         a.x.v = function () {
-
             return 2;
         };
 
@@ -335,10 +308,9 @@ describe('clone()', () => {
     });
 
     it('should copy a buffer', () => {
-
         const tls = {
             key: Buffer.from([1, 2, 3, 4, 5]),
-            cert: Buffer.from([1, 2, 3, 4, 5, 6, 10])
+            cert: Buffer.from([1, 2, 3, 4, 5, 6, 10]),
         };
 
         const copiedTls = Hoek.clone(tls);
@@ -351,27 +323,22 @@ describe('clone()', () => {
         expect(JSON.stringify(copiedTls.key)).not.toHoequal(JSON.stringify(tls.key));
     });
 
-
     it('clones an object with a prototype', () => {
-
         type ObjInst = {
-
-            b: () => 'c',
-            a: number,
-            x: number
-        }
+            b: () => 'c';
+            a: number;
+            x: number;
+        };
 
         interface ObjFn extends ObjInst {
-            new (): ObjInst
+            new (): ObjInst;
         }
 
-        const Obj = (function (this: ObjFn) {
-
+        const Obj = function (this: ObjFn) {
             this.a = 5;
-        }) as unknown as ObjFn;
+        } as unknown as ObjFn;
 
         Obj.prototype.b = function () {
-
             return 'c';
         };
 
@@ -384,25 +351,21 @@ describe('clone()', () => {
     });
 
     it('clones an object without a prototype', () => {
-
         type ObjInst = {
-
-            b: () => 'c',
-            a: number,
-            x: number
-        }
+            b: () => 'c';
+            a: number;
+            x: number;
+        };
 
         interface ObjFn extends ObjInst {
-            new (): ObjInst
+            new (): ObjInst;
         }
 
-        const Obj = (function (this: ObjFn) {
-
+        const Obj = function (this: ObjFn) {
             this.a = 5;
-        }) as unknown as ObjFn;
+        } as unknown as ObjFn;
 
         Obj.prototype.b = function () {
-
             return 'c';
         };
 
@@ -419,12 +382,11 @@ describe('clone()', () => {
     });
 
     it('reuses cloned Date object', () => {
-
         const obj = {
-            a: new Date()
+            a: new Date(),
         } as {
-            a: Date,
-            b?: Date
+            a: Date;
+            b?: Date;
         };
 
         obj.b = obj.a;
@@ -434,32 +396,28 @@ describe('clone()', () => {
     });
 
     it('shallow copies an object with a prototype and isImmutable flag', () => {
-
         type ObjInst = {
-
-            b: () => 'c',
-            value: number,
-            x: number
-        }
+            b: () => 'c';
+            value: number;
+            x: number;
+        };
 
         interface ObjFn extends ObjInst {
-            new (): ObjInst
+            new (): ObjInst;
         }
 
         const Obj = function (this: ObjFn) {
-
             this.value = 5;
         } as unknown as ObjFn;
 
         Obj.prototype.b = function () {
-
             return 'c';
         };
 
         Obj.prototype.isImmutable = true;
 
         const obj = {
-            a: new Obj()
+            a: new Obj(),
         };
 
         const copy = Hoek.clone(obj);
@@ -471,7 +429,6 @@ describe('clone()', () => {
     });
 
     it('clones an object with property getter without executing it', () => {
-
         const obj = {} as { test?: number };
         const value = 1;
         let execCount = 0;
@@ -480,10 +437,9 @@ describe('clone()', () => {
             enumerable: true,
             configurable: true,
             get: function () {
-
                 ++execCount;
                 return value;
-            }
+            },
         });
 
         const copy = Hoek.clone(obj);
@@ -493,25 +449,22 @@ describe('clone()', () => {
     });
 
     it('clones an object with property getter and setter', () => {
-
         const obj = {
-            _test: 0
+            _test: 0,
         } as {
-            _test: number,
-            test?: number
+            _test: number;
+            test?: number;
         };
 
         Object.defineProperty(obj, 'test', {
             enumerable: true,
             configurable: true,
             get: function () {
-
                 return this._test;
             },
             set: function (value) {
-
                 this._test = value - 1;
-            }
+            },
         });
 
         const copy = Hoek.clone(obj);
@@ -521,21 +474,19 @@ describe('clone()', () => {
     });
 
     it('clones an object with only property setter', () => {
-
         const obj = {
-            _test: 0
+            _test: 0,
         } as {
-            _test: number,
-            test?: number
+            _test: number;
+            test?: number;
         };
 
         Object.defineProperty(obj, 'test', {
             enumerable: true,
             configurable: true,
             set: function (value) {
-
                 this._test = value - 1;
-            }
+            },
         });
 
         const copy = Hoek.clone(obj);
@@ -545,21 +496,19 @@ describe('clone()', () => {
     });
 
     it('clones an object with non-enumerable properties', () => {
-
         const obj = {
-            _test: 0
+            _test: 0,
         } as {
-            _test: number,
-            test?: number
+            _test: number;
+            test?: number;
         };
 
         Object.defineProperty(obj, 'test', {
             enumerable: false,
             configurable: true,
             set: function (value) {
-
                 this._test = value - 1;
-            }
+            },
         });
 
         const copy = Hoek.clone(obj);
@@ -569,11 +518,9 @@ describe('clone()', () => {
     });
 
     it('clones an object where getOwnPropertyDescriptor returns undefined', () => {
-
         const oldGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
         const obj = { a: 'b' };
         Object.getOwnPropertyDescriptor = function () {
-
             return undefined;
         };
 
@@ -583,11 +530,8 @@ describe('clone()', () => {
     });
 
     it('clones own property when class property is not writable', () => {
-
         const Cl = class {
-
             get x() {
-
                 return 'hi';
             }
         };
@@ -595,7 +539,8 @@ describe('clone()', () => {
         const obj = new Cl();
 
         Object.defineProperty(obj, 'x', {
-            value: 0, writable: true
+            value: 0,
+            writable: true,
         });
 
         const copy = Hoek.clone(obj);
@@ -603,7 +548,6 @@ describe('clone()', () => {
     });
 
     it('clones a Set', () => {
-
         const a = new Set([1, 2, 3]);
         const b = Hoek.clone(a);
 
@@ -620,13 +564,9 @@ describe('clone()', () => {
     });
 
     it('clones properties set on a Set', () => {
-
-        const a = (new Set([1])) as (
-            Set<number> &
-            {
-                val: { b: number }
-            }
-        );
+        const a = new Set([1]) as Set<number> & {
+            val: { b: number };
+        };
 
         a.val = { b: 2 };
 
@@ -638,8 +578,7 @@ describe('clone()', () => {
     });
 
     it('clones subclassed Set', () => {
-
-        const MySet = class extends Set { };
+        const MySet = class extends Set {};
 
         const a = new MySet([1]);
         const b = Hoek.clone(a);
@@ -656,8 +595,7 @@ describe('clone()', () => {
     });
 
     it('clones Set containing objects (no pass by reference)', () => {
-
-        const a = new Set <number | typeof nestedObj>([1, 2, 3]);
+        const a = new Set<number | typeof nestedObj>([1, 2, 3]);
 
         a.add(nestedObj);
 
@@ -669,8 +607,11 @@ describe('clone()', () => {
     });
 
     it('clones a Map', () => {
-
-        const a = new Map([['a', 1], ['b', 2], ['c', 3]]);
+        const a = new Map([
+            ['a', 1],
+            ['b', 2],
+            ['c', 3],
+        ]);
         const b = Hoek.clone(a);
 
         expect(b).toHoequal(a);
@@ -686,13 +627,9 @@ describe('clone()', () => {
     });
 
     it('clones properties set on Map', () => {
-
-        const a = (new Map([['a', 1]])) as (
-            Map<string, number> &
-            {
-                val: { b: number }
-            }
-        );
+        const a = new Map([['a', 1]]) as Map<string, number> & {
+            val: { b: number };
+        };
         a.val = { b: 2 };
 
         const b = Hoek.clone(a);
@@ -703,8 +640,7 @@ describe('clone()', () => {
     });
 
     it('clones subclassed Map', () => {
-
-        const MyMap = class extends Map<string, number> { };
+        const MyMap = class extends Map<string, number> {};
 
         const a = new MyMap([['a', 1]]);
         const b = Hoek.clone(a);
@@ -721,7 +657,6 @@ describe('clone()', () => {
     });
 
     it('clones Map containing objects as values (no pass by reference)', () => {
-
         const a = new Map();
         a.set('a', 1);
         a.set('b', 2);
@@ -736,7 +671,6 @@ describe('clone()', () => {
     });
 
     it('clones Map containing objects as keys (passed by reference)', () => {
-
         const a = new Map();
         a.set('a', 1);
         a.set('b', 2);
@@ -750,7 +684,6 @@ describe('clone()', () => {
     });
 
     it('clones an URL', () => {
-
         const a = new URL('https://hapi.dev/');
         const b = Hoek.clone(a);
 
@@ -759,7 +692,6 @@ describe('clone()', () => {
     });
 
     it('clones Error', () => {
-
         class CustomError extends Error {
             name = 'CustomError';
             test?: symbol;
@@ -774,27 +706,23 @@ describe('clone()', () => {
         expect(b).toHoequal(a);
         expect(b).not.toBe(a);
         expect(b).toBeInstanceOf(CustomError);
-        expect(b.stack).toHoequal(a.stack);                 // Explicitly validate the .stack getters
+        expect(b.stack).toHoequal(a.stack); // Explicitly validate the .stack getters
     });
 
     it('clones Error with cause', () => {
-
-        const a = (new TypeError('bad', { cause: new Error('embedded') })) as (
-            TypeError & {
-                cause?: Error
-            }
-        );
+        const a = new TypeError('bad', { cause: new Error('embedded') }) as TypeError & {
+            cause?: Error;
+        };
         const b = Hoek.clone(a);
 
         expect(b).toHoequal(a);
         expect(b).not.toBe(a);
         expect(b).toBeInstanceOf(TypeError);
-        expect(b.stack).toHoequal(a.stack);                 // Explicitly validate the .stack getters
-        expect(b.cause!.stack).toHoequal(a.cause!.stack);     // Explicitly validate the .stack getters
+        expect(b.stack).toHoequal(a.stack); // Explicitly validate the .stack getters
+        expect(b.cause!.stack).toHoequal(a.cause!.stack); // Explicitly validate the .stack getters
     });
 
     it('clones Error with error message', () => {
-
         const a = new Error();
         a.message = new Error('message') as unknown as string;
 
@@ -807,7 +735,6 @@ describe('clone()', () => {
     });
 
     it('cloned Error handles late stack update', () => {
-
         const a = new Error('bad');
         const b = Hoek.clone(a);
 
@@ -818,15 +745,14 @@ describe('clone()', () => {
     });
 
     it('ignores symbols', () => {
-
         const sym = Symbol();
         const source = {
             a: {
-                b: 5
+                b: 5,
             },
             [sym]: {
-                d: 6
-            }
+                d: 6,
+            },
         };
 
         const copy = Hoek.clone(source, { symbols: false });
@@ -838,15 +764,14 @@ describe('clone()', () => {
     });
 
     it('deep clones except for listed keys', () => {
-
         const source = {
             a: {
-                b: 5
+                b: 5,
             },
             c: {
-                d: 6
+                d: 6,
             },
-            e() { }
+            e() {},
         };
 
         const copy = Hoek.clone(source, { shallow: ['c', 'e'] });
@@ -858,29 +783,25 @@ describe('clone()', () => {
     });
 
     it('returns immutable value', () => {
-
         expect(Hoek.clone(5, { shallow: [] })).toHoequal(5);
     });
 
     it('returns null value', () => {
-
         expect(Hoek.clone(null, { shallow: [] })).toHoequal(null);
     });
 
     it('returns undefined value', () => {
-
         expect(Hoek.clone(undefined, { shallow: [] })).toHoequal(undefined);
     });
 
     it('deep clones except for listed keys (including missing keys)', () => {
-
         const source = {
             a: {
-                b: 5
+                b: 5,
             },
             c: {
-                d: 6
-            }
+                d: 6,
+            },
         };
 
         const copy = Hoek.clone(source, { shallow: ['c', 'v'] });
@@ -893,15 +814,14 @@ describe('clone()', () => {
     });
 
     it('supports shallow symbols', () => {
-
         const sym = Symbol();
         const source = {
             a: {
-                b: 5
+                b: 5,
             },
             [sym]: {
-                d: 6
-            }
+                d: 6,
+            },
         };
 
         const copy = Hoek.clone(source, { shallow: [[sym]], symbols: true });
@@ -912,19 +832,18 @@ describe('clone()', () => {
     });
 
     it('shallow clones an entire object', () => {
-
         type Nested = {
             a: {
-                b: number
-            },
-            x?: Nested,
-            test?: number
-        }
+                b: number;
+            };
+            x?: Nested;
+            test?: number;
+        };
 
         const obj = {
             a: {
-                b: 1
-            }
+                b: 1,
+            },
         } as Nested;
 
         obj.x = obj;
@@ -936,10 +855,9 @@ describe('clone()', () => {
             enumerable: true,
             configurable: true,
             get: function () {
-
                 ++execCount;
                 return value;
-            }
+            },
         });
 
         const copy = Hoek.clone(obj, { shallow: true });
@@ -951,10 +869,9 @@ describe('clone()', () => {
     });
 
     it('does not invoke setter when shallow cloning', () => {
-
         const obj = {} as {
-            a: object,
-            b: object
+            a: object;
+            b: object;
         };
 
         Object.defineProperty(obj, 'a', { enumerable: true, value: {} });
@@ -967,7 +884,6 @@ describe('clone()', () => {
     });
 
     it('prevents prototype poisoning', () => {
-
         const a = JSON.parse('{ "__proto__": { "x": 1 } }');
         expect(a.x).toBeUndefined();
 
@@ -975,33 +891,34 @@ describe('clone()', () => {
         expect(b.x).toBeUndefined();
     });
 
-    it('handles structuredClone not returning proper Error instances', { skip: typeof structuredClone !== 'function' }, () => {
+    it(
+        'handles structuredClone not returning proper Error instances',
+        { skip: typeof structuredClone !== 'function' },
+        () => {
+            // This can happen when running in a VM
 
-        // This can happen when running in a VM
+            const error = new Error('blam');
+            let cloned: Error | undefined;
 
-        const error = new Error('blam');
-        let cloned: Error | undefined;
+            const origStructuredClone = structuredClone;
 
-        const origStructuredClone = structuredClone;
+            try {
+                global.structuredClone = function <T>(this: typeof structuredClone, obj: T): T {
+                    const clone = origStructuredClone.call(this, obj);
+                    if (obj === error) {
+                        Object.setPrototypeOf(clone, Object);
+                    }
 
-        try {
-            global.structuredClone = function <T> (this: typeof structuredClone, obj: T): T {
+                    return clone as T;
+                } as unknown as typeof structuredClone;
 
-                const clone = origStructuredClone.call(this, obj);
-                if (obj === error) {
-                    Object.setPrototypeOf(clone, Object);
-                }
+                cloned = Hoek.clone(error);
+            } finally {
+                global.structuredClone = origStructuredClone;
+            }
 
-                return clone as T;
-            } as unknown as typeof structuredClone;
-
-            cloned = Hoek.clone(error);
-        }
-        finally {
-            global.structuredClone = origStructuredClone;
-        }
-
-        expect(cloned).toBeInstanceOf(Error);
-        expect(cloned).toHoequal(error);
-    });
+            expect(cloned).toBeInstanceOf(Error);
+            expect(cloned).toHoequal(error);
+        },
+    );
 });

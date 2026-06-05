@@ -5,8 +5,7 @@ interface WrappedFunction {
     [wrapped]?: boolean | undefined;
 }
 
-export function once <T extends WrappedFunction>(method: T): T {
-
+export function once<T extends WrappedFunction>(method: T): T {
     if (method[wrapped]) {
         return method;
     }
@@ -14,7 +13,6 @@ export function once <T extends WrappedFunction>(method: T): T {
     let didRun = false;
 
     const wrappedFn = function (...args: Parameters<T>) {
-
         if (!didRun) {
             didRun = true;
             method(...args);

@@ -24,8 +24,5 @@
         "target": "ESNext",
         "types": ["./vitest.d.ts"]
     },
-    "include": [
-        "lib",
-        "test"
-    ]
+    "include": ["lib", "test"]
 }

@@ -1,40 +1,44 @@
 {
   "name": "@hapi/hoek",
-  "description": "General purpose node utilities",
   "version": "11.0.6",
-  "repository": "git://github.com/hapijs/hoek",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
-  "exports": {
-    ".": "./dist/index.js",
-    "./package.json": "./package.json"
-  },
-  "type": "module",
+  "description": "General purpose node utilities",
   "keywords": [
     "utilities"
   ],
+  "license": "BSD-3-Clause",
+  "repository": "git://github.com/hapijs/hoek",
   "files": [
     "lib",
     "dist",
     "README.md",
     "LICENSE"
   ],
-  "devDependencies": {
-    "@hapi/code": "^9.0.3",
-    "@hapi/eslint-plugin": "^7.0.0",
-    "@hapi/lab": "^26.0.0",
-    "@types/node": "^22",
-    "@vitest/coverage-v8": "^3.2.4",
-    "tsdown": "^0.13.3",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.11.0",
-    "vitest": "^3.2.4"
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index-B1rYeiOa.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
   },
   "scripts": {
     "test": "vitest run --coverage",
-    "lint": "tsc --noEmit && eslint . --ext .js,.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "fmt": "oxfmt --check",
+    "fmt:fix": "oxfmt",
     "build": "tsdown"
   },
-  "license": "BSD-3-Clause"
+  "devDependencies": {
+    "@hapi/code": "^9.0.3",
+    "@hapi/lab": "^26.0.0",
+    "@hapi/oxc-plugin": "^1.0.0",
+    "@types/node": "^22",
+    "@vitest/coverage-v8": "^3.2.4",
+    "oxfmt": "^0.53.0",
+    "oxlint": "^1.68.0",
+    "tsdown": "^0.13.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.2.4"
+  }
 }

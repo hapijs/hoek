@@ -1,28 +1,26 @@
 import Util from 'util';
-import { describe, it, expect } from 'vitest';
 
+import { describe, it, expect } from 'vitest';
 
 import * as Hoek from '../lib/index.ts';
 import { type MergeTypes } from '../lib/merge.ts';
 
 const nestedObj = {
     v: [7, 8, 9],
-    w: /^something$/igm,
+    w: /^something$/gim,
     x: {
         a: [1, 2, 3],
         b: 123456,
         c: new Date(),
-        d: /hi/igm,
-        e: /hello/
+        d: /hi/gim,
+        e: /hello/,
     },
     y: 'y',
-    z: new Date(1378775452757)
+    z: new Date(1378775452757),
 };
 
 describe('merge()', () => {
-
     it('deep copies source items', () => {
-
         const sym1 = Symbol('1');
         const sym2 = Symbol('2');
         const sym3 = Symbol('3');
@@ -31,16 +29,16 @@ describe('merge()', () => {
             b: 3,
             d: [],
             [sym1]: true,
-            [sym3]: true
+            [sym3]: true,
         } as any;
 
         const source = {
             c: {
-                d: 1
+                d: 1,
             },
             d: [{ e: 1 }],
             [sym2]: true,
-            [sym3]: false
+            [sym3]: false,
         };
 
         Hoek.merge(target, source);
@@ -56,7 +54,6 @@ describe('merge()', () => {
     });
 
     it('deep copies source items without symbols', () => {
-
         const sym1 = Symbol('1');
         const sym2 = Symbol('2');
         const sym3 = Symbol('3');
@@ -65,16 +62,16 @@ describe('merge()', () => {
             b: 3,
             d: [],
             [sym1]: true,
-            [sym3]: true
+            [sym3]: true,
         } as any;
 
         const source = {
             c: {
-                d: 1
+                d: 1,
             },
             d: [{ e: 1 }],
             [sym2]: true,
-            [sym3]: false
+            [sym3]: false,
         };
 
         Hoek.merge(target, source, { symbols: false });
@@ -90,16 +87,15 @@ describe('merge()', () => {
     });
 
     it('merges array over an object', () => {
-
         const a = {
-            x: ['n', 'm']
+            x: ['n', 'm'],
         } as any;
 
         const b = {
             x: {
                 n: '1',
-                m: '2'
-            }
+                m: '2',
+            },
         };
 
         Hoek.merge(b, a);
@@ -108,16 +104,15 @@ describe('merge()', () => {
     });
 
     it('merges object over an array', () => {
-
         const a = {
-            x: ['n', 'm']
+            x: ['n', 'm'],
         } as any;
 
         const b = {
             x: {
                 n: '1',
-                m: '2'
-            }
+                m: '2',
+            },
         };
 
         Hoek.merge(a, b);
@@ -126,7 +121,6 @@ describe('merge()', () => {
     });
 
     it('merges from null prototype objects', () => {
-
         const a = {} as any;
 
         const b = Object.create(null);
@@ -137,13 +131,12 @@ describe('merge()', () => {
     });
 
     it('skips non-enumerable properties', () => {
-
         const a = { x: 0 } as any;
 
         const b = {};
         Object.defineProperty(b, 'x', {
             enumerable: false,
-            value: 1
+            value: 1,
         });
 
         Hoek.merge(a, b);
@@ -151,13 +144,11 @@ describe('merge()', () => {
     });
 
     it('does not throw if source is null', () => {
-
         const a = {} as any;
         const b = null;
         let c = null;
 
         expect(() => {
-
             c = Hoek.merge(a, b);
         }).not.toThrow();
 
@@ -165,13 +156,11 @@ describe('merge()', () => {
     });
 
     it('does not throw if source is undefined', () => {
-
         const a = {} as any;
         const b = undefined;
         let c = null;
 
         expect(() => {
-
             c = Hoek.merge(a, b);
         }).not.toThrow();
 
@@ -179,9 +168,7 @@ describe('merge()', () => {
     });
 
     it('throws if source is not an object', () => {
-
         expect(() => {
-
             const a = {} as any;
             const b = 0;
 
@@ -191,9 +178,7 @@ describe('merge()', () => {
     });
 
     it('throws if target is not an object', () => {
-
         expect(() => {
-
             const a = 0;
             const b = {};
 
@@ -203,9 +188,7 @@ describe('merge()', () => {
     });
 
     it('throws if target is not an array and source is', () => {
-
         expect(() => {
-
             const a = {} as any;
             const b = [1, 2];
 
@@ -214,7 +197,6 @@ describe('merge()', () => {
     });
 
     it('returns the same object when merging arrays', () => {
-
         const a = [] as any[];
         const b = [1, 2];
 
@@ -222,7 +204,6 @@ describe('merge()', () => {
     });
 
     it('combines an empty object with a non-empty object', () => {
-
         const a = {} as any;
         const b = nestedObj;
 
@@ -232,7 +213,6 @@ describe('merge()', () => {
     });
 
     it('overrides values in target', () => {
-
         const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', s: 1, m: 'abc' };
         const b = { x: null, z: 4, v: 0, t: { u: 6 }, s: undefined, m: '123' };
 
@@ -247,7 +227,6 @@ describe('merge()', () => {
     });
 
     it('overrides values in target (flip)', () => {
-
         const a = { x: 1, y: 2, z: 3, v: 5, t: 'test', s: 1, m: 'abc' };
         const b = { x: null, z: 4, v: 0, t: { u: 6 }, s: undefined, m: '123' };
 
@@ -262,7 +241,6 @@ describe('merge()', () => {
     });
 
     it('retains Date properties', () => {
-
         const a = { x: new Date(1378776452757) };
 
         const b = Hoek.merge({}, a);
@@ -270,7 +248,6 @@ describe('merge()', () => {
     });
 
     it('retains Date properties when merging keys', () => {
-
         const a = { x: new Date(1378776452757) };
 
         const b = Hoek.merge({ x: {} }, a);
@@ -278,7 +255,6 @@ describe('merge()', () => {
     });
 
     it('overrides Buffer', () => {
-
         const a = { x: Buffer.from('abc') };
 
         Hoek.merge({ x: {} }, a);
@@ -286,7 +262,6 @@ describe('merge()', () => {
     });
 
     it('overrides RegExp', () => {
-
         const a = { x: /test/ };
 
         Hoek.merge({ x: {} }, a);
@@ -294,7 +269,6 @@ describe('merge()', () => {
     });
 
     it('overrides Symbol properties', () => {
-
         const sym = Symbol();
         const a = { [sym]: 1 };
 
@@ -303,7 +277,6 @@ describe('merge()', () => {
     });
 
     it('skips __proto__', () => {
-
         const a = '{ "ok": "value", "__proto__": { "test": "value" } }';
 
         const b = Hoek.merge({}, JSON.parse(a));
@@ -313,39 +286,32 @@ describe('merge()', () => {
 });
 
 describe('applyToDefaults()', () => {
-
     it('throws when target is null', () => {
-
         expect(() => {
-
             Hoek.applyToDefaults(null as never, {});
         }).toThrow('Invalid defaults value: must be an object');
     });
 
     it('throws when options are invalid', () => {
-
         expect(() => {
-
             Hoek.applyToDefaults({}, {}, false as never);
         }).toThrow('Invalid options: must be an object');
 
         expect(() => {
-
             Hoek.applyToDefaults({}, {}, 123 as never);
         }).toThrow('Invalid options: must be an object');
     });
 
     it('returns null if source is false', () => {
-
         const defaults = {
             a: 1,
             b: 2,
             c: {
                 d: 3,
-                e: [5, 6]
+                e: [5, 6],
             },
             f: 6,
-            g: 'test'
+            g: 'test',
         };
 
         const result = Hoek.applyToDefaults(defaults, false);
@@ -353,16 +319,15 @@ describe('applyToDefaults()', () => {
     });
 
     it('returns null if source is null', () => {
-
         const defaults = {
             a: 1,
             b: 2,
             c: {
                 d: 3,
-                e: [5, 6]
+                e: [5, 6],
             },
             f: 6,
-            g: 'test'
+            g: 'test',
         };
 
         const result = Hoek.applyToDefaults(defaults, null as never);
@@ -370,16 +335,15 @@ describe('applyToDefaults()', () => {
     });
 
     it('returns null if source is undefined', () => {
-
         const defaults = {
             a: 1,
             b: 2,
             c: {
                 d: 3,
-                e: [5, 6]
+                e: [5, 6],
             },
             f: 6,
-            g: 'test'
+            g: 'test',
         };
 
         const result = Hoek.applyToDefaults(defaults, undefined);
@@ -387,16 +351,15 @@ describe('applyToDefaults()', () => {
     });
 
     it('returns a copy of defaults if source is true', () => {
-
         const defaults = {
             a: 1,
             b: 2,
             c: {
                 d: 3,
-                e: [5, 6]
+                e: [5, 6],
             },
             f: 6,
-            g: 'test'
+            g: 'test',
         };
 
         const result = Hoek.applyToDefaults(defaults, true);
@@ -404,27 +367,26 @@ describe('applyToDefaults()', () => {
     });
 
     it('applies object to defaults', () => {
-
         const defaults = {
             a: 1,
             b: 2,
             c: {
                 d: 3,
-                e: [5, 6]
+                e: [5, 6],
             },
             f: 6,
-            g: 'test'
+            g: 'test',
         };
 
         const obj = {
             a: null,
             c: {
-                e: [4]
+                e: [4],
             },
             f: 0,
             g: {
-                h: 5
-            }
+                h: 5,
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof obj>;
@@ -438,27 +400,26 @@ describe('applyToDefaults()', () => {
     });
 
     it('applies object to defaults with null', () => {
-
         const defaults = {
             a: 1,
             b: 2,
             c: {
                 d: 3,
-                e: [5, 6]
+                e: [5, 6],
             },
             f: 6,
-            g: 'test'
+            g: 'test',
         };
 
         const obj = {
             a: null,
             c: {
-                e: [4]
+                e: [4],
             },
             f: 0,
             g: {
-                h: 5
-            }
+                h: 5,
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof obj>;
@@ -472,26 +433,25 @@ describe('applyToDefaults()', () => {
     });
 
     it('shallow copies the listed keys from source without merging', () => {
-
         const defaults = {
             a: {
                 b: 5,
-                e: 3
+                e: 3,
             },
             c: {
                 d: 7,
-                g: 1
-            }
+                g: 1,
+            },
         };
 
         const source = {
             a: {
-                b: 4
+                b: 4,
             },
             c: {
                 d: 6,
-                f: 7
-            }
+                f: 7,
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof source>;
@@ -505,27 +465,26 @@ describe('applyToDefaults()', () => {
     });
 
     it('shallow copies the nested keys (override)', () => {
-
         const defaults = {
             a: {
-                b: 5
+                b: 5,
             },
             c: {
                 d: 7,
-                g: 1
-            }
+                g: 1,
+            },
         };
 
         const source = {
             a: {
-                b: 4
+                b: 4,
             },
             c: {
                 d: 6,
                 g: {
-                    h: 8
-                }
-            }
+                    h: 8,
+                },
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof source>;
@@ -536,22 +495,21 @@ describe('applyToDefaults()', () => {
     });
 
     it('shallow copies the nested keys (missing)', () => {
-
         const defaults = {
             a: {
-                b: 5
-            }
+                b: 5,
+            },
         };
 
         const source = {
             a: {
-                b: 4
+                b: 4,
             },
             c: {
                 g: {
-                    h: 8
-                }
-            }
+                    h: 8,
+                },
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof source>;
@@ -562,27 +520,26 @@ describe('applyToDefaults()', () => {
     });
 
     it('shallow copies the nested keys (override)', () => {
-
         const defaults = {
             a: {
-                b: 5
+                b: 5,
             },
             c: {
                 g: {
-                    d: 7
-                }
-            }
+                    d: 7,
+                },
+            },
         };
 
         const source = {
             a: {
-                b: 4
+                b: 4,
             },
             c: {
                 g: {
-                    h: 8
-                }
-            }
+                    h: 8,
+                },
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof source>;
@@ -593,24 +550,23 @@ describe('applyToDefaults()', () => {
     });
 
     it('shallow copies the nested keys (deeper)', () => {
-
         const defaults = {
             a: {
-                b: 5
-            }
+                b: 5,
+            },
         };
 
         const source = {
             a: {
-                b: 4
+                b: 4,
             },
             c: {
                 g: {
                     r: {
-                        h: 8
-                    }
-                }
-            }
+                        h: 8,
+                    },
+                },
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof source>;
@@ -621,24 +577,23 @@ describe('applyToDefaults()', () => {
     });
 
     it('shallow copies the nested keys (not present)', () => {
-
         const defaults = {
             a: {
-                b: 5
-            }
+                b: 5,
+            },
         };
 
         const source = {
             a: {
-                b: 4
+                b: 4,
             },
             c: {
                 g: {
                     r: {
-                        h: 8
-                    }
-                }
-            }
+                        h: 8,
+                    },
+                },
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof source>;
@@ -648,40 +603,39 @@ describe('applyToDefaults()', () => {
     });
 
     it('shallow copies the nested keys (non-object)', () => {
-
         const defaults = {
             // All falsy values:
             _undefined: {
-                a: 1
+                a: 1,
             },
             _null: {
-                a: 2
+                a: 2,
             },
             _false: {
-                a: 3
+                a: 3,
             },
             _emptyString: {
-                a: 4
+                a: 4,
             },
             _zero: {
-                a: 5
+                a: 5,
             },
             _NaN: {
-                a: 6
+                a: 6,
             },
             // Other non-object values:
             _string: {
-                a: 7
+                a: 7,
             },
             _number: {
-                a: 8
+                a: 8,
             },
             _true: {
-                a: 9
+                a: 9,
             },
             _function: {
-                a: 10
-            }
+                a: 10,
+            },
         };
 
         const source = {
@@ -694,23 +648,25 @@ describe('applyToDefaults()', () => {
             _string: 'foo',
             _number: 42,
             _true: true,
-            _function: () => {}
+            _function: () => {},
         };
 
         type D = MergeTypes<typeof defaults, typeof source>;
 
-        const merged = Hoek.applyToDefaults<D>(defaults, source, { shallow: [
-            '_undefined.a',
-            '_null.a',
-            '_false.a',
-            '_emptyString.a',
-            '_zero.a',
-            '_NaN.a',
-            '_string.a',
-            '_number.a',
-            '_true.a',
-            '_function.a'
-        ] });
+        const merged = Hoek.applyToDefaults<D>(defaults, source, {
+            shallow: [
+                '_undefined.a',
+                '_null.a',
+                '_false.a',
+                '_emptyString.a',
+                '_zero.a',
+                '_NaN.a',
+                '_string.a',
+                '_number.a',
+                '_true.a',
+                '_function.a',
+            ],
+        });
         expect(merged).toHoequal({
             _undefined: { a: 1 },
             _null: { a: 2 },
@@ -721,16 +677,15 @@ describe('applyToDefaults()', () => {
             _string: 'foo',
             _number: 42,
             _true: true,
-            _function: source._function
+            _function: source._function,
         });
     });
 
     it('shallow copies the listed keys in the defaults', () => {
-
         const defaults = {
             a: {
-                b: 1
-            }
+                b: 1,
+            },
         };
 
         const merged = Hoek.applyToDefaults(defaults, {}, { shallow: ['a'] })!;
@@ -738,11 +693,10 @@ describe('applyToDefaults()', () => {
     });
 
     it('shallow copies the listed keys in the defaults (true)', () => {
-
         const defaults = {
             a: {
-                b: 1
-            }
+                b: 1,
+            },
         };
 
         const merged = Hoek.applyToDefaults(defaults, true, { shallow: ['a'] })!;
@@ -750,11 +704,10 @@ describe('applyToDefaults()', () => {
     });
 
     it('returns null on false', () => {
-
         const defaults = {
             a: {
-                b: 1
-            }
+                b: 1,
+            },
         };
 
         const merged = Hoek.applyToDefaults(defaults, false, { shallow: ['a'] });
@@ -762,24 +715,22 @@ describe('applyToDefaults()', () => {
     });
 
     it('handles missing shallow key in defaults', () => {
-
         const defaults = {
             a: {
-                b: 1
-            }
+                b: 1,
+            },
         };
 
         const options = {
             a: {
-                b: 4
+                b: 4,
             },
             c: {
-                d: 2
-            }
+                d: 2,
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof options>;
-
 
         const merged = Hoek.applyToDefaults<D>(defaults, options, { shallow: ['c'] })!;
         expect(merged).toHoequal({ a: { b: 4 }, c: { d: 2 } });
@@ -789,52 +740,53 @@ describe('applyToDefaults()', () => {
     });
 
     it('throws on missing defaults', () => {
-
-        expect(() => Hoek.applyToDefaults(null as never, {}, { shallow: ['a'] })).toThrow('Invalid defaults value: must be an object');
+        expect(() => Hoek.applyToDefaults(null as never, {}, { shallow: ['a'] })).toThrow(
+            'Invalid defaults value: must be an object',
+        );
     });
 
     it('throws on invalid defaults', () => {
-
-        expect(() => Hoek.applyToDefaults('abc', {}, { shallow: ['a'] })).toThrow('Invalid defaults value: must be an object');
+        expect(() => Hoek.applyToDefaults('abc', {}, { shallow: ['a'] })).toThrow(
+            'Invalid defaults value: must be an object',
+        );
     });
 
     it('throws on invalid source', () => {
-
-        expect(() => Hoek.applyToDefaults({}, 'abc', { shallow: ['a'] })).toThrow('Invalid source value: must be true, falsy or an object');
+        expect(() => Hoek.applyToDefaults({}, 'abc', { shallow: ['a'] })).toThrow(
+            'Invalid source value: must be true, falsy or an object',
+        );
     });
 
     it('throws on missing keys', () => {
-
         expect(() => Hoek.applyToDefaults({}, true, { shallow: 123 } as never)).toThrow('Invalid keys');
     });
 
     it('handles array keys', () => {
-
         const sym = Symbol();
 
         const defaults = {
             a: {
                 b: 5,
-                e: 3
+                e: 3,
             },
             c: {
                 d: 7,
                 [sym]: {
-                    f: 9
-                }
-            }
+                    f: 9,
+                },
+            },
         };
 
         const options = {
             a: {
-                b: 4
+                b: 4,
             },
             c: {
                 d: 6,
                 [sym]: {
-                    g: 1
-                }
-            }
+                    g: 1,
+                },
+            },
         };
 
         type D = MergeTypes<typeof defaults, typeof options>;
@@ -845,11 +797,10 @@ describe('applyToDefaults()', () => {
     });
 
     it('does not modify shallow entries in source', () => {
-
         const defaults = {
             a: {
-                b: 5
-            }
+                b: 5,
+            },
         };
 
         const source = {} as { a?: { b: number } };
@@ -865,7 +816,6 @@ describe('applyToDefaults()', () => {
     });
 
     it('should respect nullOverride when shallow is used', () => {
-
         const defaults = { host: 'localhost', port: 8000 };
         const source = { host: null, port: 8080 };
 
@@ -878,16 +828,13 @@ describe('applyToDefaults()', () => {
 });
 
 describe('deepEqual()', () => {
-
     it('compares identical references', () => {
-
         const x = {};
 
         expect(Hoek.deepEqual(x, x)).toBe(true);
     });
 
     it('compares simple values', () => {
-
         expect(Hoek.deepEqual('x', 'x')).toBe(true);
         expect(Hoek.deepEqual('x', 'y')).toBe(false);
         expect(Hoek.deepEqual('x1', 'x')).toBe(false);
@@ -903,7 +850,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares different types', () => {
-
         expect(Hoek.deepEqual([], 5, { prototype: false })).toBe(false);
         expect(Hoek.deepEqual(5, [], { prototype: false })).toBe(false);
         expect(Hoek.deepEqual({}, null, { prototype: false })).toBe(false);
@@ -913,7 +859,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares empty structures', () => {
-
         expect(Hoek.deepEqual([], [])).toBe(true);
         expect(Hoek.deepEqual({}, {})).toBe(true);
         expect(Hoek.deepEqual([], {})).toBe(false);
@@ -922,25 +867,20 @@ describe('deepEqual()', () => {
     });
 
     it('compares empty arguments object', () => {
-
         const compare = function () {
-
-            expect(Hoek.deepEqual([], arguments)).toBe(false);            // eslint-disable-line prefer-rest-params
+            expect(Hoek.deepEqual([], arguments)).toBe(false); // eslint-disable-line prefer-rest-params
         };
 
         compare();
     });
 
     it('compares empty arguments objects', () => {
-
         const compare = function () {
-
-            const arg1 = arguments;                                         // eslint-disable-line prefer-rest-params
+            const arg1 = arguments; // eslint-disable-line prefer-rest-params
 
             const inner = function () {
-
                 // callee is not supported in strict mode, was previously false becuse callee was different
-                expect(Hoek.deepEqual(arg1, arguments)).toBe(true);       // eslint-disable-line prefer-rest-params
+                expect(Hoek.deepEqual(arg1, arguments)).toBe(true); // eslint-disable-line prefer-rest-params
             };
 
             inner();
@@ -950,7 +890,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares symbol object properties', () => {
-
         const sym = Symbol();
 
         const ne = {};
@@ -975,7 +914,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares dates', () => {
-
         expect(Hoek.deepEqual(new Date(2015, 1, 1), new Date('2015/02/01'))).toBe(true);
         expect(Hoek.deepEqual(new Date(100), new Date(101))).toBe(false);
         expect(Hoek.deepEqual(new Date(), {})).toBe(false);
@@ -985,7 +923,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares regular expressions', () => {
-
         expect(Hoek.deepEqual(/\s/, new RegExp('\\\s'))).toBe(true);
         expect(Hoek.deepEqual(/\s/g, /\s/g)).toBe(true);
         expect(Hoek.deepEqual(/a/, {}, { prototype: false })).toBe(false);
@@ -994,7 +931,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares errors', () => {
-
         expect(Hoek.deepEqual(new Error('a'), new Error('a'))).toBe(true);
         expect(Hoek.deepEqual(new Error('a'), new Error('b'))).toBe(false);
 
@@ -1013,7 +949,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares arrays', () => {
-
         expect(Hoek.deepEqual([[1]], [[1]])).toBe(true);
         expect(Hoek.deepEqual([1, 2, 3], [1, 2, 3])).toBe(true);
         expect(Hoek.deepEqual([1, 2, 3], [1, 3, 2])).toBe(false);
@@ -1025,7 +960,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares sets', () => {
-
         expect(Hoek.deepEqual(new Set(), new Set())).toBe(true);
         expect(Hoek.deepEqual(new Set([1]), new Set([1]))).toBe(true);
         expect(Hoek.deepEqual(new Set([]), new Set([]))).toBe(true);
@@ -1046,7 +980,6 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new WeakSet(), new Set(), { prototype: false })).toBe(false);
 
         const sets = [new Set(), new Set()].map((set) => {
-
             (set as any).modified = true;
             return set;
         });
@@ -1055,11 +988,8 @@ describe('deepEqual()', () => {
     });
 
     it('compares extended sets', () => {
-
         class PrivateSet extends Set {
-
             has(): boolean {
-
                 throw new Error('not allowed');
             }
         }
@@ -1073,17 +1003,14 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new PrivateSet(entries), new PrivateSet())).toBe(false);
 
         class LockableSet extends Set {
-
             locked: boolean;
 
             constructor(values?: any[], locked = true) {
-
                 super(values);
                 this.locked = locked;
             }
 
             has(key: any) {
-
                 if (this.locked) {
                     throw new Error('not allowed');
                 }
@@ -1102,7 +1029,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares maps', () => {
-
         const item1 = { key: 'value1' };
         const item2 = { key: 'value2' };
         expect(Hoek.deepEqual(new Map(), new Map())).toBe(true);
@@ -1111,7 +1037,15 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new Map([[1, item1]]), new Map([[1, item2]]))).toBe(false);
         expect(Hoek.deepEqual(new Map([[1, undefined]]), new Map([[1, undefined]]))).toBe(true);
         expect(Hoek.deepEqual(new Map([[1, undefined]]), new Map([[2, undefined]]))).toBe(false);
-        expect(Hoek.deepEqual(new Map([[1, {}]]), new Map([[1, {}], [2, {}]]))).toBe(false);
+        expect(
+            Hoek.deepEqual(
+                new Map([[1, {}]]),
+                new Map([
+                    [1, {}],
+                    [2, {}],
+                ]),
+            ),
+        ).toBe(false);
         expect(Hoek.deepEqual(new Map([[item1, 1]]), new Map([[item1, 1]]))).toBe(true);
         expect(Hoek.deepEqual(new Map([[{}, 1]]), new Map([[{}, 1]]))).toBe(false);
         expect(Hoek.deepEqual(new WeakMap(), new WeakMap())).toBe(true);
@@ -1119,7 +1053,6 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new WeakMap(), new Map(), { prototype: false })).toBe(false);
 
         const maps = [new Map(), new Map()].map((map) => {
-
             (map as any).modified = true;
             return map;
         });
@@ -1128,22 +1061,21 @@ describe('deepEqual()', () => {
     });
 
     it('compares extended maps', () => {
-
         class PrivateMap extends Map {
-
             constructor(args?: any) {
-
                 // @ts-expect-error - Map typing is a MapConstructor, but for whatever reason, it thinks it doesn't accept arguments
                 super(args);
             }
 
             get() {
-
                 throw new Error('not allowed');
             }
         }
 
-        const entries = [['a', 1], ['b', undefined]] as const;
+        const entries = [
+            ['a', 1],
+            ['b', undefined],
+        ] as const;
 
         expect(Hoek.deepEqual(new PrivateMap(), new PrivateMap())).toBe(true);
         expect(Hoek.deepEqual(new PrivateMap(entries), new PrivateMap(entries))).toBe(true);
@@ -1153,11 +1085,9 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual(new PrivateMap(entries), new PrivateMap())).toBe(false);
 
         class LockableMap extends Map {
-
             locked: boolean;
 
             constructor(kvs?: any, locked = true) {
-
                 // https://stackoverflow.com/questions/70677360/in-typescript-when-i-use-mymap-to-extends-map-but-it-s-show-expected-0-argument
                 // https://stackoverflow.com/questions/67631458/no-overload-matches-this-call-while-constructing-map-from-array
                 // @ts-expect-error - See above
@@ -1167,7 +1097,6 @@ describe('deepEqual()', () => {
             }
 
             get() {
-
                 if (this.locked) {
                     throw new Error('not allowed');
                 }
@@ -1184,15 +1113,13 @@ describe('deepEqual()', () => {
     });
 
     it('compares promises', () => {
-
-        const a = new Promise(() => { });
+        const a = new Promise(() => {});
 
         expect(Hoek.deepEqual(a, a)).toBe(true);
-        expect(Hoek.deepEqual(a, new Promise(() => { }))).toBe(false);
+        expect(Hoek.deepEqual(a, new Promise(() => {}))).toBe(false);
     });
 
     it('compares urls', () => {
-
         const a = new URL('https://hapi.dev/');
 
         expect(Hoek.deepEqual(a, a)).toBe(true);
@@ -1201,7 +1128,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares buffers', () => {
-
         expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 2, 3]))).toBe(true);
         expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 3, 2]))).toBe(false);
         expect(Hoek.deepEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 2]))).toBe(false);
@@ -1210,7 +1136,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares string objects', () => {
-
         /* eslint-disable no-new-wrappers */
         expect(Hoek.deepEqual(new String('a'), new String('a'))).toBe(true);
         expect(Hoek.deepEqual(new String('a'), new String('b'))).toBe(false);
@@ -1222,7 +1147,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares number objects', () => {
-
         /* eslint-disable no-new-wrappers */
         expect(Hoek.deepEqual(new Number(1), new Number(1))).toBe(true);
         expect(Hoek.deepEqual(new Number(1), new Number(2))).toBe(false);
@@ -1236,7 +1160,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares boolean objects', () => {
-
         /* eslint-disable no-new-wrappers */
         expect(Hoek.deepEqual(new Boolean(true), new Boolean(true))).toBe(true);
         expect(Hoek.deepEqual(new Boolean(true), new Boolean(false))).toBe(false);
@@ -1248,7 +1171,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares objects', () => {
-
         expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).toBe(true);
         expect(Hoek.deepEqual({ foo: 'bar' }, { foo: 'baz' })).toBe(false);
         expect(Hoek.deepEqual({ foo: { bar: 'foo' } }, { foo: { bar: 'baz' } })).toBe(false);
@@ -1258,7 +1180,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares functions', () => {
-
         const f1 = () => 1;
         const f2 = () => 2;
         const f2a = () => 2;
@@ -1283,7 +1204,6 @@ describe('deepEqual()', () => {
     });
 
     it('skips keys', () => {
-
         expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 4 })).toBe(false);
         expect(Hoek.deepEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 4 }, { skip: ['c'] })).toBe(true);
 
@@ -1296,14 +1216,15 @@ describe('deepEqual()', () => {
 
         expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3 }, { a: 1, b: 2 })).toBe(false);
         expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3 }, { a: 1, b: 2 }, { skip: [sym] })).toBe(true);
-        expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3, [Symbol('other')]: true }, { a: 1, b: 2 }, { skip: [sym] })).toBe(false);
+        expect(Hoek.deepEqual({ a: 1, b: 2, [sym]: 3, [Symbol('other')]: true }, { a: 1, b: 2 }, { skip: [sym] })).toBe(
+            false,
+        );
 
         expect(Hoek.deepEqual({ a: 1, b: 2 }, { a: 1 }, { skip: ['a'] })).toBe(false);
         expect(Hoek.deepEqual({ a: 1 }, { a: 1, b: 2 }, { skip: ['a'] })).toBe(false);
     });
 
     it('handles circular dependency', () => {
-
         const a = {} as any;
         a.x = a;
 
@@ -1312,7 +1233,6 @@ describe('deepEqual()', () => {
     });
 
     it('handles obj only circular dependency', () => {
-
         const a = {} as any;
         a.x = a;
 
@@ -1322,7 +1242,6 @@ describe('deepEqual()', () => {
     });
 
     it('handles irregular circular dependency', () => {
-
         const a = {} as any;
         a.x = a;
 
@@ -1347,7 +1266,6 @@ describe('deepEqual()', () => {
     });
 
     it('handles cross circular dependency', () => {
-
         const a = {} as any;
         const b = { x: {}, y: a } as any;
 
@@ -1366,7 +1284,6 @@ describe('deepEqual()', () => {
     });
 
     it('handles reuse of objects', () => {
-
         const date1 = { year: 2018, month: 1, day: 1 };
         const date2 = { year: 2000, month: 1, day: 1 };
 
@@ -1374,18 +1291,14 @@ describe('deepEqual()', () => {
     });
 
     it('handles valueOf() that throws', () => {
-
         const throwing = class {
-
             value: string;
 
             constructor(value: string) {
-
                 this.value = value;
             }
 
             valueOf() {
-
                 throw new Error('failed');
             }
         };
@@ -1397,18 +1310,14 @@ describe('deepEqual()', () => {
     });
 
     it('handles valueOf() that returns similar value', () => {
-
         const identity = class {
-
             value: string;
 
             constructor(value: string) {
-
                 this.value = value;
             }
 
             valueOf() {
-
                 return { value: this.value };
             }
         };
@@ -1421,20 +1330,13 @@ describe('deepEqual()', () => {
         expect(Hoek.deepEqual({ value: 'a' }, new identity('a'), { prototype: false })).toBe(true);
     });
 
-
     interface BaseItf {
         value: string;
         surprice?: number;
     }
 
     it('skips enumerable properties on prototype chain', () => {
-
-        const base: any = function (
-            this: BaseItf,
-            value: string,
-            surprice?: number
-        ) {
-
+        const base: any = function (this: BaseItf, value: string, surprice?: number) {
             this.value = value;
 
             if (surprice) {
@@ -1445,7 +1347,7 @@ describe('deepEqual()', () => {
         Object.defineProperty(base.prototype, 'enum', {
             enumerable: true,
             configurable: true,
-            value: true
+            value: true,
         });
 
         expect('enum' in new base('a')).toBe(true);
@@ -1458,13 +1360,7 @@ describe('deepEqual()', () => {
     });
 
     it('skips non-enumerable properties', () => {
-
-        const base: any = function Base(
-            this: BaseItf,
-            value: string,
-            surprice: number
-        ) {
-
+        const base: any = function Base(this: BaseItf, value: string, surprice: number) {
             this.value = value;
 
             if (surprice) {
@@ -1473,13 +1369,12 @@ describe('deepEqual()', () => {
         };
 
         const createObj = (...args: any[]) => {
-
             const obj = new base(...args);
 
             Object.defineProperty(obj, 'hidden', {
                 enumerable: false,
                 configurable: true,
-                value: true
+                value: true,
             });
 
             return obj;
@@ -1494,7 +1389,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares an object with property getter while executing it', () => {
-
         const obj = {} as any;
         const value = 1;
         let execCount = 0;
@@ -1503,10 +1397,9 @@ describe('deepEqual()', () => {
             enumerable: true,
             configurable: true,
             get: function () {
-
                 ++execCount;
                 return value;
-            }
+            },
         });
 
         const copy = Hoek.clone(obj);
@@ -1518,7 +1411,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares objects with property getters', () => {
-
         const obj = {};
         const ref = {};
 
@@ -1526,46 +1418,39 @@ describe('deepEqual()', () => {
             enumerable: true,
             configurable: true,
             get: function () {
-
                 return 1;
-            }
+            },
         });
 
         Object.defineProperty(ref, 'test', {
             enumerable: true,
             configurable: true,
             get: function () {
-
                 return 2;
-            }
+            },
         });
 
         expect(Hoek.deepEqual(obj, ref)).toBe(false);
     });
 
     it('compares object prototypes', () => {
-
         interface Itf {
-            a: number,
+            a: number;
         }
 
         const Obj: any = function (this: Itf) {
-
             this.a = 5;
         };
 
         Obj.prototype.b = function () {
-
             return this.a;
         };
 
         const Ref: any = function (this: Itf) {
-
             this.a = 5;
         };
 
         Ref.prototype.b = function () {
-
             return this.a;
         };
 
@@ -1575,7 +1460,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares plain objects', () => {
-
         const a = Object.create(null);
         const b = Object.create(null);
 
@@ -1587,7 +1471,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares an object with an empty object', () => {
-
         const a = { a: 1, b: 2 };
 
         expect(Hoek.deepEqual({}, a)).toBe(false);
@@ -1595,7 +1478,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares an object ignoring the prototype', () => {
-
         const a = Object.create(null);
         const b = {};
 
@@ -1603,7 +1485,6 @@ describe('deepEqual()', () => {
     });
 
     it('compares an object ignoring the prototype recursively', () => {
-
         const a = [Object.create(null)];
         const b = [{}];
 
@@ -1612,9 +1493,7 @@ describe('deepEqual()', () => {
 });
 
 describe('intersect()', () => {
-
     it('returns the common objects of two arrays', () => {
-
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
         const common = Hoek.intersect(array1, array2);
@@ -1622,7 +1501,6 @@ describe('intersect()', () => {
     });
 
     it('returns the common objects of array and set', () => {
-
         const array1 = new Set([1, 2, 3, 4, 4, 5, 5]);
         const array2 = [5, 4, 5, 6, 7];
         const common = Hoek.intersect(array1, array2);
@@ -1630,7 +1508,6 @@ describe('intersect()', () => {
     });
 
     it('returns the common objects of set and array', () => {
-
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = new Set([5, 4, 5, 6, 7]);
         const common = Hoek.intersect(array1, array2);
@@ -1638,7 +1515,6 @@ describe('intersect()', () => {
     });
 
     it('returns the common objects of two sets', () => {
-
         const array1 = new Set([1, 2, 3, 4, 4, 5, 5]);
         const array2 = new Set([5, 4, 5, 6, 7]);
         const common = Hoek.intersect(array1, array2);
@@ -1646,7 +1522,6 @@ describe('intersect()', () => {
     });
 
     it('returns just the first common object of two arrays', () => {
-
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [5, 4, 5, 6, 7];
         const common = Hoek.intersect(array1, array2, { first: true });
@@ -1654,7 +1529,6 @@ describe('intersect()', () => {
     });
 
     it('returns null when no common and returning just the first common object of two arrays', () => {
-
         const array1 = [1, 2, 3, 4, 4, 5, 5];
         const array2 = [6, 7];
         const common = Hoek.intersect(array1, array2, { first: true });
@@ -1662,14 +1536,12 @@ describe('intersect()', () => {
     });
 
     it('returns an empty array if either input is null', () => {
-
         expect(Hoek.intersect([1], null)!.length).toHoequal(0);
         expect(Hoek.intersect(null, [1])!.length).toHoequal(0);
         expect(Hoek.intersect(null, [1], { first: true })).toBeNull();
     });
 
     it('returns the common objects of object and array', () => {
-
         const array1 = { 1: true, 2: true, 3: true, 4: true, 5: true };
         const array2 = [5, 4, 5, 6, 7];
         const common = Hoek.intersect(array1, array2) as number[];
@@ -1678,9 +1550,7 @@ describe('intersect()', () => {
 });
 
 describe('contain()', () => {
-
     it('tests strings', () => {
-
         expect(Hoek.contain('abc', 'ab')).toBe(true);
         expect(Hoek.contain('abc', 'abc', { only: true })).toBe(true);
         expect(Hoek.contain('aaa', 'a', { only: true })).toBe(true);
@@ -1697,7 +1567,7 @@ describe('contain()', () => {
         expect(Hoek.contain('aab', 'a', { only: true })).toBe(false);
         expect(Hoek.contain('abb', 'b', { once: true })).toBe(false);
         expect(Hoek.contain('abc', ['a', 'd'])).toBe(false);
-        expect(Hoek.contain('abc', ['ab', 'bc'])).toBe(false);                      // Overlapping values not supported
+        expect(Hoek.contain('abc', ['ab', 'bc'])).toBe(false); // Overlapping values not supported
 
         expect(Hoek.contain('', 'a')).toBe(false);
         expect(Hoek.contain('', 'a', { only: true })).toBe(false);
@@ -1725,7 +1595,6 @@ describe('contain()', () => {
     });
 
     it('tests arrays', () => {
-
         expect(Hoek.contain([1, 2, 3], 1)).toBe(true);
         expect(Hoek.contain([{ a: 1 }], { a: 1 }, { deep: true })).toBe(true);
         expect(Hoek.contain([1, 2, 3], [1, 2])).toBe(true);
@@ -1748,8 +1617,12 @@ describe('contain()', () => {
 
         expect(Hoek.contain([1, 2, 3], 4)).toBe(false);
         expect(Hoek.contain([{ a: 1 }], { a: 2 }, { deep: true })).toBe(false);
-        expect(Hoek.contain([{ a: 1 }, { a: 1 }], [{ a: 1 }, { a: 1 }], { deep: true, once: true, only: true })).toBe(true);
-        expect(Hoek.contain([{ a: 1 }, { a: 1 }], [{ a: 1 }, { a: 2 }], { deep: true, once: true, only: true })).toBe(false);
+        expect(Hoek.contain([{ a: 1 }, { a: 1 }], [{ a: 1 }, { a: 1 }], { deep: true, once: true, only: true })).toBe(
+            true,
+        );
+        expect(Hoek.contain([{ a: 1 }, { a: 1 }], [{ a: 1 }, { a: 2 }], { deep: true, once: true, only: true })).toBe(
+            false,
+        );
         expect(Hoek.contain([{ a: 1 }], { a: 1 })).toBe(false);
         expect(Hoek.contain([1, 2, 3], [4, 5])).toBe(false);
         expect(Hoek.contain([[3], [2]], [[1]])).toBe(false);
@@ -1776,7 +1649,6 @@ describe('contain()', () => {
     });
 
     it('tests objects', () => {
-
         type TTnum = Record<string, number>;
         type TTstr = Record<string, string>;
         type TTo = Record<string, TTnum>;
@@ -1791,28 +1663,62 @@ describe('contain()', () => {
         expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 }, { part: true })).toBe(true);
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }, { only: true })).toBe(true);
         expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] }, { deep: true })).toBe(true);
-        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true })).toBe(false);
-        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, part: true })).toBe(true);
-        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, part: false })).toBe(false);
-        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, only: true })).toBe(false);
-        expect(Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true, only: false })).toBe(true);
+        expect(
+            Hoek.contain<TTa>({ a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] }, { a: [{ b: 1 }, { d: 3 }] }, { deep: true }),
+        ).toBe(false);
+        expect(
+            Hoek.contain<TTa>(
+                { a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] },
+                { a: [{ b: 1 }, { d: 3 }] },
+                { deep: true, part: true },
+            ),
+        ).toBe(true);
+        expect(
+            Hoek.contain<TTa>(
+                { a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] },
+                { a: [{ b: 1 }, { d: 3 }] },
+                { deep: true, part: false },
+            ),
+        ).toBe(false);
+        expect(
+            Hoek.contain<TTa>(
+                { a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] },
+                { a: [{ b: 1 }, { d: 3 }] },
+                { deep: true, only: true },
+            ),
+        ).toBe(false);
+        expect(
+            Hoek.contain<TTa>(
+                { a: [{ b: 1 }, { c: 2 }, { d: 3, e: 4 }] },
+                { a: [{ b: 1 }, { d: 3 }] },
+                { deep: true, only: false },
+            ),
+        ).toBe(true);
         expect(Hoek.contain({ a: [1, 2, 3] }, { a: [2, 4, 6] }, { deep: true, part: true })).toBe(true);
 
         expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, 'd')).toBe(false);
         expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, ['a', 'd'])).toBe(false);
         expect(Hoek.contain({ a: 1, b: 2, c: 3, d: 4 }, ['a', 'b', 'c'], { only: true })).toBe(false);
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2 })).toBe(false);
-        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2, b: 2 }, { part: true })).toBe(false);             // part does not ignore bad value
+        expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 2, b: 2 }, { part: true })).toBe(false); // part does not ignore bad value
         expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, { a: 1, d: 3 })).toBe(false);
         expect(Hoek.contain<TTnum>({ a: 1, b: 2, c: 3 }, { a: 1, d: 4 })).toBe(false);
         expect(Hoek.contain({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 }, { only: true })).toBe(false);
         expect(Hoek.contain({ a: [1], b: [2], c: [3] }, { a: [1], c: [3] })).toBe(false);
         expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } })).toBe(false);
         expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true })).toBe(false);
-        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: true })).toBe(false);
-        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: false })).toBe(true);
-        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: true })).toBe(true);
-        expect(Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: false })).toBe(false);
+        expect(
+            Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: true }),
+        ).toBe(false);
+        expect(
+            Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, only: false }),
+        ).toBe(true);
+        expect(
+            Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: true }),
+        ).toBe(true);
+        expect(
+            Hoek.contain<TTn>({ a: { b: { c: 1, d: 2 } } }, { a: { b: { c: 1 } } }, { deep: true, part: false }),
+        ).toBe(false);
         expect(Hoek.contain({ a: [1, 2, 3] }, { a: [4, 5, 6] }, { deep: true, part: true })).toBe(false);
 
         expect(Hoek.contain({}, 'a')).toBe(false);
@@ -1829,38 +1735,31 @@ describe('contain()', () => {
         // Getter check
 
         {
-
             type FooType = {
-
                 bar?: string;
                 baz?: string;
-            }
+            };
 
             interface FooItf extends FooType {
-
                 new (bar: string): FooType;
             }
 
             type FooRecord = Record<string, FooType>;
 
-
             const Foo = function (this: FooItf, bar: string) {
-
                 this.bar = bar;
             } as unknown as FooItf;
 
             const getBar = function (this: FooItf) {
-
                 return this.bar;
             };
 
             const createFoo = (value: string) => {
-
                 const foo = new Foo(value);
 
                 Object.defineProperty(foo, 'baz', {
                     enumerable: true,
-                    get: getBar
+                    get: getBar,
                 });
 
                 return foo;
@@ -1868,52 +1767,58 @@ describe('contain()', () => {
 
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true })).toBe(true);
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true, part: true })).toBe(true);
-            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true })).toBe(true);
-            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true, only: true })).toBe(false);
-            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: false })).toBe(false);
-            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: true })).toBe(true);
+            expect(Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { bar: 'b', baz: 'b' } }, { deep: true })).toBe(
+                true,
+            );
+            expect(
+                Hoek.contain<FooRecord>(
+                    { a: createFoo('b') },
+                    { a: { bar: 'b', baz: 'b' } },
+                    { deep: true, only: true },
+                ),
+            ).toBe(false);
+            expect(
+                Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: false }),
+            ).toBe(false);
+            expect(
+                Hoek.contain<FooRecord>({ a: createFoo('b') }, { a: { baz: 'b' } }, { deep: true, part: true }),
+            ).toBe(true);
             expect(Hoek.contain({ a: createFoo('b') }, { a: createFoo('b') }, { deep: true })).toBe(true);
-
         }
 
         // Properties on prototype not visible
 
         {
-
             type FooType = {
-
                 a: number;
                 b: number;
                 c: number;
-            }
+            };
 
             interface FooItf extends FooType {
-
                 new (): FooType;
             }
 
             const Foo = function (this: FooItf) {
-
                 this.a = 1;
             } as unknown as FooItf;
 
             Object.defineProperty(Foo.prototype, 'b', {
                 enumerable: true,
-                value: 2
+                value: 2,
             });
 
             const Bar = function (this: FooItf) {
-
                 Foo.call(this);
                 this.c = 3;
             } as unknown as FooItf;
 
             Util.inherits(Bar, Foo);
 
-            expect((new Bar()).a).toHoequal(1);
-            expect((new Bar()).b).toHoequal(2);
-            expect((new Bar()).c).toHoequal(3);
-            expect(Hoek.contain(new Bar(), { 'a': 1, 'c': 3 }, { only: true })).toBe(true);
+            expect(new Bar().a).toHoequal(1);
+            expect(new Bar().b).toHoequal(2);
+            expect(new Bar().c).toHoequal(3);
+            expect(Hoek.contain(new Bar(), { a: 1, c: 3 }, { only: true })).toBe(true);
             expect(Hoek.contain(new Bar(), 'b')).toBe(false);
         }
 
@@ -1928,17 +1833,16 @@ describe('contain()', () => {
 
             Object.defineProperty(foo, 'c', {
                 enumerable: false,
-                value: 3
+                value: 3,
             });
 
             expect(Hoek.contain(foo, 'c')).toBe(true);
-            expect(Hoek.contain(foo, { 'c': 3 })).toBe(true);
-            expect(Hoek.contain(foo, { 'a': 1, 'b': 2, 'c': 3 }, { only: true })).toBe(true);
+            expect(Hoek.contain(foo, { c: 3 })).toBe(true);
+            expect(Hoek.contain(foo, { a: 1, b: 2, c: 3 }, { only: true })).toBe(true);
         }
     });
 
     it('supports symbols', () => {
-
         const sym = Symbol();
 
         expect(Hoek.contain([sym], sym)).toBe(true);
@@ -1950,13 +1854,10 @@ describe('contain()', () => {
     });
 
     it('compares error keys', () => {
-
-        const error = new Error('test') as (
-            Error & {
-                x?: number;
-                y?: number;
-            }
-        );
+        const error = new Error('test') as Error & {
+            x?: number;
+            y?: number;
+        };
 
         expect(Hoek.contain(error, { x: 1 })).toBe(false);
         expect(Hoek.contain(error, { x: 1 }, { part: true })).toBe(false);
@@ -1972,9 +1873,7 @@ describe('contain()', () => {
 });
 
 describe('flatten()', () => {
-
     it('returns a flat array', () => {
-
         const result = Hoek.flatten([1, 2, [3, 4, [5, 6], [7], 8], [9], [10, [11, 12]], 13]);
         expect(result.length).toHoequal(13);
         expect(result).toHoequal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
@@ -1982,34 +1881,32 @@ describe('flatten()', () => {
 });
 
 describe('reach()', () => {
-
     const sym = Symbol();
     const obj = {
         a: {
             b: {
                 c: {
                     d: 1,
-                    e: 2
+                    e: 2,
                 },
-                f: 'hello'
+                f: 'hello',
             },
             g: {
-                h: 3
+                h: 3,
             },
             '-2': true,
             [sym]: {
-                v: true
-            }
+                v: true,
+            },
         },
-        i: (function () { }) as ((() => any) & { x: number }),
+        i: function () {} as (() => any) & { x: number },
         j: null,
-        k: [4, 8, 9, 1]
+        k: [4, 8, 9, 1],
     };
 
     obj.i.x = 5;
 
     it('returns object itself', () => {
-
         expect(Hoek.reach(obj, null)).toHoequal(obj);
         expect(Hoek.reach(obj, false)).toHoequal(obj);
         expect(Hoek.reach(obj)).toHoequal(obj);
@@ -2017,58 +1914,46 @@ describe('reach()', () => {
     });
 
     it('returns values of array', () => {
-
         expect(Hoek.reach(obj, 'k.0')).toHoequal(4);
         expect(Hoek.reach(obj, 'k.1')).toHoequal(8);
     });
 
     it('returns last value of array using negative index', () => {
-
         expect(Hoek.reach(obj, 'k.-1')).toHoequal(1);
         expect(Hoek.reach(obj, 'k.-2')).toHoequal(9);
     });
 
     it('returns object property with negative index for non-array', () => {
-
         expect(Hoek.reach(obj, 'a.-2')).toHoequal(true);
     });
 
     it('returns a valid member', () => {
-
         expect(Hoek.reach(obj, 'a.b.c.d')).toHoequal(1);
     });
 
     it('returns a valid member with separator override', () => {
-
         expect(Hoek.reach(obj, 'a/b/c/d', '/')).toHoequal(1);
     });
 
     it('returns undefined on null object', () => {
-
         expect(Hoek.reach(null, 'a.b.c.d')).toHoequal(undefined);
     });
 
     it('returns undefined on missing object member', () => {
-
         expect(Hoek.reach(obj, 'a.b.c.d.x')).toHoequal(undefined);
     });
 
     it('returns undefined on missing function member', () => {
-
         expect(Hoek.reach(obj, 'i.y', { functions: true })).toHoequal(undefined);
     });
 
     it('throws on missing member in strict mode', () => {
-
         expect(() => {
-
             Hoek.reach(obj, 'a.b.c.o.x', { strict: true });
         }).toThrow('Missing segment o in reach path  a.b.c.o.x');
-
     });
 
     it('returns undefined on invalid member', () => {
-
         expect(Hoek.reach(obj, 'a.b.c.d-.x')).toHoequal(undefined);
         expect(Hoek.reach(obj, 'k.x')).toHoequal(undefined);
         expect(Hoek.reach(obj, 'k.1000')).toHoequal(undefined);
@@ -2076,45 +1961,36 @@ describe('reach()', () => {
     });
 
     it('returns function member', () => {
-
         expect(typeof Hoek.reach(obj, 'i')).toHoequal('function');
     });
 
     it('returns function property', () => {
-
         expect(Hoek.reach(obj, 'i.x')).toHoequal(5);
     });
 
     it('returns null', () => {
-
         expect(Hoek.reach(obj, 'j')).toHoequal(null);
     });
 
     it('throws on function property when functions not allowed', () => {
-
         expect(() => {
-
             Hoek.reach(obj, 'i.x', { functions: false });
         }).toThrow('Invalid segment x in reach path  i.x');
     });
 
     it('will return a default value if property is not found', () => {
-
         expect(Hoek.reach(obj, 'a.b.q', { default: 'defaultValue' })).toHoequal('defaultValue');
     });
 
     it('will return a default value if path is not found', () => {
-
         expect(Hoek.reach(obj, 'q', { default: 'defaultValue' })).toHoequal('defaultValue');
     });
 
     it('allows a falsey value to be used as the default value', () => {
-
         expect(Hoek.reach(obj, 'q', { default: '' })).toHoequal('');
     });
 
     it('allows array-based lookup', () => {
-
         expect(Hoek.reach(obj, ['a', 'b', 'c', 'd'])).toHoequal(1);
         expect(Hoek.reach(obj, ['k', '1'])).toHoequal(8);
         expect(Hoek.reach(obj, ['k', 1])).toHoequal(8);
@@ -2123,19 +1999,16 @@ describe('reach()', () => {
     });
 
     it('allows array-based lookup with symbols', () => {
-
         expect(Hoek.reach(obj, ['a', sym, 'v'])).toHoequal(true);
         expect(Hoek.reach(obj, ['a', Symbol(), 'v'])).toHoequal(undefined);
     });
 
     it('returns character in string', () => {
-
         expect(Hoek.reach(['abc'], [0])).toHoequal('abc');
         expect(Hoek.reach(['abc'], ['0'])).toHoequal('abc');
     });
 
     it('reaches sets and maps', () => {
-
         const value = {
             a: {
                 b: new Set([
@@ -2144,11 +2017,11 @@ describe('reach()', () => {
                     {
                         y: new Map([
                             ['v', 4],
-                            ['w', 5]
-                        ])
-                    }
-                ])
-            }
+                            ['w', 5],
+                        ]),
+                    },
+                ]),
+            },
         };
 
         expect(Hoek.reach(value, 'a.b.2.y.w')).toBeUndefined();
@@ -2157,19 +2030,17 @@ describe('reach()', () => {
 });
 
 describe('reachTemplate()', () => {
-
     it('applies object to template', () => {
-
         const obj = {
             a: {
                 b: {
                     c: {
-                        d: 1
-                    }
-                }
+                        d: 1,
+                    },
+                },
             },
             j: null,
-            k: [4, 8, 9, 1]
+            k: [4, 8, 9, 1],
         };
 
         const template = '{k.0}:{k.-2}:{a.b.c.d}:{x.y}:{j}';
@@ -2178,17 +2049,16 @@ describe('reachTemplate()', () => {
     });
 
     it('applies object to template (options)', () => {
-
         const obj = {
             a: {
                 b: {
                     c: {
-                        d: 1
-                    }
-                }
+                        d: 1,
+                    },
+                },
             },
             j: null,
-            k: [4, 8, 9, 1]
+            k: [4, 8, 9, 1],
         };
 
         const template = '{k/0}:{k/-2}:{a/b/c/d}:{x/y}:{j}';
@@ -2196,8 +2066,7 @@ describe('reachTemplate()', () => {
         expect(Hoek.reachTemplate(obj, template, '/')).toHoequal('4:9:1::');
     });
 
-    it('isn\'t prone to ReDoS given an adversarial template', () => {
-
+    it("isn't prone to ReDoS given an adversarial template", () => {
         const sizes = [0, 1, 2, 3, 4]; // Should be evenly-spaced
         const times = [];
         const diffs = [];
@@ -2222,65 +2091,49 @@ describe('reachTemplate()', () => {
 });
 
 describe('assert()', () => {
-
     it('throws an Error when using assert in a test', () => {
-
         expect(() => {
-
             Hoek.assert(false, 'my error message');
         }).toThrow(new Hoek.AssertError('my error message'));
     });
 
     it('throws an Error when using assert in a test with no message', () => {
-
         expect(() => {
-
             Hoek.assert(false);
         }).toThrow(new Hoek.AssertError('Unknown error'));
     });
 
     it('throws an Error when using assert in a test with multipart message', () => {
-
         expect(() => {
-
             Hoek.assert(false, 'This', 'is', 'my message');
         }).toThrow(new Hoek.AssertError('This is my message'));
     });
 
     it('throws an Error when using assert in a test with multipart message (empty)', () => {
-
         expect(() => {
-
             Hoek.assert(false, 'This', 'is', '', 'my message');
         }).toThrow(new Hoek.AssertError('This is my message'));
     });
 
     it('throws an Error when using assert in a test with object message', () => {
-
         expect(() => {
-
             Hoek.assert(false, 'This', 'is', { spinal: 'tap' } as never);
         }).toThrow(new Hoek.AssertError('This is {"spinal":"tap"}'));
     });
 
     it('throws an Error when using assert in a test with multipart string and error messages', () => {
-
         expect(() => {
-
             Hoek.assert(false, new Error('This'), 'is', 'spinal', new Error('tap'));
         }).toThrow(new Hoek.AssertError('This is spinal tap'));
     });
 
     it('throws an Error when using assert in a test with error object message', () => {
-
         const err = new TypeError('This is spinal tap');
         let got;
         expect(() => {
-
             try {
                 Hoek.assert(false, err);
-            }
-            catch (e) {
+            } catch (e) {
                 got = e;
                 throw e;
             }
@@ -2289,54 +2142,44 @@ describe('assert()', () => {
     });
 
     it('throws the same Error that is passed to it if there is only one error passed', () => {
-
         const error = new Error('ruh roh');
         const error2 = new Error('ruh roh');
 
         const fn = function () {
-
             Hoek.assert(false, error);
         };
 
         try {
             fn();
-        }
-        catch (err) {
-            expect(err).toHoequal(error);  // should be the same reference
+        } catch (err) {
+            expect(err).toHoequal(error); // should be the same reference
             expect(err).not.toBe(error2); // error with the same message should not match
         }
     });
 });
 
 describe('AssertError', () => {
-
     it('takes an optional message', () => {
-
         expect(new Hoek.AssertError().message).toHoequal('Unknown error');
         expect(new Hoek.AssertError(null).message).toHoequal('Unknown error');
         expect(new Hoek.AssertError('msg').message).toHoequal('msg');
     });
 
     it('has AssertError name property', () => {
-
         expect(new Hoek.AssertError().name).toHoequal('AssertError');
         expect(new Hoek.AssertError('msg').name).toHoequal('AssertError');
     });
 
     it('uses ctor argument to hide stack', { skip: typeof Error.captureStackTrace !== 'function' }, () => {
-
         const parentFn = () => {
-
             throw new Hoek.AssertError('msg', parentFn);
         };
 
         let err;
         expect(() => {
-
             try {
                 parentFn();
-            }
-            catch (e) {
+            } catch (e) {
                 err = e;
                 throw e;
             }
@@ -2347,9 +2190,7 @@ describe('AssertError', () => {
 });
 
 describe('Bench', () => {
-
     it('returns time elapsed', async () => {
-
         const timer = new Hoek.Bench();
         await Hoek.wait(12);
         expect(timer.elapsed()).toBeGreaterThan(9);
@@ -2357,73 +2198,57 @@ describe('Bench', () => {
 });
 
 describe('escapeRegex()', () => {
-
     it('escapes all special regular expression characters', () => {
-
         const a = Hoek.escapeRegex('4^f$s.4*5+-_?%=#!:@|~\\/`"(>)[<]d{}s,');
         expect(a).toHoequal('4\\^f\\$s\\.4\\*5\\+\\-_\\?%\\=#\\!\\:@\\|~\\\\\\/`"\\(>\\)\\[<\\]d\\{\\}s\\,');
     });
 });
 
 describe('escapeHeaderAttribute()', () => {
-
     it('should not alter ascii values', () => {
-
         const a = Hoek.escapeHeaderAttribute('My Value');
         expect(a).toHoequal('My Value');
     });
 
     it('escapes all special HTTP header attribute characters', () => {
-
         const a = Hoek.escapeHeaderAttribute('I said go!!!#"' + String.fromCharCode(92));
         expect(a).toHoequal('I said go!!!#\\"\\\\');
     });
 
     it('throws on large unicode characters', () => {
-
         expect(() => {
-
             Hoek.escapeHeaderAttribute('this is a test' + String.fromCharCode(500) + String.fromCharCode(300));
         }).toThrow(Error);
     });
 
     it('throws on CRLF to prevent response splitting', () => {
-
         expect(() => {
-
             Hoek.escapeHeaderAttribute('this is a test\r\n');
         }).toThrow(Error);
     });
 });
 
 describe('escapeHtml()', () => {
-
     it('escapes all special HTML characters', () => {
-
         const a = Hoek.escapeHtml('&<>"\'`');
         expect(a).toHoequal('&amp;&lt;&gt;&quot;&#x27;&#x60;');
     });
 
     it('returns empty string on falsy input', () => {
-
         const a = Hoek.escapeHtml('');
         expect(a).toHoequal('');
     });
 
     it('returns unchanged string on no reserved input', () => {
-
         const a = Hoek.escapeHtml('abc');
         expect(a).toHoequal('abc');
     });
 });
 
 describe('once()', () => {
-
     it('allows function to only execute once', () => {
-
         let gen = 0;
         let add = function (x: number) {
-
             gen += x;
         };
 
@@ -2437,8 +2262,7 @@ describe('once()', () => {
     });
 
     it('double once wraps one time', () => {
-
-        let method = function () { } as ((() => void) & { x?: number });
+        let method = function () {} as (() => void) & { x?: number };
         method = Hoek.once(method);
         method.x = 1;
         method = Hoek.once(method);
@@ -2447,24 +2271,19 @@ describe('once()', () => {
 });
 
 describe('ignore()', () => {
-
     it('exists', () => {
-
         expect(Hoek.ignore).toBeDefined();
         expect(typeof Hoek.ignore).toHoequal('function');
     });
 });
 
 describe('stringify()', () => {
-
     it('converts object to string', () => {
-
         const obj = { a: 1 };
         expect(Hoek.stringify(obj)).toHoequal('{"a":1}');
     });
 
     it('returns error in result string', () => {
-
         const obj = { a: 1 } as any;
         obj.b = obj;
         expect(Hoek.stringify(obj)).toContain('Cannot display object');
@@ -2472,9 +2291,7 @@ describe('stringify()', () => {
 });
 
 describe('isPromise()', () => {
-
     it('determines if an object is a promise', async () => {
-
         expect(Hoek.isPromise({})).toBe(false);
         expect(Hoek.isPromise(null)).toBe(false);
         expect(Hoek.isPromise(false)).toBe(false);
@@ -2483,10 +2300,7 @@ describe('isPromise()', () => {
         expect(Hoek.isPromise({ then: 1 })).toBe(false);
         expect(Hoek.isPromise([])).toBe(false);
 
-        const items = [
-            Promise.resolve(),
-            Promise.reject()
-        ];
+        const items = [Promise.resolve(), Promise.reject()];
 
         expect(Hoek.isPromise(items[0])).toBe(true);
         expect(Hoek.isPromise(items[1])).toBe(true);
@@ -2495,15 +2309,12 @@ describe('isPromise()', () => {
 
         try {
             await Promise.all(items);
-        }
-        catch { }
+        } catch {}
     });
 });
 
 describe('wait()', () => {
-
     it('delays for timeout ms', async () => {
-
         const timeout = {} as { before?: boolean; after?: boolean };
         setTimeout(() => (timeout.before = true), 10);
         const wait = Hoek.wait(10);
@@ -2516,7 +2327,6 @@ describe('wait()', () => {
     });
 
     it('delays for timeout ms as bigint', async () => {
-
         const timeout = {} as { before?: boolean; after?: boolean };
         setTimeout(() => (timeout.before = true), 10);
         const wait = Hoek.wait(10n);
@@ -2529,17 +2339,14 @@ describe('wait()', () => {
     });
 
     it('handles timeouts >= 2^31', async () => {
-
         const flow = [];
         let no = 0;
 
         const fakeTimeout = function (cb: Function, time: number) {
-
             const timer = ++no;
 
             flow.push(`CALL(${timer}): ${time}`);
             setImmediate(() => {
-
                 flow.push(`PRE(${timer})`);
                 cb();
                 flow.push(`POST(${timer})`);
@@ -2568,15 +2375,13 @@ describe('wait()', () => {
             'POST(4)',
             'PRE(5)',
             'POST(5)',
-            'DONE2'
+            'DONE2',
         ]);
     });
 
     it('returns never resolving promise when timeout >= Number.MAX_SAFE_INTEGER', async () => {
-
         let calls = 0;
         const fakeTimeout = function (cb: Function) {
-
             ++calls;
             process.nextTick(cb);
         };
@@ -2589,7 +2394,7 @@ describe('wait()', () => {
         const result = await Promise.race([
             Hoek.wait(1, waited),
             Hoek.wait(Number.MAX_SAFE_INTEGER, null, { setTimeout: fakeTimeout }),
-            Hoek.wait(Infinity, null, { setTimeout: fakeTimeout })
+            Hoek.wait(Infinity, null, { setTimeout: fakeTimeout }),
         ]);
 
         expect(result).toHoequal(waited);
@@ -2597,7 +2402,6 @@ describe('wait()', () => {
     });
 
     it('handles a return value', async () => {
-
         const uniqueValue = {};
         const timeout = {} as { before?: boolean; after?: boolean };
         setTimeout(() => (timeout.before = true), 10);
@@ -2610,50 +2414,35 @@ describe('wait()', () => {
     });
 
     it('undefined timeout resolves immediately', async () => {
-
         const waited = Symbol('waited');
-        const result = await Promise.race([
-            Hoek.wait(undefined, waited),
-            Hoek.wait(0)
-        ]);
+        const result = await Promise.race([Hoek.wait(undefined, waited), Hoek.wait(0)]);
 
         expect(result).toHoequal(waited);
     });
 
     it('NaN timeout resolves immediately', async () => {
-
         const waited = Symbol('waited');
-        const result = await Promise.race([
-            Hoek.wait(Number.NaN, waited),
-            Hoek.wait(0)
-        ]);
+        const result = await Promise.race([Hoek.wait(Number.NaN, waited), Hoek.wait(0)]);
 
         expect(result).toHoequal(waited);
     });
 
     it('rejects on weird timeout values', async () => {
-
         await expect(() => Hoek.wait({} as never)).toThrow();
         await expect(() => Hoek.wait(Symbol('hi') as never)).toThrow();
     });
 });
 
 describe('block()', () => {
-
     it('returns a promise', () => {
-
         expect(Hoek.block()).toBeInstanceOf(Promise);
     });
 
     it('does not immediately reject or resolve', async () => {
-
         const promise = Hoek.block();
         const waited = Symbol('waited');
 
-        const result = await Promise.race([
-            Hoek.wait(1, waited),
-            promise
-        ]);
+        const result = await Promise.race([Hoek.wait(1, waited), promise]);
 
         expect(result).toHoequal(waited);
     });

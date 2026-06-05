@@ -4,29 +4,28 @@ import { merge } from './merge.ts';
 import { reach } from './reach.ts';
 
 export type ApplyToDefaultsOptions = {
-    /**
-     * When true, null value from `source` overrides existing value in `target`.
-     */
+    /** When true, null value from `source` overrides existing value in `target`. */
     nullOverride?: boolean;
-    /**
-     * Shallow clone the specified keys.
-     */
+    /** Shallow clone the specified keys. */
     shallow?: boolean | ShallowKeys;
-}
+};
 
 export type Falsy = null | false | 0 | '' | undefined;
 
-export const applyToDefaults = function <T extends object> (
+export const applyToDefaults = function <T extends object>(
     defaults: Partial<T>,
     source: Partial<T> | Falsy | true,
-    options: ApplyToDefaultsOptions = {}
+    options: ApplyToDefaultsOptions = {},
 ) {
-
     assert(defaults && typeof defaults === 'object', 'Invalid defaults value: must be an object');
-    assert(!source || source === true || typeof source === 'object', 'Invalid source value: must be true, falsy or an object');
+    assert(
+        !source || source === true || typeof source === 'object',
+        'Invalid source value: must be true, falsy or an object',
+    );
     assert(typeof options === 'object', 'Invalid options: must be an object');
 
-    if (!source) {                                                  // If no source, return null
+    if (!source) {
+        // If no source, return null
         return null;
     }
 
@@ -36,7 +35,8 @@ export const applyToDefaults = function <T extends object> (
 
     const copy = clone(defaults);
 
-    if (source === true) {                                          // If source is set to true, use defaults
+    if (source === true) {
+        // If source is set to true, use defaults
         return copy;
     }
 
@@ -44,9 +44,11 @@ export const applyToDefaults = function <T extends object> (
     return merge(copy, source, { nullOverride, mergeArrays: false });
 };
 
-
-const applyToDefaultsWithShallow = function <T extends object, U extends object> (defaults: T, source: U | true, options: ApplyToDefaultsOptions) {
-
+const applyToDefaultsWithShallow = function <T extends object, U extends object>(
+    defaults: T,
+    source: U | true,
+    options: ApplyToDefaultsOptions,
+) {
     const keys = options.shallow;
     assert(Array.isArray(keys), 'Invalid keys');
 
@@ -54,15 +56,12 @@ const applyToDefaultsWithShallow = function <T extends object, U extends object>
     const _merge = source === true ? null : new Set();
 
     for (const k of keys) {
-        const key = Array.isArray(k) ? k : (k as string).split('.');            // Pre-split optimization
+        const key = Array.isArray(k) ? k : (k as string).split('.'); // Pre-split optimization
 
         const ref = reach(defaults!, key as string[]);
-        if (ref &&
-            typeof ref === 'object') {
-
-            seen.set(ref, _merge && reach(source as U, key as string[]) || ref);
-        }
-        else if (_merge) {
+        if (ref && typeof ref === 'object') {
+            seen.set(ref, (_merge && reach(source as U, key as string[])) || ref);
+        } else if (_merge) {
             _merge.add(key);
         }
     }
@@ -82,9 +81,7 @@ const applyToDefaultsWithShallow = function <T extends object, U extends object>
     return merge(copy, source as object, { nullOverride, mergeArrays: false });
 };
 
-
-const reachCopy = function <T extends object, U extends object> (dst: T, src: U, path: string[]) {
-
+const reachCopy = function <T extends object, U extends object>(dst: T, src: U, path: string[]) {
     for (const segment of path) {
         if (!(segment in src)) {
             return;
@@ -103,11 +100,9 @@ const reachCopy = function <T extends object, U extends object> (dst: T, src: U,
     let ref = dst;
 
     for (let i = 0; i < path.length - 1; ++i) {
-
         const segment = path[i] as keyof T;
 
         if (typeof ref[segment] !== 'object') {
-
             // @ts-expect-error - we know that ref[segment] is an object
             ref[segment] = {};
         }
