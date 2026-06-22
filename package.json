@@ -2,7 +2,7 @@
   "name": "@hapi/hoek",
   "description": "General purpose node utilities",
   "version": "11.0.7",
-  "repository": "git://github.com/hapijs/hoek",
+  "repository": "https://github.com/hapijs/hoek",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "exports": {
