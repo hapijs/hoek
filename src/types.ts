@@ -23,10 +23,10 @@ export type AnyPrototype =
     | RegExp
     | Set<any>
     | URL
-    | WeakMap<object, any>
-    | WeakSet<object>;
+    | WeakMap<WeakKey, any>
+    | WeakSet<WeakKey>;
 
-const typeMap = new Map<string, AnyPrototype>([
+const typeEntries: [string, AnyPrototype][] = [
     ['[object Error]', prototypes.error],
     ['[object Map]', prototypes.map],
     ['[object Promise]', prototypes.promise],
@@ -34,7 +34,9 @@ const typeMap = new Map<string, AnyPrototype>([
     ['[object URL]', prototypes.url],
     ['[object WeakMap]', prototypes.weakMap],
     ['[object WeakSet]', prototypes.weakSet],
-]);
+];
+
+const typeMap = new Map(typeEntries);
 
 export const getInternalProto = <T>(obj: T) => {
     if (Array.isArray(obj)) {

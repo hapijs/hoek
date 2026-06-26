@@ -112,8 +112,8 @@ export const reach = <T>(
             ref = ref[key as keyof typeof ref];
         } else if (isSetType) {
             ref = [...(ref as Set<any>)][Number(key)];
-        } else if (isMapType) {
-            // type === 'map'
+        } else {
+            // isMapType — the only remaining iterable (isIterable === isSetType || isMapType)
             ref = (ref as Map<any, any>).get(key);
         }
     }

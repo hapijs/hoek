@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import * as Hoek from '../lib/index.ts';
+import * as Hoek from '../src/index.ts';
 
 const nestedObj = {
     v: [7, 8, 9],

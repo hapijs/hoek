@@ -22,7 +22,7 @@
         "sourceMap": true,
         "strict": true,
         "target": "ESNext",
-        "types": ["./vitest.d.ts"]
+        "types": ["node", "./vitest.d.ts"]
     },
-    "include": ["lib", "test"]
+    "include": ["src", "test"]
 }

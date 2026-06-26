@@ -2,8 +2,8 @@ import Util from 'util';
 
 import { describe, it, expect } from 'vitest';
 
-import * as Hoek from '../lib/index.ts';
-import { type MergeTypes } from '../lib/merge.ts';
+import * as Hoek from '../src/index.ts';
+import { type MergeTypes } from '../src/merge.ts';
 
 const nestedObj = {
     v: [7, 8, 9],
