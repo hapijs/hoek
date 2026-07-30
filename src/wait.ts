@@ -1,6 +1,6 @@
 const MAX_TIMER = 2 ** 31 - 1; // ~25 days
 
-interface Options {
+export interface WaitOptions {
     /**
      * SetTimeout function to be used by wait.
      *
@@ -17,7 +17,11 @@ interface Options {
  * @param returnValue - The value that the Promise will resolve to.
  * @returns A Promise that resolves with `returnValue`.
  */
-export function wait<T = void>(timeout?: bigint | number | undefined, returnValue?: T, options?: Options): Promise<T> {
+export function wait<T = void>(
+    timeout?: bigint | number | undefined,
+    returnValue?: T,
+    options?: WaitOptions,
+): Promise<T> {
     if (typeof timeout !== 'number' && typeof timeout !== 'bigint' && timeout !== undefined) {
         throw new TypeError('Timeout must be a number or bigint');
     }

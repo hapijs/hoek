@@ -20,3 +20,12 @@ export { reach } from './reach.js';
 export { reachTemplate } from './reachTemplate.js';
 export { stringify } from './stringify.js';
 export { wait } from './wait.js';
+
+export type { ApplyToDefaultsOptions } from './applyToDefaults.js';
+export type { CloneOptions } from './clone.js';
+export type { ContainOptions } from './contain.js';
+export type { DeepEqualOptions } from './deepEqual.js';
+export type { IntersectArray, IntersectOptions } from './intersect.js';
+export type { MergeOptions } from './merge.js';
+export type { ReachOptions } from './reach.js';
+export type { WaitOptions } from './wait.js';
